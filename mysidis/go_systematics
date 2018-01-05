@@ -1,0 +1,74 @@
+#!/bin/csh -f
+
+# nominal: 0 0 0 0 0 0 0 0 0 0   0 0 0   0 0 0    ...   also, accIt=2 is nominal
+#          ./go_mysidis_hadd 24 11625 1 1 1 0 i 0 0 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+#          ./go_mysidis_hadd 24 32255 0 1 1 2 i 0 0 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+
+# e_zvertex e_ECsampling e_ECoutVin e_ECgeometric e_CCthetaMatching e_R1fid e_R3fid e_CCphiMatching e_CCfiducial yCut pip_vvp pip_R1fid pip_MXcut pim_vvp pim_R1fid pim_MXcut
+#  -1, 1       -1, 1       -1, 1       -1, 1          -1, 1          -1, 1    -1, 1                     -1, 1          -1, 1    -1, 1               -1, 1   -1, 1
+
+./go_mysidis_hadd 23 11625 1 1 1 0 b 1 0 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 11625 1 1 1 0 b -1 0 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 1 0 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b -1 0 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 1 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 -1 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 1 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 -1 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 1 0 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 -1 0 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 1 0 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 -1 0 0 0 0 0 0 0   0 0 0   0 0 0
+
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 1 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 -1 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 1 0 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 -1 0 0 0 0 0 0   0 0 0   0 0 0
+
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 1 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 -1 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 1 0 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 -1 0 0 0 0 0   0 0 0   0 0 0
+
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 1 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 -1 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 1 0 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 -1 0 0 0 0   0 0 0   0 0 0
+
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 1 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 -1 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 1 0 0 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 -1 0 0 0   0 0 0   0 0 0
+
+# not testing for now ./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 1 0 0   0 0 0   0 0 0
+# not testing for now ./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 -1 0 0   0 0 0   0 0 0
+# not testing for now ./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 1 0 0   0 0 0   0 0 0
+# not testing for now ./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 -1 0 0   0 0 0   0 0 0
+
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 0 1 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 0 -1 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 0 1 0   0 0 0   0 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 0 -1 0   0 0 0   0 0 0
+
+# not testing for now ./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 0 0 1   0 0 0   0 0 0
+# not testing for now ./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 0 0 -1   0 0 0   0 0 0
+# not testing for now ./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 0 0 1   0 0 0   0 0 0
+# not testing for now ./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 0 0 -1   0 0 0   0 0 0
+
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 0 0 0   1 0 0   1 0 0 # can test pi+ and pi- systematics together
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 0 0 0   -1 0 0   -1 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 0 0 0   1 0 0   1 0 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 0 0 0   -1 0 0   -1 0 0
+
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 0 0 0   0 1 0   0 1 0
+./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 0 0 0   0 -1 0   0 -1 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 0 0 0   0 1 0   0 1 0
+./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 0 0 0   0 -1 0   0 -1 0
+
+# not testing for now ./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 0 0 0   0 0 1   0 0 1
+# not testing for now ./go_mysidis_hadd 23 11625 1 1 1 0 b 0 0 0 0 0 0 0 0 0 0   0 0 -1   0 0 -1
+# not testing for now ./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 0 0 0   0 0 1   0 0 1
+# not testing for now ./go_mysidis_hadd 23 32255 0 1 1 2 b 0 0 0 0 0 0 0 0 0 0   0 0 -1   0 0 -1
+

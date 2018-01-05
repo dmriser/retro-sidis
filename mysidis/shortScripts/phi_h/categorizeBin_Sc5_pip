@@ -1,0 +1,637 @@
+#!/bin/csh -f
+
+# this is for bin scheme "5"
+
+# if a bin doesn't need a phi_h cut, leave it out of here
+# if a bin is empty (or only a few events) also leave it out of here, it will be dropped later
+# 1-180 = the bin needs a phi_h cut, value is half the cut width, i.e. cut from -value to +value (degrees)
+	# note: even if the cut is huge (e.g. 150), put it here, the decision to drop a bin will be made later
+	# note: the max hole half-width for measuring Ac and Acc is 30 deg.
+# special case: -1 = the bin doesn't need a cut but it is adjecent to bad bins and looks suspicious
+
+rm binCategories/pipCategory.BiSc5.*.txt
+
+#------------- x0QQ0 ------------------
+
+echo 20 > binCategories/pipCategory.BiSc5.x0QQ0z1PTsq0.txt
+echo 20 > binCategories/pipCategory.BiSc5.x0QQ0z1PTsq1.txt
+echo 20 > binCategories/pipCategory.BiSc5.x0QQ0z1PTsq2.txt
+
+echo 20 > binCategories/pipCategory.BiSc5.x0QQ0z2PTsq0.txt
+echo 20 > binCategories/pipCategory.BiSc5.x0QQ0z2PTsq1.txt
+echo 20 > binCategories/pipCategory.BiSc5.x0QQ0z2PTsq2.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x0QQ0z3PTsq0.txt
+echo 20 > binCategories/pipCategory.BiSc5.x0QQ0z3PTsq1.txt
+echo 20 > binCategories/pipCategory.BiSc5.x0QQ0z3PTsq2.txt
+echo 20 > binCategories/pipCategory.BiSc5.x0QQ0z3PTsq3.txt
+
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ0z4PTsq0.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z5PTsq0.txt
+echo 30 > binCategories/pipCategory.BiSc5.x0QQ0z5PTsq1.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z6PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z6PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x0QQ0z6PTsq2.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z7PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z7PTsq1.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ0z7PTsq2.txt
+echo 30 > binCategories/pipCategory.BiSc5.x0QQ0z7PTsq3.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z8PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z8PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z8PTsq2.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ0z8PTsq3.txt
+
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ0z9PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z9PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z9PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z9PTsq3.txt
+
+echo 40 > binCategories/pipCategory.BiSc5.x0QQ0z10PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z10PTsq1.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ0z10PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z10PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z10PTsq4.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ0z11PTsq0.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z11PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z11PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z11PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z11PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z11PTsq5.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ0z12PTsq0.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z12PTsq1.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z12PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z12PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z12PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z12PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z12PTsq6.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z12PTsq7.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ0z13PTsq0.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z13PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z13PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z13PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z13PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z13PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z13PTsq6.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z13PTsq7.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z13PTsq8.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z13PTsq9.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ0z14PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z14PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z14PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z14PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z14PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z14PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z14PTsq6.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z14PTsq7.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z14PTsq8.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ0z14PTsq9.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq0.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq1.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq3.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq4.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq5.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq6.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq7.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq8.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq9.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ0z15PTsq10.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ0z16PTsq0.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z16PTsq1.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z16PTsq2.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z16PTsq3.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z16PTsq4.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z16PTsq5.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z16PTsq6.txt
+
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z17PTsq0.txt
+echo 130 > binCategories/pipCategory.BiSc5.x0QQ0z17PTsq1.txt
+
+#------------- x0QQ1 ------------------
+
+echo 10 > binCategories/pipCategory.BiSc5.x0QQ1z2PTsq1.txt
+echo 10 > binCategories/pipCategory.BiSc5.x0QQ1z2PTsq2.txt
+
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ1z3PTsq0.txt
+echo 10 > binCategories/pipCategory.BiSc5.x0QQ1z3PTsq2.txt # skipped PTsq1, not a mistake
+echo 10 > binCategories/pipCategory.BiSc5.x0QQ1z3PTsq3.txt
+echo 10 > binCategories/pipCategory.BiSc5.x0QQ1z3PTsq4.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ1z4PTsq0.txt
+
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z5PTsq0.txt
+echo 30 > binCategories/pipCategory.BiSc5.x0QQ1z5PTsq1.txt
+
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z6PTsq0.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z6PTsq1.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z7PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z7PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x0QQ1z7PTsq2.txt
+echo 20 > binCategories/pipCategory.BiSc5.x0QQ1z7PTsq3.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z8PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z8PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z8PTsq2.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ1z9PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z9PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z9PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z9PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z9PTsq4.txt
+echo 30 > binCategories/pipCategory.BiSc5.x0QQ1z9PTsq5.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ1z10PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z10PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z10PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z10PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z10PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z10PTsq5.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ1z11PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z11PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z11PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z11PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z11PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z11PTsq5.txt
+echo 30 > binCategories/pipCategory.BiSc5.x0QQ1z11PTsq6.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ1z12PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z12PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z12PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z12PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z12PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z12PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z12PTsq6.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ1z12PTsq7.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ1z12PTsq8.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ1z13PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z13PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z13PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z13PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z13PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z13PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z13PTsq6.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ1z13PTsq7.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ1z13PTsq8.txt
+echo 30 > binCategories/pipCategory.BiSc5.x0QQ1z13PTsq9.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ1z14PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z14PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z14PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z14PTsq3.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z14PTsq4.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z14PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z14PTsq6.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ1z14PTsq7.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ1z14PTsq8.txt
+echo 30 > binCategories/pipCategory.BiSc5.x0QQ1z14PTsq9.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ1z15PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z15PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z15PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z15PTsq3.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z15PTsq4.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z15PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x0QQ1z15PTsq6.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ1z15PTsq7.txt
+echo 60 > binCategories/pipCategory.BiSc5.x0QQ1z15PTsq8.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x0QQ1z16PTsq0.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z16PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z16PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z16PTsq3.txt
+echo 100 > binCategories/pipCategory.BiSc5.x0QQ1z16PTsq4.txt
+
+#------------- x1QQ0 ------------------
+
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ0z5PTsq0.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ0z5PTsq1.txt
+echo 20 > binCategories/pipCategory.BiSc5.x1QQ0z5PTsq2.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ0z6PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ0z6PTsq2.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ0z7PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ0z7PTsq2.txt
+echo 20 > binCategories/pipCategory.BiSc5.x1QQ0z7PTsq3.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ0z8PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ0z8PTsq2.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ0z8PTsq3.txt
+
+echo 40 > binCategories/pipCategory.BiSc5.x1QQ0z9PTsq1.txt
+echo 40 > binCategories/pipCategory.BiSc5.x1QQ0z9PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z9PTsq3.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ0z9PTsq4.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z10PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z10PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z10PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z10PTsq4.txt
+echo 40 > binCategories/pipCategory.BiSc5.x1QQ0z10PTsq5.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z11PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z11PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z11PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z11PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z11PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z11PTsq6.txt
+echo 40 > binCategories/pipCategory.BiSc5.x1QQ0z11PTsq7.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z12PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z12PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z12PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z12PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z12PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z12PTsq6.txt
+echo 40 > binCategories/pipCategory.BiSc5.x1QQ0z12PTsq7.txt
+
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ0z13PTsq1.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ0z13PTsq2.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ0z13PTsq3.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ0z13PTsq4.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ0z13PTsq5.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ0z13PTsq6.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ0z13PTsq7.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ0z13PTsq8.txt
+
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ0z14PTsq1.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ0z14PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z14PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z14PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z14PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z14PTsq6.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z14PTsq7.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z14PTsq8.txt
+
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z15PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z15PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z15PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z15PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ0z15PTsq5.txt
+
+#------------- x1QQ1 ------------------
+
+echo 20 > binCategories/pipCategory.BiSc5.x1QQ1z3PTsq0.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ1z4PTsq0.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ1z4PTsq1.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z5PTsq0.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ1z5PTsq1.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z6PTsq0.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ1z6PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ1z6PTsq2.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z7PTsq0.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ1z7PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ1z7PTsq2.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ1z7PTsq3.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z8PTsq0.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z8PTsq1.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ1z8PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ1z8PTsq3.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z9PTsq0.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z9PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z9PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z9PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z9PTsq4.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ1z9PTsq5.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z10PTsq0.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z10PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z10PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z10PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z10PTsq4.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ1z10PTsq5.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ1z10PTsq6.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z11PTsq0.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z11PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z11PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z11PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z11PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z11PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z11PTsq6.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z11PTsq7.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z12PTsq0.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z12PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z12PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z12PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z12PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z12PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z12PTsq6.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z12PTsq7.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ1z12PTsq8.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z13PTsq0.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z13PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z13PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z13PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z13PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z13PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z13PTsq6.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z13PTsq7.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ1z13PTsq8.txt
+echo 30 > binCategories/pipCategory.BiSc5.x1QQ1z13PTsq9.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z14PTsq0.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z14PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z14PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z14PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z14PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z14PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z14PTsq6.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z14PTsq7.txt
+echo 60 > binCategories/pipCategory.BiSc5.x1QQ1z14PTsq8.txt
+echo 50 > binCategories/pipCategory.BiSc5.x1QQ1z14PTsq9.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z15PTsq0.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z15PTsq1.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z15PTsq2.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z15PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z15PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z15PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z15PTsq6.txt
+echo 80 > binCategories/pipCategory.BiSc5.x1QQ1z15PTsq7.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x1QQ1z16PTsq0.txt
+echo 110 > binCategories/pipCategory.BiSc5.x1QQ1z16PTsq1.txt
+echo 110 > binCategories/pipCategory.BiSc5.x1QQ1z16PTsq2.txt
+echo 140 > binCategories/pipCategory.BiSc5.x1QQ1z16PTsq3.txt
+
+#------------- x2QQ0 ------------------
+
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z6PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ0z6PTsq2.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z7PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ0z7PTsq2.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z8PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ0z8PTsq2.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ0z8PTsq3.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z9PTsq1.txt
+echo 40 > binCategories/pipCategory.BiSc5.x2QQ0z9PTsq2.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ0z9PTsq3.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ0z9PTsq4.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ0z9PTsq5.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z10PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z10PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z10PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z10PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z10PTsq5.txt
+
+echo 70 > binCategories/pipCategory.BiSc5.x2QQ0z11PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z11PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z11PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z11PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z11PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z11PTsq6.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z12PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z12PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z12PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z12PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z12PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z12PTsq6.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z12PTsq7.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z12PTsq8.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z13PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z13PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z13PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z13PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z13PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z13PTsq6.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z13PTsq7.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ0z13PTsq8.txt
+
+echo 60 > binCategories/pipCategory.BiSc5.x2QQ0z14PTsq2.txt
+echo 60 > binCategories/pipCategory.BiSc5.x2QQ0z14PTsq3.txt
+
+#------------- x2QQ1 ------------------
+
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ1z5PTsq1.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z6PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ1z6PTsq2.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z7PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z7PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z7PTsq3.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z8PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z8PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z8PTsq3.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ1z8PTsq4.txt
+
+echo 60 > binCategories/pipCategory.BiSc5.x2QQ1z9PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z9PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z9PTsq3.txt
+echo 60 > binCategories/pipCategory.BiSc5.x2QQ1z9PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z9PTsq5.txt
+
+echo 60 > binCategories/pipCategory.BiSc5.x2QQ1z10PTsq1.txt
+echo 60 > binCategories/pipCategory.BiSc5.x2QQ1z10PTsq2.txt
+echo 60 > binCategories/pipCategory.BiSc5.x2QQ1z10PTsq3.txt
+echo 60 > binCategories/pipCategory.BiSc5.x2QQ1z10PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z10PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z10PTsq6.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z10PTsq7.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z11PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z11PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z11PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x2QQ1z11PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x2QQ1z11PTsq5.txt
+echo 60 > binCategories/pipCategory.BiSc5.x2QQ1z11PTsq6.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z11PTsq7.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ1z11PTsq8.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z12PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z12PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z12PTsq3.txt
+echo 80 > binCategories/pipCategory.BiSc5.x2QQ1z12PTsq4.txt
+echo 80 > binCategories/pipCategory.BiSc5.x2QQ1z12PTsq5.txt
+echo 80 > binCategories/pipCategory.BiSc5.x2QQ1z12PTsq6.txt
+echo 80 > binCategories/pipCategory.BiSc5.x2QQ1z12PTsq7.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z12PTsq8.txt
+echo 30 > binCategories/pipCategory.BiSc5.x2QQ1z12PTsq9.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z13PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z13PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z13PTsq3.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z13PTsq4.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z13PTsq5.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z13PTsq6.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z13PTsq7.txt
+echo 60 > binCategories/pipCategory.BiSc5.x2QQ1z13PTsq8.txt
+echo 50 > binCategories/pipCategory.BiSc5.x2QQ1z13PTsq9.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z14PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z14PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z14PTsq3.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z14PTsq4.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z14PTsq5.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z14PTsq6.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z14PTsq7.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z15PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z15PTsq2.txt
+echo 100 > binCategories/pipCategory.BiSc5.x2QQ1z15PTsq3.txt
+
+#------------- x3QQ0 ------------------
+
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ0z5PTsq1.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ0z6PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ0z6PTsq2.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ0z7PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ0z7PTsq2.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z8PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z8PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z8PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z8PTsq4.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z9PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z9PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z9PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z9PTsq4.txt
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ0z9PTsq5.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z10PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z10PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z10PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z10PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z10PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z10PTsq6.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ0z11PTsq2.txt
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ0z11PTsq3.txt
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ0z11PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z11PTsq5.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z12PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z12PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ0z12PTsq4.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x3QQ0z13PTsq2.txt
+
+#------------- x3QQ1 ------------------
+
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ1z4PTsq1.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ1z5PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x3QQ1z5PTsq2.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z6PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z6PTsq2.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z7PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z7PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z7PTsq3.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z8PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z8PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z8PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z8PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z8PTsq5.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z9PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z9PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z9PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z9PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z9PTsq5.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x3QQ1z10PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z10PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z10PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z10PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z10PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z10PTsq6.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x3QQ1z11PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z11PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z11PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z11PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z11PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z11PTsq6.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z11PTsq7.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z11PTsq8.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x3QQ1z12PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z12PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z12PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z12PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z12PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z12PTsq6.txt
+echo 50 > binCategories/pipCategory.BiSc5.x3QQ1z12PTsq7.txt
+
+echo -1 > binCategories/pipCategory.BiSc5.x3QQ1z13PTsq1.txt
+echo 60 > binCategories/pipCategory.BiSc5.x3QQ1z13PTsq2.txt
+echo 60 > binCategories/pipCategory.BiSc5.x3QQ1z13PTsq3.txt
+echo 60 > binCategories/pipCategory.BiSc5.x3QQ1z13PTsq4.txt
+echo 60 > binCategories/pipCategory.BiSc5.x3QQ1z13PTsq5.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x3QQ1z14PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x3QQ1z14PTsq2.txt
+
+#------------- x4QQ0 ------------------
+
+echo 30 > binCategories/pipCategory.BiSc5.x4QQ0z5PTsq1.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x4QQ0z6PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x4QQ0z6PTsq2.txt
+echo 30 > binCategories/pipCategory.BiSc5.x4QQ0z6PTsq3.txt
+
+echo 30 > binCategories/pipCategory.BiSc5.x4QQ0z7PTsq1.txt
+echo 30 > binCategories/pipCategory.BiSc5.x4QQ0z7PTsq2.txt
+echo 30 > binCategories/pipCategory.BiSc5.x4QQ0z7PTsq3.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z8PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z8PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z8PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z8PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z8PTsq5.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z9PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z9PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z9PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z9PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z9PTsq5.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z9PTsq6.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z10PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z10PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z10PTsq3.txt
+echo 30 > binCategories/pipCategory.BiSc5.x4QQ0z10PTsq4.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z10PTsq5.txt
+
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z11PTsq1.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z11PTsq2.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z11PTsq3.txt
+echo 50 > binCategories/pipCategory.BiSc5.x4QQ0z11PTsq4.txt
+
+echo 100 > binCategories/pipCategory.BiSc5.x4QQ0z12PTsq1.txt
+echo 100 > binCategories/pipCategory.BiSc5.x4QQ0z12PTsq2.txt

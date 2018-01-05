@@ -1,0 +1,5 @@
+#!/bin/csh -f
+
+ffmpeg -framerate 5/1 -i pip_data_phihB%d_zPT2fid.png -c:v libx264 -pix_fmt yuv420p pip_data_zPT2fid_scanPhih.mp4
+ffmpeg -framerate 5/1 -i pim_data_phihB%d_zPT2fid.png -c:v libx264 -pix_fmt yuv420p pim_data_zPT2fid_scanPhih.mp4
+

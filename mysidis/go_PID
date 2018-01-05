@@ -1,0 +1,43 @@
+#!/bin/csh -f
+
+# run with         ./go_PID N n ExpOrSim b/i      where N is # of parallel jobs, n is (approx.) # of files, ExpOrSim = 0(MC) or 1(data), and b=batch/i=interactive
+
+# 11625 data files, 33471 v3_MC files, 32171 v8_MC files, 1995 v9 files, 3950 v10 files, 3931 v11 files, 32255 v12 files
+
+setenv filestart 1
+setenv MCversion 12 # this should match the version used, it won't actually change the version used
+
+echo ".L PIDhistos.C+" | root -l # to load the libraries
+
+@ filesPer = ($2 / $1 + 1) # +1 since it rounds fractions down... this is not ideal, but close enough
+
+@ i = $filestart
+
+foreach n (`seq 1 $1`)
+
+if($4 == "i") then
+gnome-terminal --geometry=50x5 --command 'root -l -b -q "PIDhistos.C+('"$i"','"$filesPer"','"$3"')"'
+endif
+
+if($4 == "b") then
+root -l -b -q "PIDhistos.C+($i,$filesPer,$3)" >& /dev/null &
+endif
+
+@ i += $filesPer
+end
+
+### hadd and delete ###
+while(`ps x | grep local | grep root | wc -l` != 0) # wait for all the nodes to finish... make sure no other root applications are running or this will get messed up!!
+sleep 2
+end
+sleep 5
+
+if($3 == "1") then
+hadd -f pid.data.s"$filestart".n"$2".root pid.data.s*.n"$filesPer".root
+rm pid.data.s*.n"$filesPer".root
+endif
+
+if($3 == "0") then
+hadd -f pid.MonteCarlo_v"$MCversion".s"$filestart".n"$2".root pid.MonteCarlo_v"$MCversion".s*.n"$filesPer".root
+rm pid.MonteCarlo_v"$MCversion".s*.n"$filesPer".root
+endif

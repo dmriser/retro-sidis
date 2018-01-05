@@ -1,0 +1,169 @@
+#!/bin/csh -f
+
+foreach x (`seq 0 4`)
+foreach QQ (`seq 0 1`)
+foreach z (`seq 0 17`)
+foreach PT2 (`seq 0 19`)
+
+root -l -b -q 'systematics_v1.C('"$x"','"$QQ"','"$z"','"$PT2"',"pip")' >& /dev/null &
+root -l -b -q 'systematics_v1.C('"$x"','"$QQ"','"$z"','"$PT2"',"pim")' >& /dev/null &
+
+while(`ps x | grep local | grep root | wc -l` >= 20)
+sleep 0.1
+end
+
+end
+end
+end
+end
+
+############################################
+
+#foreach x (`seq 0 4`)
+#foreach QQ (`seq 0 1`)
+#foreach z (`seq 0 17`)
+#foreach PT2 (`seq 0 19`)
+#
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',0,0,"pip")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',0,1,"pip")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',0,2,"pip")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',1,0,"pip")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',1,1,"pip")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',1,2,"pip")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',2,0,"pip")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',2,1,"pip")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',2,2,"pip")' >& /dev/null &
+#
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',0,9,"pip")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',1,9,"pip")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',2,9,"pip")' >& /dev/null &
+#
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',0,0,"pim")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',0,1,"pim")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',0,2,"pim")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',1,0,"pim")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',1,1,"pim")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',1,2,"pim")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',2,0,"pim")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',2,1,"pim")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',2,2,"pim")' >& /dev/null &
+#
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',0,9,"pim")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',1,9,"pim")' >& /dev/null &
+#root -l -b -q 'phih_simple.C('"$x"','"$QQ"','"$z"','"$PT2"',2,9,"pim")' >& /dev/null &
+#
+#while(`ps x | grep local | grep root | wc -l` != 0)
+#sleep 0.1
+#end
+#
+#end
+#end
+#end
+#end
+
+############################################
+
+#foreach x (`seq 0 4`)
+#foreach QQ (`seq 0 1`)
+#foreach z (`seq 0 17`)
+#foreach PTsq (`seq 0 19`)
+#root -l -b -q 'extract_h3h4.C('$x','$QQ','$z','$PTsq',"pip")'
+#root -l -b -q 'extract_h3h4.C('$x','$QQ','$z','$PTsq',"pim")'
+#end
+#end
+#end
+#end
+
+############################################
+
+#foreach k (`seq 0 89`)
+#root -l -b -q 'categorizeBinFiducial_Sc5_v1.C(1,0,"pip",'"$k"')'
+#root -l -b -q 'categorizeBinFiducial_Sc5_v1.C(1,0,"pim",'"$k"')'
+#end
+
+############################################
+
+#foreach x (`seq 0 4`)
+#foreach QQ (`seq 0 1`)
+#foreach z (`seq 0 17`)
+#
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,0,0)" >& /dev/null &
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,0,1)" >& /dev/null &
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,0,2)" >& /dev/null &
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,1,0)" >& /dev/null &
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,1,1)" >& /dev/null &
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,1,2)" >& /dev/null &
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,2,0)" >& /dev/null &
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,2,1)" >& /dev/null &
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,2,2)" >& /dev/null &
+#
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,0,9)" >& /dev/null &
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,1,9)" >& /dev/null &
+#root -l -b -q "MAcAccVPT2.C($x,$QQ,$z,2,9)" >& /dev/null &
+#
+#while(`ps x | grep local | grep root | wc -l` != 0)
+#sleep 0.1
+#end
+#
+#end
+#end
+#end
+
+############################################
+
+#foreach x (`seq 0 4`)
+#foreach QQ (`seq 0 1`)
+#foreach PT2 (`seq 0 19`)
+#
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,0,0)" >& /dev/null &
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,0,1)" >& /dev/null &
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,0,2)" >& /dev/null &
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,1,0)" >& /dev/null &
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,1,1)" >& /dev/null &
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,1,2)" >& /dev/null &
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,2,0)" >& /dev/null &
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,2,1)" >& /dev/null &
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,2,2)" >& /dev/null &
+#
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,0,9)" >& /dev/null &
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,1,9)" >& /dev/null &
+#root -l -b -q "MAcAccVz.C($x,$QQ,$PT2,2,9)" >& /dev/null &
+#
+#while(`ps x | grep local | grep root | wc -l` != 0)
+#sleep 0.1
+#end
+#
+#end
+#end
+#end
+
+############################################
+
+#foreach QQ (`seq 0 1`)
+#foreach z (`seq 0 17`)
+#foreach PT2 (`seq 0 19`)
+#
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,0,0)" >& /dev/null &
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,0,1)" >& /dev/null &
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,0,2)" >& /dev/null &
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,1,0)" >& /dev/null &
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,1,1)" >& /dev/null &
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,1,2)" >& /dev/null &
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,2,0)" >& /dev/null &
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,2,1)" >& /dev/null &
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,2,2)" >& /dev/null &
+#
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,0,9)" >& /dev/null &
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,1,9)" >& /dev/null &
+#root -l -b -q "MAcAccVx.C($QQ,$z,$PT2,2,9)" >& /dev/null &
+#
+#while(`ps x | grep local | grep root | wc -l` != 0)
+#sleep 0.1
+#end
+#
+#end
+#end
+#end
+
+############################################
+

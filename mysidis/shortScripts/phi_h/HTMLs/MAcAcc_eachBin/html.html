@@ -1,0 +1,559 @@
+<html>
+<head>
+<title>N.H. analysis</title>
+<script language="JavaScript">
+
+function changePic(picID){
+var currentName = "";
+
+
+var pipORpimRadioButtons = document.getElementsByName("pipORpimopt");
+var pipORpimRadioValue = "";
+for (var dummy1 = 0; dummy1 < pipORpimRadioButtons.length; dummy1++){
+if (pipORpimRadioButtons[dummy1].checked){
+pipORpimRadioValue = pipORpimRadioButtons[dummy1].value;
+}
+}
+var accItRadioButtons = document.getElementsByName("accItopt");
+var accItRadioValue = "";
+for (var dummy2 = 0; dummy2 < accItRadioButtons.length; dummy2++){
+if (accItRadioButtons[dummy2].checked){
+accItRadioValue = accItRadioButtons[dummy2].value;
+}
+}
+var hapItRadioButtons = document.getElementsByName("hapItopt");
+var hapItRadioValue = "";
+for (var dummy3 = 0; dummy3 < hapItRadioButtons.length; dummy3++){
+if (hapItRadioButtons[dummy3].checked){
+hapItRadioValue = hapItRadioButtons[dummy3].value;
+}
+}
+var xRadioButtons = document.getElementsByName("xopt");
+var xRadioValue = "";
+for (var dummy4 = 0; dummy4 < xRadioButtons.length; dummy4++){
+if (xRadioButtons[dummy4].checked){
+xRadioValue = xRadioButtons[dummy4].value;
+}
+}
+var QQRadioButtons = document.getElementsByName("QQopt");
+var QQRadioValue = "";
+for (var dummy5 = 0; dummy5 < QQRadioButtons.length; dummy5++){
+if (QQRadioButtons[dummy5].checked){
+QQRadioValue = QQRadioButtons[dummy5].value;
+}
+}
+currentName = pipORpimRadioValue + "_it" + accItRadioValue + "_hap" + hapItRadioValue + "_BiSc5_x" + xRadioValue + "QQ" + QQRadioValue + picID + ".png";
+
+
+document.images.pic1.src = currentName;
+}
+
+
+function changePicPopUp(picID){
+var currentName = "";
+
+
+var pipORpimRadioButtons = document.getElementsByName("pipORpimopt");
+var pipORpimRadioValue = "";
+for (var dummy1 = 0; dummy1 < pipORpimRadioButtons.length; dummy1++){
+if (pipORpimRadioButtons[dummy1].checked){
+pipORpimRadioValue = pipORpimRadioButtons[dummy1].value;
+}
+}
+var accItRadioButtons = document.getElementsByName("accItopt");
+var accItRadioValue = "";
+for (var dummy2 = 0; dummy2 < accItRadioButtons.length; dummy2++){
+if (accItRadioButtons[dummy2].checked){
+accItRadioValue = accItRadioButtons[dummy2].value;
+}
+}
+var hapItRadioButtons = document.getElementsByName("hapItopt");
+var hapItRadioValue = "";
+for (var dummy3 = 0; dummy3 < hapItRadioButtons.length; dummy3++){
+if (hapItRadioButtons[dummy3].checked){
+hapItRadioValue = hapItRadioButtons[dummy3].value;
+}
+}
+var xRadioButtons = document.getElementsByName("xopt");
+var xRadioValue = "";
+for (var dummy4 = 0; dummy4 < xRadioButtons.length; dummy4++){
+if (xRadioButtons[dummy4].checked){
+xRadioValue = xRadioButtons[dummy4].value;
+}
+}
+var QQRadioButtons = document.getElementsByName("QQopt");
+var QQRadioValue = "";
+for (var dummy5 = 0; dummy5 < QQRadioButtons.length; dummy5++){
+if (QQRadioButtons[dummy5].checked){
+QQRadioValue = QQRadioButtons[dummy5].value;
+}
+}
+currentName = pipORpimRadioValue + "_it" + accItRadioValue + "_hap" + hapItRadioValue + "_BiSc5_x" + xRadioValue + "QQ" + QQRadioValue + picID + ".png";
+
+
+aaa = window.open(currentName, currentName, 'height=750,width=950,scrollbars=no,resizable=no');
+}
+
+
+</script>
+</head>
+
+<body>
+<br><br>
+<input type="radio" name="pipORpimopt" value="pip" checked="checked" /> pi plus &nbsp; &nbsp;
+<input type="radio" name="pipORpimopt" value="pim" /> pi minus &nbsp; &nbsp;
+<br><br>
+Acceptance model:
+<input type="radio" name="accItopt" value="0" /> flat &nbsp; &nbsp;
+<input type="radio" name="accItopt" value="1" /> default &nbsp; &nbsp;
+<input type="radio" name="accItopt" value="2" checked="checked" /> my model &nbsp; &nbsp;
+<br><br>
+HAPRAD model:
+<input type="radio" name="hapItopt" value="0" /> flat &nbsp; &nbsp;
+<input type="radio" name="hapItopt" value="1" /> default &nbsp; &nbsp;
+<input type="radio" name="hapItopt" value="2" checked="checked" /> my model &nbsp; &nbsp;
+<!-- <input type="radio" name="hapItopt" value="9" /> no RC &nbsp; &nbsp;  this option is pointless -->
+<br><br>
+<input type="radio" name="xopt" value="0" checked="checked"/> 0.1 &lt; x &lt; 0.2 &nbsp; &nbsp;
+<input type="radio" name="xopt" value="1" /> 0.2 &lt; x &lt; 0.3 &nbsp; &nbsp;
+<input type="radio" name="xopt" value="2" /> 0.3 &lt; x &lt; 0.4 &nbsp; &nbsp;
+<input type="radio" name="xopt" value="3" /> 0.4 &lt; x &lt; 0.5 &nbsp; &nbsp;
+<input type="radio" name="xopt" value="4" /> 0.5 &lt; x &lt; 0.6 &nbsp; &nbsp;
+<br><br>
+<input type="radio" name="QQopt" value="0" checked="checked"/> low QQ bin &nbsp; &nbsp;
+<input type="radio" name="QQopt" value="1" /> high QQ bin &nbsp; &nbsp;
+(different for each x)
+<br><br>
+
+<table border="1">
+<tr>
+	<td> 0.95 &lt; PT2 &lt; 1.00 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT219')">z0 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT219')">z1 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT219')">z2 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT219')">z3 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT219')">z4 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT219')">z5 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT219')">z6 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT219')">z7 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT219')">z8 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT219')">z9 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT219')">z10 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT219')">z11 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT219')">z12 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT219')">z13 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT219')">z14 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT219')">z15 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT219')">z16 PT219</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT219')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT219')">z17 PT219</td>
+<tr>
+	<td> 0.90 &lt; PT2 &lt; 0.95 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT218')">z0 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT218')">z1 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT218')">z2 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT218')">z3 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT218')">z4 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT218')">z5 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT218')">z6 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT218')">z7 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT218')">z8 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT218')">z9 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT218')">z10 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT218')">z11 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT218')">z12 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT218')">z13 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT218')">z14 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT218')">z15 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT218')">z16 PT218</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT218')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT218')">z17 PT218</td>
+<tr>
+	<td> 0.85 &lt; PT2 &lt; 0.90 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT217')">z0 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT217')">z1 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT217')">z2 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT217')">z3 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT217')">z4 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT217')">z5 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT217')">z6 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT217')">z7 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT217')">z8 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT217')">z9 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT217')">z10 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT217')">z11 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT217')">z12 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT217')">z13 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT217')">z14 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT217')">z15 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT217')">z16 PT217</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT217')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT217')">z17 PT217</td>
+<tr>
+	<td> 0.80 &lt; PT2 &lt; 0.85 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT216')">z0 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT216')">z1 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT216')">z2 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT216')">z3 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT216')">z4 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT216')">z5 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT216')">z6 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT216')">z7 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT216')">z8 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT216')">z9 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT216')">z10 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT216')">z11 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT216')">z12 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT216')">z13 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT216')">z14 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT216')">z15 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT216')">z16 PT216</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT216')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT216')">z17 PT216</td>
+<tr>
+	<td> 0.75 &lt; PT2 &lt; 0.80 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT215')">z0 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT215')">z1 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT215')">z2 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT215')">z3 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT215')">z4 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT215')">z5 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT215')">z6 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT215')">z7 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT215')">z8 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT215')">z9 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT215')">z10 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT215')">z11 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT215')">z12 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT215')">z13 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT215')">z14 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT215')">z15 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT215')">z16 PT215</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT215')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT215')">z17 PT215</td>
+<tr>
+	<td> 0.70 &lt; PT2 &lt; 0.75 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT214')">z0 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT214')">z1 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT214')">z2 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT214')">z3 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT214')">z4 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT214')">z5 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT214')">z6 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT214')">z7 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT214')">z8 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT214')">z9 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT214')">z10 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT214')">z11 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT214')">z12 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT214')">z13 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT214')">z14 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT214')">z15 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT214')">z16 PT214</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT214')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT214')">z17 PT214</td>
+<tr>
+	<td> 0.65 &lt; PT2 &lt; 0.70 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT213')">z0 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT213')">z1 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT213')">z2 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT213')">z3 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT213')">z4 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT213')">z5 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT213')">z6 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT213')">z7 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT213')">z8 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT213')">z9 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT213')">z10 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT213')">z11 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT213')">z12 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT213')">z13 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT213')">z14 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT213')">z15 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT213')">z16 PT213</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT213')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT213')">z17 PT213</td>
+<tr>
+	<td> 0.60 &lt; PT2 &lt; 0.65 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT212')">z0 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT212')">z1 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT212')">z2 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT212')">z3 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT212')">z4 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT212')">z5 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT212')">z6 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT212')">z7 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT212')">z8 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT212')">z9 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT212')">z10 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT212')">z11 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT212')">z12 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT212')">z13 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT212')">z14 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT212')">z15 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT212')">z16 PT212</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT212')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT212')">z17 PT212</td>
+<tr>
+	<td> 0.55 &lt; PT2 &lt; 0.60 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT211')">z0 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT211')">z1 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT211')">z2 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT211')">z3 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT211')">z4 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT211')">z5 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT211')">z6 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT211')">z7 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT211')">z8 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT211')">z9 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT211')">z10 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT211')">z11 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT211')">z12 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT211')">z13 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT211')">z14 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT211')">z15 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT211')">z16 PT211</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT211')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT211')">z17 PT211</td>
+<tr>
+	<td> 0.50 &lt; PT2 &lt; 0.55 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT210')">z0 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT210')">z1 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT210')">z2 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT210')">z3 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT210')">z4 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT210')">z5 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT210')">z6 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT210')">z7 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT210')">z8 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT210')">z9 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT210')">z10 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT210')">z11 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT210')">z12 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT210')">z13 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT210')">z14 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT210')">z15 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT210')">z16 PT210</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT210')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT210')">z17 PT210</td>
+<tr>
+	<td> 0.45 &lt; PT2 &lt; 0.50 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT29')">z0 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT29')">z1 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT29')">z2 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT29')">z3 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT29')">z4 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT29')">z5 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT29')">z6 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT29')">z7 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT29')">z8 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT29')">z9 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT29')">z10 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT29')">z11 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT29')">z12 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT29')">z13 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT29')">z14 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT29')">z15 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT29')">z16 PT29</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT29')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT29')">z17 PT29</td>
+<tr>
+	<td> 0.40 &lt; PT2 &lt; 0.45 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT28')">z0 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT28')">z1 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT28')">z2 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT28')">z3 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT28')">z4 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT28')">z5 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT28')">z6 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT28')">z7 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT28')">z8 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT28')">z9 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT28')">z10 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT28')">z11 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT28')">z12 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT28')">z13 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT28')">z14 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT28')">z15 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT28')">z16 PT28</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT28')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT28')">z17 PT28</td>
+<tr>
+	<td> 0.35 &lt; PT2 &lt; 0.40 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT27')">z0 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT27')">z1 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT27')">z2 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT27')">z3 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT27')">z4 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT27')">z5 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT27')">z6 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT27')">z7 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT27')">z8 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT27')">z9 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT27')">z10 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT27')">z11 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT27')">z12 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT27')">z13 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT27')">z14 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT27')">z15 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT27')">z16 PT27</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT27')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT27')">z17 PT27</td>
+<tr>
+	<td> 0.30 &lt; PT2 &lt; 0.35 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT26')">z0 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT26')">z1 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT26')">z2 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT26')">z3 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT26')">z4 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT26')">z5 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT26')">z6 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT26')">z7 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT26')">z8 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT26')">z9 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT26')">z10 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT26')">z11 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT26')">z12 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT26')">z13 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT26')">z14 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT26')">z15 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT26')">z16 PT26</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT26')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT26')">z17 PT26</td>
+<tr>
+	<td> 0.25 &lt; PT2 &lt; 0.30 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT25')">z0 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT25')">z1 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT25')">z2 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT25')">z3 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT25')">z4 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT25')">z5 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT25')">z6 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT25')">z7 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT25')">z8 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT25')">z9 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT25')">z10 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT25')">z11 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT25')">z12 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT25')">z13 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT25')">z14 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT25')">z15 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT25')">z16 PT25</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT25')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT25')">z17 PT25</td>
+<tr>
+	<td> 0.20 &lt; PT2 &lt; 0.25 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT24')">z0 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT24')">z1 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT24')">z2 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT24')">z3 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT24')">z4 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT24')">z5 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT24')">z6 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT24')">z7 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT24')">z8 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT24')">z9 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT24')">z10 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT24')">z11 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT24')">z12 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT24')">z13 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT24')">z14 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT24')">z15 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT24')">z16 PT24</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT24')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT24')">z17 PT24</td>
+<tr>
+	<td> 0.15 &lt; PT2 &lt; 0.20 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT23')">z0 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT23')">z1 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT23')">z2 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT23')">z3 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT23')">z4 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT23')">z5 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT23')">z6 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT23')">z7 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT23')">z8 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT23')">z9 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT23')">z10 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT23')">z11 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT23')">z12 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT23')">z13 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT23')">z14 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT23')">z15 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT23')">z16 PT23</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT23')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT23')">z17 PT23</td>
+<tr>
+	<td> 0.10 &lt; PT2 &lt; 0.15 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT22')">z0 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT22')">z1 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT22')">z2 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT22')">z3 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT22')">z4 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT22')">z5 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT22')">z6 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT22')">z7 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT22')">z8 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT22')">z9 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT22')">z10 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT22')">z11 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT22')">z12 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT22')">z13 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT22')">z14 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT22')">z15 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT22')">z16 PT22</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT22')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT22')">z17 PT22</td>
+<tr>
+	<td> 0.05 &lt; PT2 &lt; 0.10 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT21')">z0 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT21')">z1 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT21')">z2 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT21')">z3 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT21')">z4 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT21')">z5 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT21')">z6 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT21')">z7 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT21')">z8 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT21')">z9 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT21')">z10 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT21')">z11 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT21')">z12 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT21')">z13 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT21')">z14 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT21')">z15 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT21')">z16 PT21</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT21')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT21')">z17 PT21</td>
+<tr>
+	<td> 0.00 &lt; PT2 &lt; 0.05 &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z0PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z0PT20')">z0 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z1PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z1PT20')">z1 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z2PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z2PT20')">z2 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z3PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z3PT20')">z3 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z4PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z4PT20')">z4 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z5PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z5PT20')">z5 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z6PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z6PT20')">z6 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z7PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z7PT20')">z7 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z8PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z8PT20')">z8 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z9PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z9PT20')">z9 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z10PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z10PT20')">z10 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z11PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z11PT20')">z11 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z12PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z12PT20')">z12 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z13PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z13PT20')">z13 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z14PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z14PT20')">z14 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z15PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z15PT20')">z15 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z16PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z16PT20')">z16 PT20</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('z17PT20')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('z17PT20')">z17 PT20</td>
+</tr>
+<tr>
+	<td> &uarr; PT2 / z &rarr; </td>
+	<td> 0.00 &lt; z &lt; 0.05 &uarr; </td>
+	<td> 0.05 &lt; z &lt; 0.10 &uarr; </td>
+	<td> 0.10 &lt; z &lt; 0.15 &uarr; </td>
+	<td> 0.15 &lt; z &lt; 0.20 &uarr; </td>
+	<td> 0.20 &lt; z &lt; 0.25 &uarr; </td>
+	<td> 0.25 &lt; z &lt; 0.30 &uarr; </td>
+	<td> 0.30 &lt; z &lt; 0.35 &uarr; </td>
+	<td> 0.35 &lt; z &lt; 0.40 &uarr; </td>
+	<td> 0.40 &lt; z &lt; 0.45 &uarr; </td>
+	<td> 0.45 &lt; z &lt; 0.50 &uarr; </td>
+	<td> 0.50 &lt; z &lt; 0.55 &uarr; </td>
+	<td> 0.55 &lt; z &lt; 0.60 &uarr; </td>
+	<td> 0.60 &lt; z &lt; 0.65 &uarr; </td>
+	<td> 0.65 &lt; z &lt; 0.70 &uarr; </td>
+	<td> 0.70 &lt; z &lt; 0.75 &uarr; </td>
+	<td> 0.75 &lt; z &lt; 0.80 &uarr; </td>
+	<td> 0.80 &lt; z &lt; 0.85 &uarr; </td>
+	<td> 0.85 &lt; z &lt; 0.90 &uarr; </td>
+</tr>
+</table>
+
+<p align="left">
+<img src="pip_it2_hap2_BiSc5_x0QQ0z6PT25.png" name="pic1" width = "1200px">
+</p>
+
+
+</body>
+</html>

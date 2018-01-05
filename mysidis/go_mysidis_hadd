@@ -1,0 +1,45 @@
+#!/bin/csh -f
+
+# run with         ./go_mysidis_hadd N n ExpOrSim doMoCo_e doMoCo_pions it b/i strictnesses...      where N is # of parallel jobs, n is (approx.) # of files, ExpOrSim = 0(MC) or 1(data), it is the iteration no. (0-3), and b=batch/i=interactive
+
+# 11625 data files, 33471 v3_MC files, 32171 v8_MC files, 1995 v9 files, 3950 v10 files, 3931 v11 files, 32255 v12 files
+
+# nominal strictnesses: 0 0 0 0 0 0 0 0 0 0   0 0 0   0 0 0
+
+setenv MCversion 12 # this should match the version used, it won't actually change the version used
+setenv BinSchemeN 6 # this should match the version used, it won't actually change the version used
+
+echo ".L mysidis.C+" | root -l # to load the libraries
+
+@ filesPer = ($2 / $1 + 1) # +1 since it rounds fractions down... this is not ideal, but close enough
+
+@ i = 1
+
+foreach n (`seq 1 $1`)
+
+if($7 == "i") then
+gnome-terminal --geometry=50x5 --command 'root -l -b -q "mysidis.C+('"$6"','"$i"','"$filesPer"','"$3"','"$4"','"$5"','"$8"','"$9"','"$10"','"$11"','"$12"','"$13"','"$14"','"$15"','"$16"','"$17"','"$18"','"$19"','"$20"','"$21"','"$22"','"$23"')"'
+endif
+
+if($7 == "b") then
+root -l -b -q "mysidis.C+($6,$i,$filesPer,$3,$4,$5,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23)" >& /dev/null &
+endif
+
+@ i += $filesPer
+end
+
+### hadd and delete ###
+while(`ps x | grep local | grep root | wc -l` != 0) # wait for all the nodes to finish... make sure no other root applications are running or this will get messed up!!
+sleep 2
+end
+sleep 5
+
+if($3 == "1") then
+hadd -f data.s1.n"$2".BiSc"$BinSchemeN".MoCo"$4""$5".__"$8$9$10$11$12$13$14$15$16$17$18$19$20$21$22$23"__.root data.s*.n"$filesPer".BiSc"$BinSchemeN".MoCo"$4""$5".__"$8$9$10$11$12$13$14$15$16$17$18$19$20$21$22$23"__.root
+rm data.s*.n"$filesPer".BiSc"$BinSchemeN".MoCo"$4""$5".__"$8$9$10$11$12$13$14$15$16$17$18$19$20$21$22$23"__.root
+endif
+
+if($3 == "0") then
+hadd -f MonteCarlo_v"$MCversion".it"$6".s1.n"$2".BiSc"$BinSchemeN".__"$8$9$10$11$12$13$14$15$16$17$18$19$20$21$22$23"__.root MonteCarlo_v"$MCversion".it"$6".s*.n"$filesPer".BiSc"$BinSchemeN".__"$8$9$10$11$12$13$14$15$16$17$18$19$20$21$22$23"__.root
+rm MonteCarlo_v"$MCversion".it"$6".s*.n"$filesPer".BiSc"$BinSchemeN".__"$8$9$10$11$12$13$14$15$16$17$18$19$20$21$22$23"__.root
+endif

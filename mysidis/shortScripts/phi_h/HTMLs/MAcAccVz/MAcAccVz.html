@@ -1,0 +1,137 @@
+<html>
+<head>
+<title>N.H. analysis</title>
+<script language="JavaScript">
+
+function changePic(picID){
+var currentName = "";
+
+var PT2RadioButtons = document.getElementsByName("PT2opt");
+var PT2RadioValue = "";
+for (var dummy1 = 0; dummy1 < PT2RadioButtons.length; dummy1++){
+if (PT2RadioButtons[dummy1].checked){
+PT2RadioValue = PT2RadioButtons[dummy1].value;
+}
+}
+var accItRadioButtons = document.getElementsByName("accItopt");
+var accItRadioValue = "";
+for (var dummy2 = 0; dummy2 < accItRadioButtons.length; dummy2++){
+if (accItRadioButtons[dummy2].checked){
+accItRadioValue = accItRadioButtons[dummy2].value;
+}
+}
+var hapItRadioButtons = document.getElementsByName("hapItopt");
+var hapItRadioValue = "";
+for (var dummy3 = 0; dummy3 < hapItRadioButtons.length; dummy3++){
+if (hapItRadioButtons[dummy3].checked){
+hapItRadioValue = hapItRadioButtons[dummy3].value;
+}
+}
+
+currentName = "MAcAccVz_it" + accItRadioValue + "_hap" + hapItRadioValue + "_BiSc5_" + picID + "PT2" + PT2RadioValue + ".png";
+document.images.pic1.src = currentName;
+}
+
+function changePicPopUp(picID){
+var currentName = "";
+
+var PT2RadioButtons = document.getElementsByName("PT2opt");
+var PT2RadioValue = "";
+for (var dummy1 = 0; dummy1 < PT2RadioButtons.length; dummy1++){
+if (PT2RadioButtons[dummy1].checked){
+PT2RadioValue = PT2RadioButtons[dummy1].value;
+}
+}
+var accItRadioButtons = document.getElementsByName("accItopt");
+var accItRadioValue = "";
+for (var dummy2 = 0; dummy2 < accItRadioButtons.length; dummy2++){
+if (accItRadioButtons[dummy2].checked){
+accItRadioValue = accItRadioButtons[dummy2].value;
+}
+}
+var hapItRadioButtons = document.getElementsByName("hapItopt");
+var hapItRadioValue = "";
+for (var dummy3 = 0; dummy3 < hapItRadioButtons.length; dummy3++){
+if (hapItRadioButtons[dummy3].checked){
+hapItRadioValue = hapItRadioButtons[dummy3].value;
+}
+}
+
+currentName = "MAcAccVz_it" + accItRadioValue + "_hap" + hapItRadioValue + "_BiSc5_" + picID + "PT2" + PT2RadioValue + ".png";
+aaa = window.open(currentName, currentName, 'height=750,width=950,scrollbars=no,resizable=no');
+}
+
+
+</script>
+</head>
+
+<body>
+<br><br>
+Acceptance model:
+<input type="radio" name="accItopt" value="0" /> flat &nbsp; &nbsp;
+<input type="radio" name="accItopt" value="1" /> default &nbsp; &nbsp;
+<input type="radio" name="accItopt" value="2" checked="checked" /> my model &nbsp; &nbsp;
+<br><br>
+HAPRAD model:
+<input type="radio" name="hapItopt" value="0" /> flat &nbsp; &nbsp;
+<input type="radio" name="hapItopt" value="1" /> default &nbsp; &nbsp;
+<input type="radio" name="hapItopt" value="2" checked="checked" /> my model &nbsp; &nbsp;
+<input type="radio" name="hapItopt" value="9" /> no RC &nbsp; &nbsp;
+<br><br>
+<input type="radio" name="PT2opt" value="0" /> 0.0 &lt; PT2 &lt; 0.05 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="1" /> 0.05 &lt; PT2 &lt; 0.1 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="2" /> 0.1 &lt; PT2 &lt; 0.15 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="3" /> 0.15 &lt; PT2 &lt; 0.2 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="4" /> 0.2 &lt; PT2 &lt; 0.25 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="5" /> 0.25 &lt; PT2 &lt; 0.3 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="6" /> 0.3 &lt; PT2 &lt; 0.35 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="7" checked="checked"/> 0.35 &lt; PT2 &lt; 0.4 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="8" /> 0.4 &lt; PT2 &lt; 0.45 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="9" /> 0.45 &lt; PT2 &lt; 0.5 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="10" /> 0.50 &lt; PT2 &lt; 0.55 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="11" /> 0.55 &lt; PT2 &lt; 0.60 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="12" /> 0.60 &lt; PT2 &lt; 0.65 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="13" /> 0.65 &lt; PT2 &lt; 0.70 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="14" /> 0.70 &lt; PT2 &lt; 0.75 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="15" /> 0.75 &lt; PT2 &lt; 0.80 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="16" /> 0.80 &lt; PT2 &lt; 0.85 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="17" /> 0.85 &lt; PT2 &lt; 0.90 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="18" /> 0.90 &lt; PT2 &lt; 0.95 &nbsp; &nbsp;
+<input type="radio" name="PT2opt" value="19" /> 0.95 &lt; PT2 &lt; 1.00 &nbsp; &nbsp;
+<br><br>
+
+<table border="1">
+<tr>
+	<td> high QQ bin &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('x0QQ1')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('x0QQ1')">x0QQ1</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('x1QQ1')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('x1QQ1')">x1QQ1</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('x2QQ1')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('x2QQ1')">x2QQ1</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('x3QQ1')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('x3QQ1')">x3QQ1</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('x4QQ1')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('x4QQ1')">x4QQ1</td>
+</tr>
+
+<tr>
+	<td> low QQ bin &rarr; </td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('x0QQ0')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('x0QQ0')">x0QQ0</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('x1QQ0')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('x1QQ0')">x1QQ0</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('x2QQ0')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('x2QQ0')">x2QQ0</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('x3QQ0')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('x3QQ0')">x3QQ0</td>
+	<td onMouseOver="this.bgColor='#FF0000'; changePic('x4QQ0')" onMouseOut="this.bgColor='#FFFFFF'" onClick="changePicPopUp('x4QQ0')">x4QQ0</td>
+</tr>
+<tr>
+	<td> &uarr; QQ / x &rarr; </td>
+	<td> 0.1 &lt; x &lt; 0.2 &uarr; </td>
+	<td> 0.2 &lt; x &lt; 0.3 &uarr; </td>
+	<td> 0.3 &lt; x &lt; 0.4 &uarr; </td>
+	<td> 0.4 &lt; x &lt; 0.5 &uarr; </td>
+	<td> 0.5 &lt; x &lt; 0.6 &uarr; </td>
+</tr>
+</table>
+
+<p align="left">
+<img src="MAcAccVz_it2_hap2_BiSc5_x0QQ0PT28.png" name="pic1" width = "1200px">
+</p>
+
+
+</body>
+</html>
