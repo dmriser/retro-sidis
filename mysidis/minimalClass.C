@@ -97,10 +97,61 @@ public:
       h22chain->SetBranchAddress("cc_segm", cc_segm);
       h22chain->SetBranchAddress("nphe", nphe);
     } else {
-      cout << "Well, you might want to try adding some files before running the analysis." << endl; 
+      cout << "[MinimalAnalysis::Run] Well, you might want to try adding some files before running the analysis!" << endl; 
     }
-  }
 
+
+    // Declaration of strictnesses for 
+    // electron identification. 
+    Int_t e_zvertex_strict         = 0; 
+    Int_t e_ECsampling_strict      = 0; 
+    Int_t e_ECoutVin_strict        = 0; 
+    Int_t e_CCthetaMatching_strict = 0; 
+    Int_t e_ECgeometric_strict     = 0; 
+    Int_t e_R1fid_strict           = 0; 
+    Int_t e_R3fid_strict           = 0;
+    Int_t e_CCphiMatching_strict   = 0; 
+    Int_t e_CCfiducial_strict      = 0; 
+    
+    
+    // Begin processing all entries. 
+    Int_t totalElectrons = 0; 
+    for (int i = 0; i < h22chain->GetEntries(); i++){
+      h22chain->GetEntry(i);
+      
+      Int_t currentRunNumber = INVALID_ID; 
+    if(ExpOrSim == 1){
+      currentRunNumber = getRunNumberFromFilename(h22chain->GetCurrentFile()->GetName());
+    }
+    
+    Int_t electronIndex = eID(
+			      gpart, q, p, cc_sect, sc_sect, ec_sect, 
+			      dc_sect, cx, cy, cz, tl1_x, tl1_y, tl3_x, 
+			      tl3_y, tl3_z, tl3_cx, tl3_cy, tl3_cz, 
+			      e_zvertex_strict, vz, vy, vx, e_ECsampling_strict, 
+			      ExpOrSim, etot, e_ECoutVin_strict, ec_ei, ech_x, 
+			      ech_y, ech_z, e_CCthetaMatching_strict, cc_segm, 
+			      e_ECgeometric_strict, e_R1fid_strict, e_R3fid_strict, 
+			      e_CCphiMatching_strict, sc_pd, e_CCfiducial_strict
+			      );
+    
+    if (electronIndex > INVALID_ID){
+      totalElectrons++; 
+    }
+    
+    if(i%10000 == 0){
+      cout<<"\rFinished Event ("<< i << "/" << h22chain->GetEntries() << ")" << flush;
+    }
+    
+    // This brace closes the loop over
+    // all entries in the tree. 
+    } 
+    
+    // Summarize things. 
+    cout << endl << "Done!" << endl;
+    cout << "Found electrons: " << totalElectrons << endl; 
+  }
+  
   private:
 
   TChain *h22chain; 
@@ -163,56 +214,6 @@ void minimalClass(){
   TStopwatch *timer = new TStopwatch();
   MomCorr_e1f *MomCorr = new MomCorr_e1f();    
   
-
-  // Declaration of strictnesses for 
-  // electron identification. 
-  Int_t e_zvertex_strict         = 0; 
-  Int_t e_ECsampling_strict      = 0; 
-  Int_t e_ECoutVin_strict        = 0; 
-  Int_t e_CCthetaMatching_strict = 0; 
-  Int_t e_ECgeometric_strict     = 0; 
-  Int_t e_R1fid_strict           = 0; 
-  Int_t e_R3fid_strict           = 0;
-  Int_t e_CCphiMatching_strict   = 0; 
-  Int_t e_CCfiducial_strict      = 0; 
-
-
-  // Begin processing all entries. 
-  Int_t totalElectrons = 0; 
-  for (int i = 0; i < h22chain->GetEntries(); i++){
-    h22chain->GetEntry(i);
-
-    Int_t currentRunNumber = INVALID_ID; 
-    if(ExpOrSim == 1){
-      currentRunNumber = getRunNumberFromFilename(h22chain->GetCurrentFile()->GetName());
-    }
-    
-    Int_t electronIndex = eID(
-			      gpart, q, p, cc_sect, sc_sect, ec_sect, 
-			      dc_sect, cx, cy, cz, tl1_x, tl1_y, tl3_x, 
-			      tl3_y, tl3_z, tl3_cx, tl3_cy, tl3_cz, 
-			      e_zvertex_strict, vz, vy, vx, e_ECsampling_strict, 
-			      ExpOrSim, etot, e_ECoutVin_strict, ec_ei, ech_x, 
-			      ech_y, ech_z, e_CCthetaMatching_strict, cc_segm, 
-			      e_ECgeometric_strict, e_R1fid_strict, e_R3fid_strict, 
-			      e_CCphiMatching_strict, sc_pd, e_CCfiducial_strict
-			      );
-    
-    if (electronIndex > INVALID_ID){
-      totalElectrons++; 
-    }
-
-    if(i%10000 == 0){
-      cout<<"\rFinished Event ("<< i << "/" << h22chain->GetEntries() << ")" << flush;
-    }
-
-    // This brace closes the loop over
-    // all entries in the tree. 
-  } 
-  
-  // Summarize things. 
-  cout << endl << "Done!" << endl;
-  cout << "Found electrons: " << totalElectrons << endl; 
   timer->Print();
 
   */
