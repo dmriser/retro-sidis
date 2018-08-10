@@ -1,4 +1,19 @@
-	// dc_xsc etc. are renamed to tl3_x etc. in the h10 --> h22 conversion
+Int_t getRunNumberFromFilename(TString filename){
+  Int_t run = 0; 
+  TRegexp runnoRegex("[1-9][0-9][0-9][0-9][0-9]");
+  TString srunno = filename(runnoRegex);
+  run = srunno.Atoi();
+  return run; 
+}
+
+TString getRunNumberWithStubFromFilename(TString filename){
+  TRegexp runnoRegex("[1-9][0-9][0-9][0-9][0-9].A[0-9][0-9]");
+  TString srunno = filename(runnoRegex);
+  return srunno; 
+}
+
+
+// dc_xsc etc. are renamed to tl3_x etc. in the h10 --> h22 conversion
 Float_t get_thetaCC(Float_t dc_xsc, Float_t dc_ysc, Float_t dc_zsc, Float_t dc_cxsc, Float_t dc_cysc, Float_t dc_czsc)
 {
 // Copied (and adjusted) from CLAS_Event.cc

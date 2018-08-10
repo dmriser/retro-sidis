@@ -16,11 +16,48 @@
 #include "programFiles/getGenIndices.C"
 #include "MomCorr.C"
 
-void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOrSim = 1, bool do_momCorr_e = 1, bool do_momCorr_pions = 1, int e_zvertex_strict = 0, int e_ECsampling_strict = 0, int e_ECoutVin_strict = 0, int e_ECgeometric_strict = 0, int e_CCthetaMatching_strict = 0, int e_R1fid_strict = 0, int e_R3fid_strict = 0, int e_CCphiMatching_strict = 0, int e_CCfiducial_strict = 0, int yCut_strict = 0, int pip_vvp_strict = 0, int pip_R1fid_strict = 0, int pip_MXcut_strict = 0, int pim_vvp_strict = 0, int pim_R1fid_strict = 0, int pim_MXcut_strict = 0) // ExpOrSim = 0(MC) or 1(data) // note: momCorr is only done to data (even if it's turned on for MC)
-{
+/* -----------------------------------------------------------
+
+   Author:    Nathan Harrison 
+   Revisions: David Riser 
+
+   Intent: 
+   This function processes the E1-F dataset 
+   for one configuration of systematic uncertainty 
+   values, defaults are all zero.  The output is a 
+   file that contains the 5-dimensional counts.  This 
+   file needs to be run over data and MC in different 
+   runs. 
+   
+   General Notes: 
+   (1) ExpOrSim follows the convention (0, MC) and (1, data). 
+
+   Change log: 
+   08-10-2018: Creating this log.  Reformatting spacing.
+   
+   -----------------------------------------------------------
+*/
+
+
+void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOrSim = 1, 
+	     bool do_momCorr_e = 1, bool do_momCorr_pions = 1, int e_zvertex_strict = 0, 
+	     int e_ECsampling_strict = 0, int e_ECoutVin_strict = 0, 
+	     int e_ECgeometric_strict = 0, int e_CCthetaMatching_strict = 0, 
+	     int e_R1fid_strict = 0, int e_R3fid_strict = 0, int e_CCphiMatching_strict = 0, 
+	     int e_CCfiducial_strict = 0, int yCut_strict = 0, int pip_vvp_strict = 0, 
+	     int pip_R1fid_strict = 0, int pip_MXcut_strict = 0, int pim_vvp_strict = 0, 
+	     int pim_R1fid_strict = 0, int pim_MXcut_strict = 0){
+
+
+  // Constant declaration block (reserved for anything
+  // that does not change throughout the run of the code.)
+  // By convention, these variables are named with all 
+  // capitol letters. 
+  const static int BUFFER_SIZE = 16; 
+  const static int MC_VERSION  = 12;
+
     TStopwatch *stopwat = new TStopwatch();
     
-    int MCversion = 12;
     
     MomCorr_e1f *MomCorr = new MomCorr_e1f();
     
@@ -124,15 +161,15 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
     
     // %%%%% read the input files into a TChain %%%%%
     int NtotalFiles = 11625;
-    if(ExpOrSim == 0 && MCversion == 3) NtotalFiles = 33471;
-    if(ExpOrSim == 0 && MCversion == 8) NtotalFiles = 32171;
-    if(ExpOrSim == 0 && MCversion == 9) NtotalFiles = 1995;
-    if(ExpOrSim == 0 && MCversion == 10) NtotalFiles = 3950;
-    if(ExpOrSim == 0 && MCversion == 11) NtotalFiles = 3931;
-    if(ExpOrSim == 0 && MCversion == 12) NtotalFiles = 32255;
+    if(ExpOrSim == 0 && MC_VERSION == 3)  NtotalFiles = 33471;
+    if(ExpOrSim == 0 && MC_VERSION == 8)  NtotalFiles = 32171;
+    if(ExpOrSim == 0 && MC_VERSION == 9)  NtotalFiles = 1995;
+    if(ExpOrSim == 0 && MC_VERSION == 10) NtotalFiles = 3950;
+    if(ExpOrSim == 0 && MC_VERSION == 11) NtotalFiles = 3931;
+    if(ExpOrSim == 0 && MC_VERSION == 12) NtotalFiles = 32255;
     
     string firstfilename = "";
-    string lastfilename = "";
+    string lastfilename  = "";
     
     ifstream filelist;
     if(ExpOrSim == 0) filelist.open(Form("programFiles/v%i_MCFiles.txt", MCversion));
