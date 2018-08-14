@@ -15,7 +15,7 @@ float cuthigh = 2;
 float sigma = 0.01;
 
 ifstream infile;
-infile.open(Form("../../..//mysidis/programFiles/pimVelocityCuts/t%i_pimVelocityCut_es%i_pBin%i.txt", 
+infile.open(Form("programFiles/pimVelocityCuts/t%i_pimVelocityCut_es%i_pBin%i.txt", 
 ExpOrSim, e_sector, pBin));
 if(infile) infile>>cutlow>>cuthigh>>sigma;
 infile.close();

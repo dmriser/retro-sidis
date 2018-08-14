@@ -89,7 +89,7 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
   // those files and adding a SetPath() method to this class.
   // Or the path can just be passed into the contructor since
   // nothing good is going to happen without having those files. 
-  MomCorr_e1f *MomCorr = new MomCorr_e1f();
+  MomCorr_e1f *MomCorr = new MomCorr_e1f("programFiles/momentumCorrections/");
   
   // %%%%% some cut values %%%%%
   float WMin = 2.05;

@@ -1,5 +1,13 @@
 #include "GetSector.C" // line added by NH
 
+/* 
+   Changelog
+   ---------
+
+   08-14-2018: David Riser, Adding path to files in constructor 
+
+*/
+
 #define NSect 6
 
 /* Theta Binning for Theta correction */
@@ -7,8 +15,6 @@
 Double_t ThetaC_min = 0;
 Double_t ThetaC_max = 144;
 Double_t ThetaC_wid = 1.;
-
-
 
 /* Theta Binning for Momentum correction */
 #define MomC_T_n 48
@@ -20,15 +26,11 @@ Double_t MomC_T_wid = 3.;
    phi between -30 and 30 deg */
 #define Npar 4
 
-
-
-
 /* CLASS DEFINITION */
-
 
 class MomCorr_e1f {
 public:
-  MomCorr_e1f();
+  MomCorr_e1f(std::string pathToFiles);
 
 
 private:
@@ -52,11 +54,11 @@ private:
 
 
   /* REad angle correction parameters */
-  void read_theta_par();
+  void read_theta_par(std::string pathToFiles);
   /* Read momentum correction parameters for electrons */
-  void read_mom_par();
+  void read_mom_par(std::string pathToFiles);
   /* Read momentum correction parameters for pi+ */
-  void read_mom_pip_par();
+  void read_mom_pip_par(std::string pathToFiles);
 
   /* Angle correction */
   Double_t theta_corr(Double_t , Double_t , Int_t );
@@ -81,32 +83,31 @@ public:
 /* Class Constructor */
 
 
-MomCorr_e1f::MomCorr_e1f() {
+MomCorr_e1f::MomCorr_e1f(std::string pathToFiles) {
 
 
   /* Reading angle correction parameters */
   fprintf(stdout, "reading parameters \n");
 
-  read_theta_par();
-  read_mom_par();
-  read_mom_pip_par();
+  read_theta_par(pathToFiles);
+  read_mom_par(pathToFiles);
+  read_mom_pip_par(pathToFiles);
 
 }
 
 
 /**********************************************/
 /* CLASS METHODES */
-void MomCorr_e1f::read_theta_par() {
+void MomCorr_e1f::read_theta_par(std::string pathToFiles) {
 
   /* Reading angle correction parameters */
-
   memset(&c0_theta[0][0], 0, ThetaC_n*NSect*sizeof(Double_t));
   memset(&c1_theta[0][0], 0, ThetaC_n*NSect*sizeof(Double_t));
   memset(&c2_theta[0][0], 0, ThetaC_n*NSect*sizeof(Double_t));
 
   char file[100];
   for (Int_t s=1; s<=NSect; s++) {
-    sprintf(file, "angles_s%d.out", s);
+    sprintf(file, "%sangles_s%d.out", pathToFiles.c_str(), s);
     FILE *fp = fopen(&file[0], "r");
     if (fp) {
       fprintf(stdout, "Theta Correction sector %d\n", s);
@@ -134,7 +135,7 @@ void MomCorr_e1f::read_theta_par() {
   }
 }
 
-void MomCorr_e1f::read_mom_par() {
+void MomCorr_e1f::read_mom_par(std::string pathToFiles){
 
   /* Reading momentum correction parameters for electrons */
 
@@ -148,7 +149,7 @@ void MomCorr_e1f::read_mom_par() {
 
     for (Int_t k=0; k<2; k++) {
 
-      sprintf(file, "momentum2_s%d_c%d.out", s, k);
+      sprintf(file, "%smomentum2_s%d_c%d.out", pathToFiles.c_str(), s, k);
       FILE *fp = fopen(&file[0], "r");
       if (fp) {
 	fprintf(stdout, "  Reading Parameter c%d\n", k);
@@ -190,7 +191,7 @@ void MomCorr_e1f::read_mom_par() {
 
 }
 
-void MomCorr_e1f::read_mom_pip_par() {
+void MomCorr_e1f::read_mom_pip_par(std::string pathToFiles){
 
   /* Reading momentum correction parameters for pi+ */
 
@@ -204,7 +205,7 @@ void MomCorr_e1f::read_mom_pip_par() {
 
     for (Int_t k=0; k<2; k++) {
 
-      sprintf(file, "momentum3_s%d_c%d.out", s, k);
+      sprintf(file, "%smomentum3_s%d_c%d.out", pathToFiles.c_str(), s, k);
       FILE *fp = fopen(&file[0], "r");
       if (fp) {
 	fprintf(stdout, "  Reading Parameter d%d\n", k);
