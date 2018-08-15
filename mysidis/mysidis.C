@@ -54,12 +54,13 @@
    08-13-2018: Continuing refactoring constants. 
    08-14-2018: Beginning to refactor the hadronic identificaiton 
        functions.  Before doing so I took a benchmark, which is below. 
-       Before 1 -> Done processing (3183192/3183193). Total time: 297.089 seconds, Event rate: 10714.6 events/sec.
-       Before 2 -> Done processing (3183192/3183193). Total time: 441.667 seconds, Event rate: 7207.22 events/sec.    
-       Before 3 -> Done processing (1591596/1591597). Total time: 176.752 seconds, Event rate: 9004.69 events/sec.
-       After 1  -> Done processing (1591596/1591597). Total time: 48.9784 seconds, Event rate: 32495.9 events/sec.
-       After 2  -> Done processing (1591596/1591597). Total time: 41.0923 seconds, Event rate: 38732.2 events/sec.
-       After 3  -> Done processing (1591596/1591597). Total time: 38.7185 seconds, Event rate: 41106.9 events/sec.
+       Before 1 -> Done processing (3183192/3183193).   Total time: 297.089 seconds, Event rate: 10714.6 events/sec.
+       Before 2 -> Done processing (3183192/3183193).   Total time: 441.667 seconds, Event rate: 7207.22 events/sec.    
+       Before 3 -> Done processing (1591596/1591597).   Total time: 176.752 seconds, Event rate: 9004.69 events/sec.
+       After 1  -> Done processing (1591596/1591597).   Total time: 48.9784 seconds, Event rate: 32495.9 events/sec.
+       After 2  -> Done processing (1591596/1591597).   Total time: 41.0923 seconds, Event rate: 38732.2 events/sec.
+       After 3  -> Done processing (1591596/1591597).   Total time: 38.7185 seconds, Event rate: 41106.9 events/sec.
+       After 4  -> Done processing (15790743/15790744). Total time: 304.079 seconds, Event rate: 51929.8 events/sec.
 
    -----------------------------------------------------------
 */
