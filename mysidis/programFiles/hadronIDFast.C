@@ -1,20 +1,22 @@
-#ifndef HADRON_CXX
-#define HADRON_CXX
+#ifndef HADRON_FAST_CXX
+#define HADRON_FAST_CXX
 
+#include "functions.C"
 #include "pipIDsubroutines.C"
 #include "pimIDsubroutines.C"
 #include "protIDsubroutines.C"
 
-vector<int> hadronID(Int_t gpart, int e_index[], Int_t q[], Float_t p[], 
-		     UChar_t sc_sect[], UChar_t dc_sect[], Float_t sc_t[],
-		     Float_t sc_r[], UChar_t sc_pd[], int pip_vvp_strict, 
-		     int pip_R1fid_strict, int pip_MXcut_strict, int ExpOrSim, 
-		     Float_t ec_ei[], UChar_t ec_sect[], UChar_t cc_sect[], 
-		     UShort_t nphe[], Float_t ec_eo[], Float_t cx[], Float_t cy[], 
-		     Float_t cz[], Float_t b[], Float_t tl1_x[], Float_t tl1_y[], 
-		     Float_t mcp[], Float_t mcphi[], Float_t mctheta[], 
-		     TLorentzVector V4_H[], int currentrunno, int pim_vvp_strict, 
-		     int pim_R1fid_strict, int pim_MXcut_strict){
+vector<int> hadronIDFast(Int_t gpart, int e_index[], Int_t q[], Float_t p[], 
+			 UChar_t sc_sect[], UChar_t dc_sect[], Float_t sc_t[],
+			 Float_t sc_r[], UChar_t sc_pd[], int pip_vvp_strict, 
+			 int pip_R1fid_strict, int pip_MXcut_strict, int ExpOrSim, 
+			 Float_t ec_ei[], UChar_t ec_sect[], UChar_t cc_sect[], 
+			 UShort_t nphe[], Float_t ec_eo[], Float_t cx[], Float_t cy[], 
+			 Float_t cz[], Float_t b[], Float_t tl1_x[], Float_t tl1_y[], 
+			 Float_t mcp[], Float_t mcphi[], Float_t mctheta[], 
+			 TLorentzVector V4_H[], int currentrunno, int pim_vvp_strict, 
+			 int pim_R1fid_strict, int pim_MXcut_strict, BetaPTable *pipTable, 
+			 BetaPTable *pimTable){
 
   Float_t speed_of_light = 29.9792458; // cm/ns
   Float_t pip_mass       = 0.13957; // GeV
@@ -49,7 +51,7 @@ vector<int> hadronID(Int_t gpart, int e_index[], Int_t q[], Float_t p[],
       bool vvp_pass, R1fid_pass, MXcut_pass;
       vvp_pass = R1fid_pass = MXcut_pass = 0;
 	
-      vvp_pass = pip_vvp_pass(pip_vvp_strict, ExpOrSim, dc_sect[e_index[1]], velocity, p[k]);
+      vvp_pass = pip_vvp_pass_table(pip_vvp_strict, ExpOrSim, dc_sect[e_index[1]], velocity, p[k], pipTable);
       if(vvp_pass){ 
 	R1fid_pass = pip_R1fid_pass(pip_R1fid_strict, dc_sect[k], tl1_x[k], tl1_y[k]); 
       }
@@ -84,7 +86,7 @@ vector<int> hadronID(Int_t gpart, int e_index[], Int_t q[], Float_t p[],
       bool vvp_pass, R1fid_pass, MXcut_pass;
       vvp_pass = R1fid_pass = MXcut_pass = 0;
       
-      vvp_pass = pim_vvp_pass(pim_vvp_strict, ExpOrSim, dc_sect[e_index[1]], velocity, p[k]);
+      vvp_pass = pim_vvp_pass_table(pim_vvp_strict, ExpOrSim, dc_sect[e_index[1]], velocity, p[k], pimTable);
       if(vvp_pass){ 
 	R1fid_pass = pim_R1fid_pass(pim_R1fid_strict, dc_sect[k], tl1_x[k], tl1_y[k]); 
       }

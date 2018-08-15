@@ -1,3 +1,26 @@
+#ifndef PIM_SUBROUTINES_CXX
+#define PIM_SUBROUTINES_CXX
+
+#include "functions.C"
+
+// Different version of the same code that uses the
+// tables.
+Bool_t pim_vvp_pass_table(int strict, int ExpOrSim, Int_t e_sector, float velocity, float p, BetaPTable *table){
+  if(strict == 9) return 1;
+
+  int pBin = table->getMomentumBin(p);
+  float Nsig_systematics = 0.25;
+
+  BetaPCutLimits limits = table->getValues(ExpOrSim, e_sector, pBin);
+
+  if( (velocity > limits.min + strict * Nsig_systematics * limits.sigma) &&
+      (velocity < limits.max - strict * Nsig_systematics * limits.sigma) ){
+    return 1;
+  }
+
+  return 0;
+}
+
 Bool_t pim_vvp_pass(int strict, int ExpOrSim, Int_t e_sector, float velocity, float p)
 {
 if(strict == 9) return 1;
@@ -101,3 +124,5 @@ return 0;
 //   if(ec_ei < 0.055) return 1;
 //   return 0;
 //   }
+
+#endif 

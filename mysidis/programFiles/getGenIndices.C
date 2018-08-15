@@ -1,3 +1,6 @@
+#ifndef GEN_INDICES_CXX
+#define GEN_INDICES_CXX
+
 vector<int> getGenIndices(Int_t mcnentr, Int_t mcid[], Float_t mcp[])
 {
 int pip_index = -123;
@@ -60,3 +63,5 @@ result.push_back(prot_index);
 return result;
 
 }
+
+#endif 

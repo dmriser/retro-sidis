@@ -1,3 +1,119 @@
+#ifndef FUNCTIONS_CXX 
+#define FUNCTIONS_CXX 
+
+/*
+  
+  Author: Nathan Harrison 
+  Edited: David Riser 
+  Date:   August 15, 2018 
+
+  Helper functions used in the analysis of 
+  E1-F, performed primarily by the file 
+  mysidis.C, but could be used by any. 
+
+*/
+
+// Helper classes for pi+ and pi- cuts on 
+// beta(p).
+struct BetaPCutLimits {
+  float min, max, sigma; 
+};
+
+class BetaPTable {
+
+public:
+  BetaPTable(std::string path, std::string meson){
+    if (meson == "pip"){
+      pMin = 0.20; 
+      pMax = 3.75; 
+    } else if (meson == "pim"){
+      pMin = 0.20; 
+      pMax = 3.25; 
+    } else {
+      std::cout << "[BetaPTable::BetaPTable] Fatal: Trouble loading for meson type " << meson << std::endl; 
+      exit(0); 
+    }
+
+    loadValues(path, meson); 
+  }
+  
+  ~BetaPTable(){
+  }
+
+  void setMinimumP(float p){
+    pMin = p; 
+  }
+
+  void setMaximumP(float p){
+    pMax = p; 
+  }
+
+  float getMinimumP() const {
+    return pMin; 
+  }
+
+  float getMaximumP() const {
+    return pMax; 
+  }
+
+  int getNumberBins() const {
+    return fNumberBins; 
+  }
+
+  int getMomentumBin(float p) const {
+    int bin = ((p-pMin)/((pMax-pMin)/fNumberBins));
+    if(bin < 0){ 
+      bin = 0; 
+    }
+    
+    if(bin >= fNumberBins){ 
+      bin = fNumberBins-1; 
+    }
+    return bin; 
+  }
+
+  BetaPCutLimits & getValues(int type, int sector, int bin){
+    return fValues[type][sector][bin]; 
+  } 
+
+  void loadValues(std::string path, std::string meson){
+    float min, max, sigma; 
+
+    for(int type=0; type<2; type++){
+      for(int sector=1; sector<7; sector++){
+	for(int bin=0; bin<fNumberBins; bin++){
+      
+	  std::ifstream infile;
+	  infile.open(Form("%s/%sVelocityCuts/t%i_%sVelocityCut_es%i_pBin%i.txt", 
+			   path.c_str(), meson.c_str(), type, meson.c_str(), sector, bin)); 
+
+	  if(infile){
+	    infile >> min >> max >> sigma;
+	    sigma = fabs(sigma); 
+	          
+	    BetaPCutLimits limits; 
+	    limits.min   = min; 
+	    limits.max   = max; 
+	    limits.sigma = sigma; 
+	    
+	    fValues[type][sector-1][bin] = limits; 
+	  }
+	  infile.close();
+	  
+	}
+      }
+    }
+  }
+
+private:
+  const static int fNumberBins = 70; 
+  float pMin, pMax; 
+  
+  // Main content of the class is this 
+  // data object containing all the parameters. 
+  BetaPCutLimits fValues[2][6][fNumberBins]; 
+};
+
 Int_t getRunNumberFromFilename(TString filename){
   Int_t run = 0; 
   TRegexp runnoRegex("[1-9][0-9][0-9][0-9][0-9]");
@@ -6,12 +122,13 @@ Int_t getRunNumberFromFilename(TString filename){
   return run; 
 }
 
-TString getRunNumberWithStubFromFilename(TString filename){
-  TRegexp runnoRegex("[1-9][0-9][0-9][0-9][0-9].A[0-9][0-9]");
-  TString srunno = filename(runnoRegex);
-  return srunno; 
-}
+/*
+  
+  Functions below original to 
+  funtions.C file from Nathan 
+  Harrison. 
 
+*/
 
 // dc_xsc etc. are renamed to tl3_x etc. in the h10 --> h22 conversion
 Float_t get_thetaCC(Float_t dc_xsc, Float_t dc_ysc, Float_t dc_zsc, Float_t dc_cxsc, Float_t dc_cysc, Float_t dc_czsc)
@@ -121,3 +238,5 @@ if(val < min || val >= max) return -123;
 int binN = static_cast<int>((val - min)/((max - min)/Nbins));
 return binN;
 }
+
+#endif

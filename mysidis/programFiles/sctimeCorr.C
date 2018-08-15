@@ -1,3 +1,6 @@
+#ifndef SCT_CXX
+#define SCT_CXX
+
 float e_sctimeCorr(int ExpOrSim, float sctime, int sector, int paddle, int runno)
 {
 if(ExpOrSim == 0) return sctime;
@@ -134,3 +137,5 @@ if(sector == 5 && paddle == 47) return 0;
 
 return 1;
 }
+
+#endif

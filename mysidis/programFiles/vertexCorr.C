@@ -1,3 +1,6 @@
+#ifndef VERTEX_CXX
+#define VERTEX_CXX
+
 float getCorrZ(int ExpOrSim, float vx, float vy, float vz, float px, float py, float pz, int s)
 {
 s--;
@@ -116,3 +119,5 @@ V3 vertex_corr_selection::vertex_corr(V3 v, V4 p)
 }
 
 */
+
+#endif

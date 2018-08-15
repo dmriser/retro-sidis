@@ -1,3 +1,6 @@
+#ifndef EID_CXX 
+#define EID_CXX
+
 #include "eIDsubroutines.C"
 #include "vertexCorr.C"
 #include "sctimeCorr.C"
@@ -44,3 +47,5 @@ if(p[Veindex[v]] > p[electron_index]) electron_index = Veindex[v];
 
 return electron_index;
 }
+
+#endif 

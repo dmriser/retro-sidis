@@ -215,7 +215,8 @@ void MomCorr_e1f::read_mom_pip_par(std::string pathToFiles){
 	  char str[250];
 	  
 	  while (fgets(str, sizeof(str), fp)) {
-	    sscanf(str, "%lf %lf %lf %lf %lf %lf %lf %lf %lf", &x1, &a1, &y, &a2, &y, &a3, &y);
+	    //	    sscanf(str, "%lf %lf %lf %lf %lf %lf %lf %lf %lf", &x1, &a1, &y, &a2, &y, &a3, &y);
+	    sscanf(str, "%lf %lf %lf %lf %lf %lf %lf", &x1, &a1, &y, &a2, &y, &a3, &y);
 	    
 	    Int_t bin = (x1-MomC_T_min)/MomC_T_wid;
 	    if (k==0) {

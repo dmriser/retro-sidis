@@ -16,11 +16,19 @@
 #include "TTree.h"
 #include "TVector3.h"
 
-// This project 
+// This project, these headers cannot 
+// be arranged into alphabetical order
+// because some of them depend on each 
+// other but are not included in those 
+// files, instead loaded here. Could be 
+// fixed with preprocessor directives 
+// #ifndef and #define with imports in 
+// both places. 
 #include "programFiles/functions.C"
 #include "programFiles/eID.C"
-#include "programFiles/hadronID.C"
 #include "programFiles/getGenIndices.C"
+#include "programFiles/hadronID.C"
+#include "programFiles/hadronIDFast.C"
 #include "MomCorr.C"
 
 /* -----------------------------------------------------------
@@ -44,7 +52,15 @@
    Change log: 
    08-10-2018: Creating this log.  Reformatting spacing.
    08-13-2018: Continuing refactoring constants. 
-   
+   08-14-2018: Beginning to refactor the hadronic identificaiton 
+       functions.  Before doing so I took a benchmark, which is below. 
+       Before 1 -> Done processing (3183192/3183193). Total time: 297.089 seconds, Event rate: 10714.6 events/sec.
+       Before 2 -> Done processing (3183192/3183193). Total time: 441.667 seconds, Event rate: 7207.22 events/sec.    
+       Before 3 -> Done processing (1591596/1591597). Total time: 176.752 seconds, Event rate: 9004.69 events/sec.
+       After 1  -> Done processing (1591596/1591597). Total time: 48.9784 seconds, Event rate: 32495.9 events/sec.
+       After 2  -> Done processing (1591596/1591597). Total time: 41.0923 seconds, Event rate: 38732.2 events/sec.
+       After 3  -> Done processing (1591596/1591597). Total time: 38.7185 seconds, Event rate: 41106.9 events/sec.
+
    -----------------------------------------------------------
 */
 
@@ -79,9 +95,11 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
   const Float_t pi180          = pi/180.0;      // Really not sure why root decided to make it a function and not a constant.
   const Float_t pi180_inv      = 180.0/pi;
   
-  
-  //  TStopwatch *runtimeCounter = new TStopwatch();
-  
+  // Time tracking and benchmarking. 
+  TStopwatch runtimeCounter;
+  runtimeCounter.Reset(); 
+  runtimeCounter.Start(); 
+
   // Class produced by Marco Mirazita.  Current relies on 
   // having a bunch of text files placed in the current 
   // working directory.  This is an easy fix, and should 
@@ -90,7 +108,13 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
   // Or the path can just be passed into the contructor since
   // nothing good is going to happen without having those files. 
   MomCorr_e1f *MomCorr = new MomCorr_e1f("programFiles/momentumCorrections/");
-  
+
+  // Classes for hadronic identification rely on the 
+  // same login as the original function.  The only 
+  // difference is the single load of the parameters. 
+  BetaPTable *pipTable = new BetaPTable("programFiles/", "pip"); 
+  BetaPTable *pimTable = new BetaPTable("programFiles/", "pim"); 
+
   // %%%%% some cut values %%%%%
   float WMin = 2.05;
   float yMax = 0.85; // default value (for when yCut_strict = 0)
@@ -599,8 +623,22 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
       
       // %%%%% hadron ID %%%%%
       if(e_index[1] >= 0){
-	vector<int> hadronIndices = hadronID(gpart, e_index, q, p, sc_sect, dc_sect, sc_t, sc_r, sc_pd, pip_vvp_strict, pip_R1fid_strict, pip_MXcut_strict, ExpOrSim, ec_ei, ec_sect, cc_sect, nphe, ec_eo, cx, cy, cz, b, tl1_x, tl1_y, mcp, mcphi, mctheta, V4_H, currentRunNumber, pim_vvp_strict, pim_R1fid_strict, pim_MXcut_strict);
+	//	vector<int> hadronIndices = hadronID(gpart, e_index, q, p, sc_sect, 
+	//					     dc_sect, sc_t, sc_r, sc_pd, pip_vvp_strict, 
+	//					     pip_R1fid_strict, pip_MXcut_strict, ExpOrSim, 
+	//					     ec_ei, ec_sect, cc_sect, nphe, ec_eo, cx, cy, 
+	//					     cz, b, tl1_x, tl1_y, mcp, mcphi, mctheta, V4_H, 
+	//					     currentRunNumber, pim_vvp_strict, pim_R1fid_strict, 
+	//					     pim_MXcut_strict);
 
+	vector<int> hadronIndices = hadronIDFast(gpart, e_index, q, p, sc_sect, 
+						 dc_sect, sc_t, sc_r, sc_pd, pip_vvp_strict, 
+						 pip_R1fid_strict, pip_MXcut_strict, ExpOrSim, 
+						 ec_ei, ec_sect, cc_sect, nphe, ec_eo, cx, cy, 
+						 cz, b, tl1_x, tl1_y, mcp, mcphi, mctheta, V4_H, 
+						 currentRunNumber, pim_vvp_strict, pim_R1fid_strict, 
+						 pim_MXcut_strict, pipTable, pimTable);
+	
 	// Should be changed to return a std::tuple<int, int, int>. 
 	pip_index[1]  = hadronIndices[0];
 	pim_index[1]  = hadronIndices[1];
@@ -1080,7 +1118,13 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
 
     } // end if(genExclusiveEvent == 0)
   } // end of loop over entries
-  
+
+  // Calculate runtime and event rate.
+  float loopTime  = runtimeCounter.RealTime(); 
+  float eventRate = h22chain->GetEntries() / loopTime;  
+  cout << "Total time: " << loopTime << " seconds, Event rate: " 
+       << eventRate << " events/sec. " << endl; 
+
   outputfile->Write();
   cout << endl << " Analysis complete. "<< endl;
 } 

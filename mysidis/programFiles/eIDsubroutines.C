@@ -1,3 +1,6 @@
+#ifndef EID_SUBROUTINES_CXX
+#define EID_SUBROUTINES_CXX
+
 //   Bool_t e_npheCC_pass(int strict, int nphe)
 //   {
 //   if(strict == -1) return 1;
@@ -250,3 +253,5 @@ return 0;
 //   
 //   return 0;
 //   }
+
+#endif 
