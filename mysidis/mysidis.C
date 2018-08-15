@@ -66,7 +66,7 @@
 */
 
 
-void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOrSim = 1, 
+void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5, int ExpOrSim = 1, 
 	     bool do_momCorr_e = 1, bool do_momCorr_pions = 1, int e_zvertex_strict = 0, 
 	     int e_ECsampling_strict = 0, int e_ECoutVin_strict = 0, 
 	     int e_ECgeometric_strict = 0, int e_CCthetaMatching_strict = 0, 
@@ -218,7 +218,11 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
   }
   // %%%%% end x, QQ, z, PT2 bin definitions %%%%%
   
-  // %%%%% read the input files into a TChain %%%%%
+  // This block needs to be updated to read a given 
+  // number of files from the list provided.  Then 
+  // continue to perform the analysis based on those 
+  // files that are loaded.  I don't want the code to 
+  // have to know how many files are in the list. 
   int NtotalFiles = 11625;
   if(ExpOrSim == 0 && MC_VERSION ==  3) NtotalFiles = 33471;
   if(ExpOrSim == 0 && MC_VERSION ==  8) NtotalFiles = 32171;
@@ -227,29 +231,22 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
   if(ExpOrSim == 0 && MC_VERSION == 11) NtotalFiles = 3931;
   if(ExpOrSim == 0 && MC_VERSION == 12) NtotalFiles = 32255;
   
-  string firstfilename = "";
-  string lastfilename  = "";
-  
   ifstream filelist;
-  if(ExpOrSim == 0){
-    filelist.open("../mc.dat"); 
-  } else if (ExpOrSim == 1){
-    filelist.open("../files.dat");
-  } else {
-    cout << "[Error::Fatal] Trouble with ExpOrSim value: " << ExpOrSim << endl; 
-    return; 
-  }
-  
+  filelist.open(inputListOfFiles.c_str()); 
+
   TChain *h22chain = new TChain("h22");
   
-  int kStop = Nfiles + filestart;
-  if(kStop > NtotalFiles+1) kStop = NtotalFiles+1;
-  for(int k = 1; k < kStop; k++){
-    string filename;
-    filelist >> filename;
-    if(k >= filestart) h22chain->Add(filename.c_str());
-    if(k == filestart) firstfilename = filename;
-    if(k == kStop - 1) lastfilename = filename;
+  if (filelist.is_open()){
+      std::string filename;
+      
+      int currentFileNumber = 0; 
+      while( getline(filelist, filename) && currentFileNumber < Nfiles){
+	h22chain->Add(filename.c_str()); 
+	currentFileNumber++; 
+      }
+  } else {
+    cout << "Fatal: The list of files from " << inputListOfFiles << " was not opened successfully!" << endl; 
+    return; 
   }
 
   // Define variables that are common 
@@ -568,10 +565,10 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
       // Some things. 
       TLorentzVector V4k(0.0, 0.0, Beam_Energy, Beam_Energy); // x, y, z, t
       TLorentzVector V4ISproton(0.0, 0.0, 0.0, prot_mass); // IS = Initial State
-      int e_index[2] = {-123, -123};
-      int pip_index[2] = {-123, -123};
-      int pim_index[2] = {-123, -123};
-      int prot_index[2] = {-123, -123};
+      int e_index[2]    = {INVALID_INDEX, INVALID_INDEX};
+      int pip_index[2]  = {INVALID_INDEX, INVALID_INDEX};
+      int pim_index[2]  = {INVALID_INDEX, INVALID_INDEX};
+      int prot_index[2] = {INVALID_INDEX, INVALID_INDEX};
       
       // %%%%% get gen. particle indices  %%%%%
       if(ExpOrSim == 0){
@@ -598,12 +595,12 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
       TVector3 V3_e[2]; // 2 for gen(0) and rec(1)
       TLorentzVector V4_e[2];
       
-      if(e_index[0] > -122){
+      if(e_index[0] > INVALID_INDEX){
 	V3_e[0].SetXYZ(mcp[e_index[0]]*cos(pi180*mcphi[e_index[0]])*sin(pi180*mctheta[e_index[0]]), mcp[e_index[0]]*sin(pi180*mcphi[e_index[0]])*sin(pi180*mctheta[e_index[0]]), mcp[e_index[0]]*cos(pi180*mctheta[e_index[0]]));
 	V4_e[0].SetXYZT(V3_e[0].X(), V3_e[0].Y(), V3_e[0].Z(), sqrt(V3_e[0].Mag2() + pow(e_mass,2)));
       }
       
-      if(e_index[1] > -122){
+      if(e_index[1] > INVALID_INDEX){
 	V3_e[1].SetXYZ(p[e_index[1]]*cx[e_index[1]], p[e_index[1]]*cy[e_index[1]], p[e_index[1]]*cz[e_index[1]]);
 	V4_e[1].SetXYZT(V3_e[1].X(), V3_e[1].Y(), V3_e[1].Z(), sqrt(V3_e[1].Mag2() + pow(e_mass,2)));
 
@@ -652,22 +649,22 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
       TVector3 V3_pip[2], V3_pim[2], V3_prot[2]; // 2 for gen(0) and rec(1)
       TLorentzVector V4_pip[2], V4_pim[2], V4_prot[2];
       
-      if(pip_index[0] > -122){
+      if(pip_index[0] > INVALID_INDEX){
 	V3_pip[0].SetXYZ(mcp[pip_index[0]]*cos(pi180*mcphi[pip_index[0]])*sin(pi180*mctheta[pip_index[0]]), mcp[pip_index[0]]*sin(pi180*mcphi[pip_index[0]])*sin(pi180*mctheta[pip_index[0]]), mcp[pip_index[0]]*cos(pi180*mctheta[pip_index[0]]));
 	V4_pip[0].SetXYZT(V3_pip[0].X(), V3_pip[0].Y(), V3_pip[0].Z(), sqrt(V3_pip[0].Mag2() + pow(pip_mass,2)));
       }
 
-      if(pim_index[0] > -122){
+      if(pim_index[0] > INVALID_INDEX){
 	V3_pim[0].SetXYZ(mcp[pim_index[0]]*cos(pi180*mcphi[pim_index[0]])*sin(pi180*mctheta[pim_index[0]]), mcp[pim_index[0]]*sin(pi180*mcphi[pim_index[0]])*sin(pi180*mctheta[pim_index[0]]), mcp[pim_index[0]]*cos(pi180*mctheta[pim_index[0]]));
 	V4_pim[0].SetXYZT(V3_pim[0].X(), V3_pim[0].Y(), V3_pim[0].Z(), sqrt(V3_pim[0].Mag2() + pow(pim_mass,2)));
       }
 
-      if(prot_index[0] > -122){
+      if(prot_index[0] > INVALID_INDEX){
 	V3_prot[0].SetXYZ(mcp[prot_index[0]]*cos(pi180*mcphi[prot_index[0]])*sin(pi180*mctheta[prot_index[0]]), mcp[prot_index[0]]*sin(pi180*mcphi[prot_index[0]])*sin(pi180*mctheta[prot_index[0]]), mcp[prot_index[0]]*cos(pi180*mctheta[prot_index[0]]));
 	V4_prot[0].SetXYZT(V3_prot[0].X(), V3_prot[0].Y(), V3_prot[0].Z(), sqrt(V3_prot[0].Mag2() + pow(prot_mass,2)));
       }
       
-      if(pip_index[1] > -122){
+      if(pip_index[1] > INVALID_INDEX){
 	V3_pip[1].SetXYZ(p[pip_index[1]]*cx[pip_index[1]], p[pip_index[1]]*cy[pip_index[1]], p[pip_index[1]]*cz[pip_index[1]]);
 	V4_pip[1].SetXYZT(V3_pip[1].X(), V3_pip[1].Y(), V3_pip[1].Z(), sqrt(V3_pip[1].Mag2() + pow(pip_mass,2)));
 	if(do_momCorr_pions && ExpOrSim == 1){ 
@@ -675,7 +672,7 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
 	}
       }
 
-      if(pim_index[1] > -122){
+      if(pim_index[1] > INVALID_INDEX){
 	V3_pim[1].SetXYZ(p[pim_index[1]]*cx[pim_index[1]], p[pim_index[1]]*cy[pim_index[1]], p[pim_index[1]]*cz[pim_index[1]]);
 	V4_pim[1].SetXYZT(V3_pim[1].X(), V3_pim[1].Y(), V3_pim[1].Z(), sqrt(V3_pim[1].Mag2() + pow(pim_mass,2)));
 	if(do_momCorr_pions && ExpOrSim == 1){ 
@@ -683,7 +680,7 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
 	}
       }
 
-      if(prot_index[1] > -122){
+      if(prot_index[1] > INVALID_INDEX){
 	V3_prot[1].SetXYZ(p[prot_index[1]]*cx[prot_index[1]], p[prot_index[1]]*cy[prot_index[1]], p[prot_index[1]]*cz[prot_index[1]]);
 	V4_prot[1].SetXYZT(V3_prot[1].X(), V3_prot[1].Y(), V3_prot[1].Z(), sqrt(V3_prot[1].Mag2() + pow(prot_mass,2)));
       }
@@ -1119,6 +1116,9 @@ void mysidis(int accIterationN = 0, int filestart = 1, int Nfiles = 5, int ExpOr
 
     } // end if(genExclusiveEvent == 0)
   } // end of loop over entries
+
+  // Clear the output of above. 
+  cout << endl; 
 
   // Calculate runtime and event rate.
   float loopTime  = runtimeCounter.RealTime(); 
