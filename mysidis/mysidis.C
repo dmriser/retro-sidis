@@ -75,7 +75,6 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	     int pip_R1fid_strict = 0, int pip_MXcut_strict = 0, int pim_vvp_strict = 0, 
 	     int pim_R1fid_strict = 0, int pim_MXcut_strict = 0){
   
-  
   // Constant declaration block (reserved for anything
   // that does not change throughout the run of the code.)
   // By convention, these variables are named with all 
@@ -358,8 +357,8 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
   string outfilename;
   TFile *outputfile;
   if(ExpOrSim == 1){ 
-    outfilename = Form("data.s%i.n%i.BiSc%i.MoCo%i%i.__%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i__.root", 
-		       filestart, Nfiles, binSchemeOpt, do_momCorr_e, 
+    outfilename = Form("data.n%i.BiSc%i.MoCo%i%i.__%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i__.root", 
+		       Nfiles, binSchemeOpt, do_momCorr_e, 
 		       do_momCorr_pions, e_zvertex_strict, e_ECsampling_strict, 
 		       e_ECoutVin_strict, e_ECgeometric_strict, e_CCthetaMatching_strict, 
 		       e_R1fid_strict, e_R3fid_strict, e_CCphiMatching_strict, 
@@ -367,8 +366,8 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 		       pip_MXcut_strict, pim_vvp_strict, pim_R1fid_strict, pim_MXcut_strict);
   }
   else if(ExpOrSim == 0){ 
-    outfilename = Form("MonteCarlo_v%i.it%i.s%i.n%i.BiSc%i.__%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i__.root", 
-		       MC_VERSION, accIterationN, filestart, Nfiles, binSchemeOpt, 
+    outfilename = Form("MonteCarlo_v%i.it%i.n%i.BiSc%i.__%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i__.root", 
+		       MC_VERSION, accIterationN, Nfiles, binSchemeOpt, 
 		       e_zvertex_strict, e_ECsampling_strict, e_ECoutVin_strict, 
 		       e_ECgeometric_strict, e_CCthetaMatching_strict, e_R1fid_strict, 
 		       e_R3fid_strict, e_CCphiMatching_strict, e_CCfiducial_strict, 

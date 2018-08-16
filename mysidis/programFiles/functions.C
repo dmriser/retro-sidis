@@ -13,6 +13,23 @@
 
 */
 
+void loadRunConfiguration(std::string configurationFilename){
+
+  std::ifstream configFile(configurationFilename); 
+
+  if ( configFile.is_open() ){
+    
+    std::string currentLine; 
+    while( getline(configFile, currentLine) ){
+      std::cout << currentLine << std::endl; 
+    }
+
+  } else {
+    std::cerr << "[loadRunConfiguration] Fatal: Configuration file not opened." << std::endl; 
+    return; 
+  }
+}
+
 // Helper classes for pi+ and pi- cuts on 
 // beta(p).
 struct BetaPCutLimits {
