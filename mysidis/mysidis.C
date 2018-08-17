@@ -45,7 +45,7 @@
    runs. 
    
    General Notes: 
-   (1) ExpOrSim follows the convention (0, MC) and (1, data). 
+   (1) expOrSim follows the convention (0, MC) and (1, data). 
    (2) The tree variables tl3_x, tl1_cx used to be called 
    dc_xsc and dc_cxsc in h10 tree format.
 
@@ -62,18 +62,24 @@
        After 3  -> Done processing (1591596/1591597).   Total time: 38.7185 seconds, Event rate: 41106.9 events/sec.
        After 4  -> Done processing (15790743/15790744). Total time: 304.079 seconds, Event rate: 51929.8 events/sec.
 
+   08-17-2018: Added configuration file setup to programFiles/configuration.C.  
+       changing the input of this function to accept just a few arguments. 
    -----------------------------------------------------------
 */
 
 
-void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5, int ExpOrSim = 1, 
-	     bool do_momCorr_e = 1, bool do_momCorr_pions = 1, int e_zvertex_strict = 0, 
-	     int e_ECsampling_strict = 0, int e_ECoutVin_strict = 0, 
-	     int e_ECgeometric_strict = 0, int e_CCthetaMatching_strict = 0, 
-	     int e_R1fid_strict = 0, int e_R3fid_strict = 0, int e_CCphiMatching_strict = 0, 
-	     int e_CCfiducial_strict = 0, int yCut_strict = 0, int pip_vvp_strict = 0, 
-	     int pip_R1fid_strict = 0, int pip_MXcut_strict = 0, int pim_vvp_strict = 0, 
-	     int pim_R1fid_strict = 0, int pim_MXcut_strict = 0){
+//void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5, int expOrSim = 1, 
+//	     bool do_momCorr_e = 1, bool do_momCorr_pions = 1, int e_zvertex_strict = 0, 
+//	     int e_ECsampling_strict = 0, int e_ECoutVin_strict = 0, 
+//	     int e_ECgeometric_strict = 0, int e_CCthetaMatching_strict = 0, 
+//	     int e_R1fid_strict = 0, int e_R3fid_strict = 0, int e_CCphiMatching_strict = 0, 
+//	     int e_CCfiducial_strict = 0, int yCut_strict = 0, int pip_vvp_strict = 0, 
+//	     int pip_R1fid_strict = 0, int pip_MXcut_strict = 0, int pim_vvp_strict = 0, 
+//	     int pim_R1fid_strict = 0, int pim_MXcut_strict = 0){
+
+void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim, 
+	     int acceptanceIteration, bool correctElectronP, bool correctPionP,
+	     bool changeStrictness, int strictToChange, int strictness){
   
   // Constant declaration block (reserved for anything
   // that does not change throughout the run of the code.)
@@ -95,6 +101,25 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
   const Float_t pi180          = pi/180.0;      // Really not sure why root decided to make it a function and not a constant.
   const Float_t pi180_inv      = 180.0/pi;
   
+  // Setup the strictness values based on the input 
+  // of this module. 
+  int e_zvertex_strict         = 0;
+  int e_ECsampling_strict      = 0;
+  int e_ECoutVin_strict        = 0;
+  int e_ECgeometric_strict     = 0;
+  int e_CCthetaMatching_strict = 0;
+  int e_R1fid_strict           = 0;
+  int e_R3fid_strict           = 0;
+  int e_CCphiMatching_strict   = 0;
+  int e_CCfiducial_strict      = 0;
+  int yCut_strict              = 0;
+  int pip_vvp_strict           = 0;
+  int pip_R1fid_strict         = 0;
+  int pip_MXcut_strict         = 0;
+  int pim_vvp_strict           = 0;
+  int pim_R1fid_strict         = 0; 
+  int pim_MXcut_strict         = 0;
+
   // Time tracking and benchmarking. 
   TStopwatch runtimeCounter;
   runtimeCounter.Reset(); 
@@ -223,15 +248,15 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
   // files that are loaded.  I don't want the code to 
   // have to know how many files are in the list. 
   int NtotalFiles = 11625;
-  if(ExpOrSim == 0 && MC_VERSION ==  3) NtotalFiles = 33471;
-  if(ExpOrSim == 0 && MC_VERSION ==  8) NtotalFiles = 32171;
-  if(ExpOrSim == 0 && MC_VERSION ==  9) NtotalFiles = 1995;
-  if(ExpOrSim == 0 && MC_VERSION == 10) NtotalFiles = 3950;
-  if(ExpOrSim == 0 && MC_VERSION == 11) NtotalFiles = 3931;
-  if(ExpOrSim == 0 && MC_VERSION == 12) NtotalFiles = 32255;
+  if(expOrSim == 0 && MC_VERSION ==  3) NtotalFiles = 33471;
+  if(expOrSim == 0 && MC_VERSION ==  8) NtotalFiles = 32171;
+  if(expOrSim == 0 && MC_VERSION ==  9) NtotalFiles = 1995;
+  if(expOrSim == 0 && MC_VERSION == 10) NtotalFiles = 3950;
+  if(expOrSim == 0 && MC_VERSION == 11) NtotalFiles = 3931;
+  if(expOrSim == 0 && MC_VERSION == 12) NtotalFiles = 32255;
   
   ifstream filelist;
-  filelist.open(inputListOfFiles.c_str()); 
+  filelist.open(inputFileList.c_str()); 
 
   TChain *h22chain = new TChain("h22");
   
@@ -239,12 +264,12 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
       std::string filename;
       
       int currentFileNumber = 0; 
-      while( getline(filelist, filename) && currentFileNumber < Nfiles){
+      while( getline(filelist, filename) && currentFileNumber < numberOfFiles){
 	h22chain->Add(filename.c_str()); 
 	currentFileNumber++; 
       }
   } else {
-    cout << "Fatal: The list of files from " << inputListOfFiles << " was not opened successfully!" << endl; 
+    cout << "Fatal: The list of files from " << inputFileList << " was not opened successfully!" << endl; 
     return; 
   }
 
@@ -305,7 +330,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
   // harm, just a recurrent message that there
   // exists no branch called "mcid" in the file.
   // This might also cause a slight slowdown. 
-  if(ExpOrSim == 0){
+  if(expOrSim == 0){
     h22chain->SetBranchAddress("mcnentr", &mcnentr);
     h22chain->SetBranchAddress("mcid", mcid);
     h22chain->SetBranchAddress("mctheta", mctheta);
@@ -356,18 +381,18 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
   // %%%%% stuff for output root files %%%%%
   string outfilename;
   TFile *outputfile;
-  if(ExpOrSim == 1){ 
+  if(expOrSim == 1){ 
     outfilename = Form("data.n%i.BiSc%i.MoCo%i%i.__%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i__.root", 
-		       Nfiles, binSchemeOpt, do_momCorr_e, 
-		       do_momCorr_pions, e_zvertex_strict, e_ECsampling_strict, 
+		       numberOfFiles, binSchemeOpt, correctElectronP, 
+		       correctPionP, e_zvertex_strict, e_ECsampling_strict, 
 		       e_ECoutVin_strict, e_ECgeometric_strict, e_CCthetaMatching_strict, 
 		       e_R1fid_strict, e_R3fid_strict, e_CCphiMatching_strict, 
 		       e_CCfiducial_strict, yCut_strict, pip_vvp_strict, pip_R1fid_strict, 
 		       pip_MXcut_strict, pim_vvp_strict, pim_R1fid_strict, pim_MXcut_strict);
   }
-  else if(ExpOrSim == 0){ 
+  else if(expOrSim == 0){ 
     outfilename = Form("MonteCarlo_v%i.it%i.n%i.BiSc%i.__%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i__.root", 
-		       MC_VERSION, accIterationN, Nfiles, binSchemeOpt, 
+		       MC_VERSION, acceptanceIteration, numberOfFiles, binSchemeOpt, 
 		       e_zvertex_strict, e_ECsampling_strict, e_ECoutVin_strict, 
 		       e_ECgeometric_strict, e_CCthetaMatching_strict, e_R1fid_strict, 
 		       e_R3fid_strict, e_CCphiMatching_strict, e_CCfiducial_strict, 
@@ -399,23 +424,23 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
   TH2F *ethvsx_QQgt1_Wgt2p05 = new TH2F("ethvsx_QQgt1_Wgt2p05", "ethvsx_QQgt1_Wgt2p05", 200, 0.05, 0.65, 200, 0, 50);
   
   TH1F *hpip_PT2[2]; // 2 for gen(0) or rec(1)
-  if(ExpOrSim == 0) hpip_PT2[0] = new TH1F("hgen_pip_PT2", "hgen_pip_PT2", 200, 0, 1);
+  if(expOrSim == 0) hpip_PT2[0] = new TH1F("hgen_pip_PT2", "hgen_pip_PT2", 200, 0, 1);
   hpip_PT2[1] = new TH1F("hrec_pip_PT2", "hrec_pip_PT2", 200, 0, 1);
   
   TH2F *pip_QQvsx[2]; // 2 for gen(0) or rec(1)
-  if(ExpOrSim == 0) pip_QQvsx[0] = new TH2F("gen_pip_QQvsx", "gen_pip_QQvsx", 200, 0.08, 0.64, 200, 0.5, 5);
+  if(expOrSim == 0) pip_QQvsx[0] = new TH2F("gen_pip_QQvsx", "gen_pip_QQvsx", 200, 0.08, 0.64, 200, 0.5, 5);
   pip_QQvsx[1] = new TH2F("rec_pip_QQvsx", "rec_pip_QQvsx", 200, 0.08, 0.64, 200, 0.5, 5);
   
   TH2F *pim_QQvsx[2]; // 2 for gen(0) or rec(1)
-  if(ExpOrSim == 0) pim_QQvsx[0] = new TH2F("gen_pim_QQvsx", "gen_pim_QQvsx", 200, 0.08, 0.64, 200, 0.5, 5);
+  if(expOrSim == 0) pim_QQvsx[0] = new TH2F("gen_pim_QQvsx", "gen_pim_QQvsx", 200, 0.08, 0.64, 200, 0.5, 5);
   pim_QQvsx[1] = new TH2F("rec_pim_QQvsx", "rec_pim_QQvsx", 200, 0.08, 0.64, 200, 0.5, 5);
   
   TH2F *pip_PT2vsz[2]; // 2 for gen(0) or rec(1)
-  if(ExpOrSim == 0) pip_PT2vsz[0] = new TH2F("gen_pip_PT2vsz", "gen_pip_PT2vsz", 200, 0, 1.05, 200, 0, 1.05);
+  if(expOrSim == 0) pip_PT2vsz[0] = new TH2F("gen_pip_PT2vsz", "gen_pip_PT2vsz", 200, 0, 1.05, 200, 0, 1.05);
   pip_PT2vsz[1] = new TH2F("rec_pip_PT2vsz", "rec_pip_PT2vsz", 200, 0, 1.05, 200, 0, 1.05);
   
   TH2F *pim_PT2vsz[2]; // 2 for gen(0) or rec(1)
-  if(ExpOrSim == 0) pim_PT2vsz[0] = new TH2F("gen_pim_PT2vsz", "gen_pim_PT2vsz", 200, 0, 1.05, 200, 0, 1.05);
+  if(expOrSim == 0) pim_PT2vsz[0] = new TH2F("gen_pim_PT2vsz", "gen_pim_PT2vsz", 200, 0, 1.05, 200, 0, 1.05);
   pim_PT2vsz[1] = new TH2F("rec_pim_PT2vsz", "rec_pim_PT2vsz", 200, 0, 1.05, 200, 0, 1.05);
   
   TH2F *pip_PT2vsz_xQQbins[NxBins][NQQBins][2]; // 2 for gen(0) or rec(1)
@@ -432,7 +457,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
   for(int x = 0; x < NxBins; x++){
     for(int QQ = 0; QQ < NQQBins; QQ++){
       
-      if(ExpOrSim == 0){
+      if(expOrSim == 0){
 	pip_PT2vsz_xQQbins[x][QQ][0] = new TH2F(Form("gen_pip_PT2vsz_x%iQQ%i", x, QQ), 
 						Form("gen_pip_PT2vsz_x%iQQ%i", x, QQ), 
 						200, 0, 1.05, 200, 0, 1.1);
@@ -463,7 +488,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
       
       // Not sure what this phihB is.
       for(int phihB = 0; phihB < NphihBBins; phihB++){
-	if(ExpOrSim == 0){ 
+	if(expOrSim == 0){ 
 	  pip_PT2vsz_xQQphihBbins[x][QQ][phihB][0] = new TH2F(Form("gen_pip_PT2vsz_x%iQQ%iphihB%i", x, QQ, phihB), 
 							      Form("gen_pip_PT2vsz_x%iQQ%iphihB%i", x, QQ, phihB), 
 							      200, 0, 1.05, 200, 0, 1.1);
@@ -497,7 +522,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
   TH1F *pip_theta_res[NmomBins];
   TH1F *pip_phi_res[NmomBins];
   for(int N = 0; N < NmomBins; N++){
-    if(ExpOrSim == 0){
+    if(expOrSim == 0){
       pip_mom_res[N] = new TH1F(Form("pip_mom_res%i",N), Form("pip_mom_res%i",N), 100, -0.3, 0.3);
       pip_theta_res[N] = new TH1F(Form("pip_theta_res%i",N), Form("pip_theta_res%i",N), 100, -1, 1);
       pip_phi_res[N] = new TH1F(Form("pip_phi_res%i",N), Form("pip_phi_res%i",N), 100, -7, 7);
@@ -510,7 +535,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
     for(int QQ = 0; QQ < NQQBins; QQ++){
       for(int z = 0; z < NzBins_pip; z++){
 	for(int PT2 = 0; PT2 < NPT2Bins_pip; PT2++){
-	  if(ExpOrSim == 0){
+	  if(expOrSim == 0){
 	    h_pip_phih[x][QQ][z][PT2][0] = new TH1F(Form("gen_pip_phih_x%i_QQ%i_z%i_PT2%i",x,QQ,z,PT2), Form("gen_pip_phih_x%i_QQ%i_z%i_PT2%i",x,QQ,z,PT2), NphihBins, phihMin, phihMax);
 	    h_pip_phih[x][QQ][z][PT2][0]->Sumw2();
 	    pip_phih_pure[x][QQ][z][PT2] = new TH1F(Form("pip_phih_pure_x%i_QQ%i_z%i_PT2%i",x,QQ,z,PT2), Form("pip_phih_pure_x%i_QQ%i_z%i_PT2%i",x,QQ,z,PT2), NphihBins, phihMin, phihMax);
@@ -529,7 +554,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
     for(int QQ = 0; QQ < NQQBins; QQ++){
       for(int z = 0; z < NzBins_pim; z++){
 	for(int PT2 = 0; PT2 < NPT2Bins_pim; PT2++){
-	  if(ExpOrSim == 0){
+	  if(expOrSim == 0){
 	    h_pim_phih[x][QQ][z][PT2][0] = new TH1F(Form("gen_pim_phih_x%i_QQ%i_z%i_PT2%i",x,QQ,z,PT2), Form("gen_pim_phih_x%i_QQ%i_z%i_PT2%i",x,QQ,z,PT2), NphihBins, phihMin, phihMax);
 	    h_pim_phih[x][QQ][z][PT2][0]->Sumw2();
 	    pim_phih_pure[x][QQ][z][PT2] = new TH1F(Form("pim_phih_pure_x%i_QQ%i_z%i_PT2%i",x,QQ,z,PT2), Form("pim_phih_pure_x%i_QQ%i_z%i_PT2%i",x,QQ,z,PT2), NphihBins, phihMin, phihMax);
@@ -547,7 +572,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
     h22chain->GetEntry(i);
     
     bool genExclusiveEvent = 0; // if the generated event is an exclusive event, i.e. ep --> e pi+ n, we don't want to analyze it at all (the generator give unrealistic kinematics)
-    if(ExpOrSim == 0 && mcnentr == 3){
+    if(expOrSim == 0 && mcnentr == 3){
       if((mcid[1] == 211 && mcid[2] == 2112) || (mcid[1] == 2112 && mcid[2] == 211)){
 	genExclusiveEvent = 1; // the first (zeroth) generated particle is always the scattered electron
       }
@@ -556,7 +581,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
     if(genExclusiveEvent == 0){
       
       Int_t currentRunNumber = 0; 
-      if(ExpOrSim == 1){
+      if(expOrSim == 1){
 	TString currentFilename = h22chain->GetCurrentFile()->GetName(); 
 	currentRunNumber = getRunNumberFromFilename(currentFilename); 
       }
@@ -570,7 +595,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
       int prot_index[2] = {INVALID_INDEX, INVALID_INDEX};
       
       // %%%%% get gen. particle indices  %%%%%
-      if(ExpOrSim == 0){
+      if(expOrSim == 0){
 	e_index[0] = 0; // the first (zeroth) generated particle is always the scattered electron
 	vector<int> genIndices = getGenIndices(mcnentr, mcid, mcp);
 	pip_index[0] = genIndices[0];
@@ -583,7 +608,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
       // no electron is found. 
       e_index[1] = eID(gpart, q, p, cc_sect, sc_sect, ec_sect, dc_sect, cx, cy, cz, 
 		       tl1_x, tl1_y, tl3_x, tl3_y, tl3_z, tl3_cx, tl3_cy, tl3_cz, 
-		       e_zvertex_strict, vz, vy, vx, e_ECsampling_strict, ExpOrSim, 
+		       e_zvertex_strict, vz, vy, vx, e_ECsampling_strict, expOrSim, 
 		       etot, e_ECoutVin_strict, ec_ei, ech_x, ech_y, ech_z, 
 		       e_CCthetaMatching_strict, cc_segm, e_ECgeometric_strict, 
 		       e_R1fid_strict, e_R3fid_strict, e_CCphiMatching_strict, sc_pd, 
@@ -603,7 +628,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	V3_e[1].SetXYZ(p[e_index[1]]*cx[e_index[1]], p[e_index[1]]*cy[e_index[1]], p[e_index[1]]*cz[e_index[1]]);
 	V4_e[1].SetXYZT(V3_e[1].X(), V3_e[1].Y(), V3_e[1].Z(), sqrt(V3_e[1].Mag2() + pow(e_mass,2)));
 
-	if(do_momCorr_e && ExpOrSim == 1){ 
+	if(correctElectronP && expOrSim == 1){ 
 	  V4_e[1] = MomCorr->PcorN(V4_e[1], -1, 11); 
 	}
       }
@@ -611,7 +636,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
       TVector3 V3_H[2];
       TLorentzVector V4_q[2], V4_H[2];
       
-      for(int j = 1; j >= ExpOrSim; j--){
+      for(int j = 1; j >= expOrSim; j--){
 	V4_q[j] = V4k - V4_e[j];
 	V4_H[j] = V4_q[j] + V4ISproton;
 	V3_H[j].SetXYZ(V4_H[j].X(), V4_H[j].Y(), V4_H[j].Z());
@@ -622,7 +647,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
       if(e_index[1] >= 0){
 	//	vector<int> hadronIndices = hadronID(gpart, e_index, q, p, sc_sect, 
 	//					     dc_sect, sc_t, sc_r, sc_pd, pip_vvp_strict, 
-	//					     pip_R1fid_strict, pip_MXcut_strict, ExpOrSim, 
+	//					     pip_R1fid_strict, pip_MXcut_strict, expOrSim, 
 	//					     ec_ei, ec_sect, cc_sect, nphe, ec_eo, cx, cy, 
 	//					     cz, b, tl1_x, tl1_y, mcp, mcphi, mctheta, V4_H, 
 	//					     currentRunNumber, pim_vvp_strict, pim_R1fid_strict, 
@@ -630,7 +655,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 
 	vector<int> hadronIndices = hadronIDFast(gpart, e_index, q, p, sc_sect, 
 						 dc_sect, sc_t, sc_r, sc_pd, pip_vvp_strict, 
-						 pip_R1fid_strict, pip_MXcut_strict, ExpOrSim, 
+						 pip_R1fid_strict, pip_MXcut_strict, expOrSim, 
 						 ec_ei, ec_sect, cc_sect, nphe, ec_eo, cx, cy, 
 						 cz, b, tl1_x, tl1_y, mcp, mcphi, mctheta, V4_H, 
 						 currentRunNumber, pim_vvp_strict, pim_R1fid_strict, 
@@ -666,7 +691,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
       if(pip_index[1] > INVALID_INDEX){
 	V3_pip[1].SetXYZ(p[pip_index[1]]*cx[pip_index[1]], p[pip_index[1]]*cy[pip_index[1]], p[pip_index[1]]*cz[pip_index[1]]);
 	V4_pip[1].SetXYZT(V3_pip[1].X(), V3_pip[1].Y(), V3_pip[1].Z(), sqrt(V3_pip[1].Mag2() + pow(pip_mass,2)));
-	if(do_momCorr_pions && ExpOrSim == 1){ 
+	if(correctPionP && expOrSim == 1){ 
 	  V4_pip[1] = MomCorr->PcorN(V4_pip[1], 1, 211); 
 	}
       }
@@ -674,7 +699,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
       if(pim_index[1] > INVALID_INDEX){
 	V3_pim[1].SetXYZ(p[pim_index[1]]*cx[pim_index[1]], p[pim_index[1]]*cy[pim_index[1]], p[pim_index[1]]*cz[pim_index[1]]);
 	V4_pim[1].SetXYZT(V3_pim[1].X(), V3_pim[1].Y(), V3_pim[1].Z(), sqrt(V3_pim[1].Mag2() + pow(pim_mass,2)));
-	if(do_momCorr_pions && ExpOrSim == 1){ 
+	if(correctPionP && expOrSim == 1){ 
 	  V4_pim[1] = MomCorr->PcorN(V4_pim[1], -1, -211); 
 	}
       }
@@ -688,7 +713,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
       TLorentzVector V4_X_epipX[2];
       TLorentzVector V4_X_epimX[2];
       
-      for(int j = 1; j >= ExpOrSim; j--){
+      for(int j = 1; j >= expOrSim; j--){
 	V4_q[j] = V4k - V4_e[j];
 	V4_H[j] = V4_q[j] + V4ISproton;
 	V3_H[j].SetXYZ(V4_H[j].X(), V4_H[j].Y(), V4_H[j].Z());
@@ -729,7 +754,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
       int pim_phihBBin[2] = {-1234, -1234};
       
       // set some values:
-      for(int j = 1; j >= ExpOrSim; j--){
+      for(int j = 1; j >= expOrSim; j--){
 	W[j]  = V4_H[j].Mag();
 	y[j]  = V4_q[j].T()/Beam_Energy;
 	QQ[j] = -V4_q[j]*V4_q[j];
@@ -800,7 +825,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	// see if the event is a keeper for my final sample
 	bool pip_keeper[2] = {0, 0};
 	bool pim_keeper[2] = {0, 0};
-	for(int j = 1; j >= ExpOrSim; j--)
+	for(int j = 1; j >= expOrSim; j--)
 	  {
 	    if(xBin[j] > -1 && QQBin[j] > -1 && pip_zBin[j] > -1 && pip_PT2Bin[j] > -1 && W[j] > WMin && y[j] < yMax) pip_keeper[j] = 1;
 	    if(xBin[j] > -1 && QQBin[j] > -1 && pim_zBin[j] > -1 && pim_PT2Bin[j] > -1 && W[j] > WMin && y[j] < yMax) pim_keeper[j] = 1;
@@ -822,7 +847,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	// executes. 
 	// iteration 1 = default model in haprad:
 	// pip:
-	if(ExpOrSim == 0 && accIterationN == 1 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pip_index[0] >= 0)
+	if(expOrSim == 0 && acceptanceIteration == 1 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pip_index[0] >= 0)
 	  {
 	    ifstream term0file(Form("/scratch/dflt_term0_fromHAPRAD/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pip_zBin[0], pip_PT2Bin[0]));
 	    if(term0file)
@@ -863,7 +888,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	
 	// iteration 2 = from Nick
 	// pip:
-	if(ExpOrSim == 0 && accIterationN == 2 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pip_index[0] >= 0)
+	if(expOrSim == 0 && acceptanceIteration == 2 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pip_index[0] >= 0)
 	  {
 	    ifstream term0file(Form("/scratch/dflt_term0_fromHAPRAD/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pip_zBin[0], pip_PT2Bin[0]));
 	    if(term0file)
@@ -906,7 +931,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	
 	// iteration 1 = default model in haprad:
 	// pim:
-	if(ExpOrSim == 0 && accIterationN == 1 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pim_index[0] >= 0)
+	if(expOrSim == 0 && acceptanceIteration == 1 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pim_index[0] >= 0)
 	  {
 	    ifstream term0file(Form("/scratch/dflt_term0_fromHAPRAD/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pim_zBin[0], pim_PT2Bin[0]));
 	    if(term0file)
@@ -947,7 +972,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	
 	// iteration 2 = from Nick
 	// pim:
-	if(ExpOrSim == 0 && accIterationN == 2 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pim_index[0] >= 0)
+	if(expOrSim == 0 && acceptanceIteration == 2 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pim_index[0] >= 0)
 	  {
 	    ifstream term0file(Form("/scratch/dflt_term0_fromHAPRAD/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pim_zBin[0], pim_PT2Bin[0]));
 	    if(term0file)
@@ -1020,7 +1045,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	// Keep in mind that flipping the convention for 
 	// simulation and data would break this entire 
 	// block. 
-	for(int j = 1; j >= ExpOrSim; j--){
+	for(int j = 1; j >= expOrSim; j--){
 	  if(pip_keeper[j] && pip_z[j] > 0.4 && pip_z[j] < 0.7){
 	    hpip_PT2[j]->Fill(pip_PT2[j]); 
 	  }
@@ -1061,7 +1086,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	}
         
 	// phih histos:
-	for(int j = 1; j >= ExpOrSim; j--){
+	for(int j = 1; j >= expOrSim; j--){
 	  if(pip_keeper[j]){ 
 	    h_pip_phih[xBin[j]][QQBin[j]][pip_zBin[j]][pip_PT2Bin[j]][j]->Fill(pip_phih[j], pip_weight); 
 	  }
@@ -1090,7 +1115,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	}
 	
 	// resolution:
-	if(ExpOrSim == 0 && pip_index[0] >= 0 && pip_index[1] >= 0 && V3_pip[0].Mag() > momMin && V3_pip[0].Mag() < momMax){
+	if(expOrSim == 0 && pip_index[0] >= 0 && pip_index[1] >= 0 && V3_pip[0].Mag() > momMin && V3_pip[0].Mag() < momMax){
 	  int momBin = static_cast<int>((V3_pip[0].Mag() - momMin)/((momMax - momMin)/NmomBins));
 	  pip_mom_res[momBin]  ->Fill(V3_pip[0].Mag() - V3_pip[1].Mag());
 	  pip_theta_res[momBin]->Fill(pi180_inv*V3_pip[0].Theta() - pi180_inv*V3_pip[1].Theta());
@@ -1098,7 +1123,7 @@ void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5
 	}
             
 	// more resolution:
-	if(ExpOrSim == 0 && xBin[0] >= 0 && QQBin[0] >=0 && pip_zBin[0] >= 0 && pip_PT2Bin[0] >= 0 && xBin[1] >= 0 && QQBin[1] >=0 && pip_zBin[1] >= 0 && pip_PT2Bin[1] >= 0){ 
+	if(expOrSim == 0 && xBin[0] >= 0 && QQBin[0] >=0 && pip_zBin[0] >= 0 && pip_PT2Bin[0] >= 0 && xBin[1] >= 0 && QQBin[1] >=0 && pip_zBin[1] >= 0 && pip_PT2Bin[1] >= 0){ 
 	  float mom = V3_pip[0].Mag();
 	  float Dmom = V3_pip[0].Mag() - V3_pip[1].Mag();
 	  float Dtheta = V3_pip[0].Theta() - V3_pip[1].Theta();
