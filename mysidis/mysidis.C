@@ -16,14 +16,7 @@
 #include "TTree.h"
 #include "TVector3.h"
 
-// This project, these headers cannot 
-// be arranged into alphabetical order
-// because some of them depend on each 
-// other but are not included in those 
-// files, instead loaded here. Could be 
-// fixed with preprocessor directives 
-// #ifndef and #define with imports in 
-// both places. 
+// This project. 
 #include "programFiles/functions.C"
 #include "programFiles/eID.C"
 #include "programFiles/getGenIndices.C"
@@ -54,13 +47,13 @@
    08-13-2018: Continuing refactoring constants. 
    08-14-2018: Beginning to refactor the hadronic identificaiton 
        functions.  Before doing so I took a benchmark, which is below. 
-       Before 1 -> Done processing (3183192/3183193).   Total time: 297.089 seconds, Event rate: 10714.6 events/sec.
-       Before 2 -> Done processing (3183192/3183193).   Total time: 441.667 seconds, Event rate: 7207.22 events/sec.    
-       Before 3 -> Done processing (1591596/1591597).   Total time: 176.752 seconds, Event rate: 9004.69 events/sec.
-       After 1  -> Done processing (1591596/1591597).   Total time: 48.9784 seconds, Event rate: 32495.9 events/sec.
-       After 2  -> Done processing (1591596/1591597).   Total time: 41.0923 seconds, Event rate: 38732.2 events/sec.
-       After 3  -> Done processing (1591596/1591597).   Total time: 38.7185 seconds, Event rate: 41106.9 events/sec.
-       After 4  -> Done processing (15790743/15790744). Total time: 304.079 seconds, Event rate: 51929.8 events/sec.
+       Before 1 -> Event rate: 10714.6 events/sec.
+       Before 2 -> Event rate: 7207.22 events/sec.    
+       Before 3 -> Event rate: 9004.69 events/sec.
+       After 1  -> Event rate: 32495.9 events/sec.
+       After 2  -> Event rate: 38732.2 events/sec.
+       After 3  -> Event rate: 41106.9 events/sec.
+       After 4  -> Event rate: 51929.8 events/sec.
 
    08-17-2018: Added configuration file setup to programFiles/configuration.C.  
        changing the input of this function to accept just a few arguments. 
@@ -102,23 +95,81 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
   const Float_t pi180_inv      = 180.0/pi;
   
   // Setup the strictness values based on the input 
-  // of this module. 
-  int e_zvertex_strict         = 0;
-  int e_ECsampling_strict      = 0;
-  int e_ECoutVin_strict        = 0;
-  int e_ECgeometric_strict     = 0;
-  int e_CCthetaMatching_strict = 0;
-  int e_R1fid_strict           = 0;
-  int e_R3fid_strict           = 0;
-  int e_CCphiMatching_strict   = 0;
-  int e_CCfiducial_strict      = 0;
-  int yCut_strict              = 0;
-  int pip_vvp_strict           = 0;
-  int pip_R1fid_strict         = 0;
-  int pip_MXcut_strict         = 0;
-  int pim_vvp_strict           = 0;
-  int pim_R1fid_strict         = 0; 
-  int pim_MXcut_strict         = 0;
+  // of this module. Sixteen different flags are given 
+  // an index between 0-15. 
+  int e_zvertex_strict         = 0;//  0
+  int e_ECsampling_strict      = 0;//  1
+  int e_ECoutVin_strict        = 0;//  2
+  int e_ECgeometric_strict     = 0;//  3
+  int e_CCthetaMatching_strict = 0;//  4
+  int e_R1fid_strict           = 0;//  5
+  int e_R3fid_strict           = 0;//  6
+  int e_CCphiMatching_strict   = 0;//  7
+  int e_CCfiducial_strict      = 0;//  8
+  int yCut_strict              = 0;//  9
+  int pip_vvp_strict           = 0;// 10
+  int pip_R1fid_strict         = 0;// 11
+  int pip_MXcut_strict         = 0;// 12
+  int pim_vvp_strict           = 0;// 13
+  int pim_R1fid_strict         = 0;// 14
+  int pim_MXcut_strict         = 0;// 15
+
+  // If we're asked to change one of the 
+  // strictnesses, let's do it and go on 
+  // with our lives! 
+  if (changeStrictness){
+    std::cout << "Changing strictness: " << strictToChange << " to level " << strictness << std::endl; 
+    
+    // Hideous block. 
+    if (strictToChange == 0){
+      e_zvertex_strict = strictness; 
+    } 
+    else if (strictToChange == 1){
+      e_ECsampling_strict = strictness; 
+    } 
+    else if (strictToChange == 2){
+      e_ECoutVin_strict = strictness; 
+    } 
+    else if (strictToChange == 3){
+      e_ECgeometric_strict = strictness; 
+    } 
+    else if (strictToChange == 4){
+      e_CCthetaMatching_strict = strictness; 
+    } 
+    else if (strictToChange == 5){
+      e_R1fid_strict = strictness; 
+    } 
+    else if (strictToChange == 6){
+      e_R3fid_strict = strictness; 
+    } 
+    else if (strictToChange == 7){
+      e_CCphiMatching_strict = strictness; 
+    } 
+    else if (strictToChange == 8){
+      e_CCfiducial_strict = strictness; 
+    } 
+    else if (strictToChange == 9){
+      yCut_strict = strictness; 
+    } 
+    else if (strictToChange == 10){
+      pip_vvp_strict = strictness; 
+    } 
+    else if (strictToChange == 11){
+      pip_R1fid_strict = strictness; 
+    } 
+    else if (strictToChange == 12){
+      pip_MXcut_strict = strictness; 
+    } 
+    else if (strictToChange == 13){
+      pim_vvp_strict = strictness; 
+    } 
+    else if (strictToChange == 14){
+      pim_R1fid_strict = strictness; 
+    } 
+    else if (strictToChange == 15){
+      pim_MXcut_strict = strictness; 
+    }
+  }
 
   // Time tracking and benchmarking. 
   TStopwatch runtimeCounter;
