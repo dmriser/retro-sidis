@@ -20,4 +20,4 @@ config['files'] = ['/volatile/clas12/dmriser/data/all/root/37748.root',
                    '/volatile/clas12/dmriser/data/all/root/37770.root']
 
 with open('config.json', 'w') as outfile:
-    json.dump(config, outfile)
+    json.dump(config, outfile, indent=4)
