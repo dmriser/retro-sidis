@@ -1,7 +1,7 @@
 #include "mysidis.C"
 #include "programFiles/configuration.C"
 
-void runTests(){
+void run(){
 
   gROOT->LoadMacro("mysidis.C"); 
 

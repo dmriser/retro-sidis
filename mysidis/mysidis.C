@@ -199,8 +199,9 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
   
   // %%%%% x, QQ, z, PT2 bin definitions %%%%%
   // When you change this, there are two spots below that you have to update. 
-  // (In my view unacceptable, requires finding and fixing, will lead to 
-  // lack of understanding of why code is broken and lack of reproducibility.)
+  //
+  // I haven't found those places yet.  I hope this doesn't introduce 
+  // unreproducible results. 
   int binSchemeOpt = 5; 
   
   int NxBins, NQQBins, NzBins_pip, NPT2Bins_pip, NzBins_pim, NPT2Bins_pim;
@@ -208,30 +209,30 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
   float phihMin, phihMax;
   
   if(binSchemeOpt == 5){
-    NxBins = 5;
-    NQQBins = 2;
-    NzBins_pip = 18;
+    NxBins       = 5;
+    NQQBins      = 2;
+    NzBins_pip   = 18;
     NPT2Bins_pip = 20;
-    NzBins_pim = 18;
+    NzBins_pim   = 18;
     NPT2Bins_pim = 20;
-    NphihBins = 36;
-    phihMin = -180;
-    phihMax = 180;
+    NphihBins    = 36;
+    phihMin      = -180;
+    phihMax      = 180;
   }
   
   // consistent with Osipenko's binning
   // exception here, Osipenko uses 0-360, but -180-180 is better 
   // so I'll convert his results to this convention
   else if(binSchemeOpt == 6){
-    NxBins = 19;
-    NQQBins = 10;
-    NzBins_pip = 22;
+    NxBins       = 19;
+    NQQBins      = 10;
+    NzBins_pip   = 22;
     NPT2Bins_pip = 10;
-    NzBins_pim = 1;
+    NzBins_pim   = 1;
     NPT2Bins_pim = 1;
-    NphihBins = 18;
-    phihMin = -180;
-    phihMax = 180;
+    NphihBins    = 18;
+    phihMin      = -180;
+    phihMax      = 180;
   }
   
   float xLimits[NxBins + 1], QQLimits[NxBins][NQQBins + 1], zLimits_pip[NzBins_pip + 1], PT2Limits_pip[NPT2Bins_pip + 1], zLimits_pim[NzBins_pim + 1], PT2Limits_pim[NPT2Bins_pim + 1];

@@ -2,9 +2,6 @@
 
 # User Parameters 
 set numberOfJobs = 20
-set binDir       = "/u/home/dmriser/clas/retro-sidis/mysidis"
-set binName      = "mysidis"
-set sourceDir    = "/u/home/dmriser/clas/analysis-projects/farm/analysis" 
 set outDir       = "/volatile/clas12/dmriser/farm_out/"
 set outName      = "sidis_xs_debug_00"
 set runScript    = "goAnalyze"
