@@ -3,6 +3,7 @@ import argparse
 import glob 
 import sys, os
 import subprocess
+import json 
 
 def setup_analysis():
     os.system('cp -r /u/home/dmriser/clas/retro-sidis/mysidis/* .')
@@ -21,20 +22,12 @@ def rename():
     return glob.glob('*.root')
 
 if __name__ == '__main__':
+
     ''' Run the analysis for a set of files 
     that has been provided.   
     '''
-    ap = argparse.ArguementParser() 
-    ap.add_argument('-o', '--output_directory', required=True)
-    args = ap.parse_args()
+    with open('config.json') as input_json_file:
+        config = json.load(input_json_file)
 
-    # Copy the files to this node. 
-    setup_analysis()
-    run() 
-    output_files = rename() 
-    
-    for f in output_files:
-        os.system('mv {} {}'.format(f, args.output_directory))
-    
-    
-    
+        for k,v in config.iteritems():
+            print(k,v)
