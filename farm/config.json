@@ -11,12 +11,14 @@
         "/volatile/clas12/dmriser/data/all/root/37770.root"
     ], 
     "project_name": "TestProject", 
-    "strictness": 0, 
+    "change_strictness": 0, 
     "job_id": 9, 
     "data_type": "data", 
-    "change_strict": 0,
     "strict_to_change": 0, 
-    "strictness": 0,
     "variation": "nominal", 
-    "base_path": "."
+    "base_path": ".", 
+    "correct_electron_p": 1, 
+    "strictness": 0, 
+    "correct_pion_p": 1, 
+    "acceptance_iteration": 0
 }
