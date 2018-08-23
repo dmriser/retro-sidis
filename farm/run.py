@@ -33,3 +33,12 @@ if __name__ == '__main__':
 
         os.system(root_cmd)
         os.system('rm temp_runfile.dat')
+        os.system('mkdir -p {}/{}/{}'.format(
+            config['base_path'], 
+            config['project_name'],
+            config['data_type']))
+        os.system('cp *.root {}/{}/{}/out.{}.root'.format(
+            config['base_path'], 
+            config['project_name'], 
+            config['data_type'],
+            config['job_id']))
