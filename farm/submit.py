@@ -66,43 +66,45 @@ def create_jsub(output_name='out.jsub', job_name='CreatedFarmJob', project='E1F'
             output_file.write('\n')
 
 
-FILE_LIST = '../mysidis/files.dat'
-number_of_nodes = 60 
 
-config = {}
-config['base_path']            = '/volatile/clas12/dmriser/farm_out'
-config['project_name']         = 'TestSIDIS'
-config['variation']            = 'nominal'
-config['job_id']               = 0
-config['data_type']            = 'data'
-config['change_strictness']    = 0
-config['strict_to_change']     = 0
-config['strictness']           = 0
-config['correct_electron_p']   = 1
-config['correct_pion_p']       = 1
-config['acceptance_iteration'] = 0
+if __name__ == '__main__':
+    FILE_LIST = '../mysidis/mc.dat'
+    number_of_nodes = 60 
+    
+    config = {}
+    config['base_path']            = '/volatile/clas12/dmriser/farm_out'
+    config['project_name']         = 'TestSIDIS'
+    config['variation']            = 'nominal'
+    config['job_id']               = 0
+    config['data_type']            = 'mc'
+    config['change_strictness']    = 0
+    config['strict_to_change']     = 0
+    config['strictness']           = 0
+    config['correct_electron_p']   = 1
+    config['correct_pion_p']       = 1
+    config['acceptance_iteration'] = 0
 
 
-for job_id, files in enumerate(split_files(file_list=FILE_LIST, nodes=number_of_nodes)):
+    for job_id, files in enumerate(split_files(file_list=FILE_LIST, nodes=number_of_nodes)):
+        
+        config['files'] = files
+        config['job_id'] = job_id
 
-    config['files'] = files
-    config['job_id'] = job_id
+        with open('configurations/config.{}.json'.format(job_id), 'w') as outfile:
+            json.dump(config, outfile, indent=4)
+            
+            create_jsub(output_name='submission_files/out.{}.jsub'.format(job_id), 
+                        job_name='SIDISAnalysis_{}_{}'.format(config['project_name'], job_id), 
+                        project='E1F',
+                        track='simulation', 
+                        time=240, 
+                        memory=4096, 
+                        os='CENTOS7', 
+                        command='source /u/home/dmriser/environment/jlab-root6.env ; chmod +x run.py ; run.py',
+                        other_files=['/u/home/dmriser/clas/retro-sidis/farm/configurations/config.{}.json'.format(job_id), 
+                                     '/u/home/dmriser/clas/retro-sidis/farm/run.py'], 
+                        output_data=None, 
+                        output_template=None, 
+                        input_files=None)
 
-    with open('configurations/config.{}.json'.format(job_id), 'w') as outfile:
-        json.dump(config, outfile, indent=4)
-
-    create_jsub(output_name='submission_files/out.{}.jsub'.format(job_id), 
-                job_name='SIDISAnalysis_{}_{}'.format(config['project_name'], job_id), 
-                project='E1F',
-                track='simulation', 
-                time=240, 
-                memory=4096, 
-                os='CENTOS7', 
-                command='source /u/home/dmriser/environment/jlab-root6.env ; chmod +x run.py ; run.py',
-                other_files=['/u/home/dmriser/clas/retro-sidis/farm/configurations/config.{}.json'.format(job_id), 
-                             '/u/home/dmriser/clas/retro-sidis/farm/run.py'], 
-                output_data=None, 
-                output_template=None, 
-                input_files=None)
-
-    os.system('jsub submission_files/out.{}.jsub'.format(job_id))
+            os.system('jsub submission_files/out.{}.jsub'.format(job_id))

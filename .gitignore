@@ -7,3 +7,7 @@
 *.d 
 *.root 
 *~ 
+
+# The submission and configurations 
+farm/submission_files/*
+farm/configurations/* 
