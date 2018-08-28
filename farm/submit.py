@@ -36,7 +36,7 @@ def create_jsub(output_name='out.jsub', job_name='CreatedFarmJob', project='E1F'
         output_file.write('PROJECT: {}\n'.format(project))
         output_file.write('TRACK: {}\n'.format(track))
         output_file.write('TIME: {}\n'.format(time))
-        output_file.write('MEMORY: {}\n'.format(memory))
+        output_file.write('MEMORY: {} MB\n'.format(memory))
         output_file.write('OS: {}\n'.format(os))
         output_file.write('\n')
         output_file.write('COMMAND: {}\n'.format(command))
@@ -67,7 +67,7 @@ def create_jsub(output_name='out.jsub', job_name='CreatedFarmJob', project='E1F'
 
 
 FILE_LIST = '../mysidis/files.dat'
-number_of_nodes = 20 
+number_of_nodes = 60 
 
 config = {}
 config['base_path']            = '/volatile/clas12/dmriser/farm_out'
@@ -98,9 +98,9 @@ for job_id, files in enumerate(split_files(file_list=FILE_LIST, nodes=number_of_
                 time=240, 
                 memory=4096, 
                 os='CENTOS7', 
-                command='source /u/home/dmriser/environment/jlab-root6.csh ; chmod +x run.py ; run.py',
-                other_files=['/u/home/dmriser/configurations/config.{}.json'.format(job_id), 
-                             '/u/home/dmriser/run.py'], 
+                command='source /u/home/dmriser/environment/jlab-root6.env ; chmod +x run.py ; run.py',
+                other_files=['/u/home/dmriser/clas/retro-sidis/farm/configurations/config.{}.json'.format(job_id), 
+                             '/u/home/dmriser/clas/retro-sidis/farm/run.py'], 
                 output_data=None, 
                 output_template=None, 
                 input_files=None)

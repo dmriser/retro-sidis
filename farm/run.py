@@ -10,6 +10,10 @@ if __name__ == '__main__':
     # Setup code. 
     os.system('cp -r /u/home/dmriser/clas/retro-sidis/mysidis/* .')
 
+    # Move configuration file 
+    config_files = glob.glob('config.*.json')
+    os.system('mv {} config.json'.format(config_files[0]))
+
     # This should be provided for each job. 
     with open('config.json') as input_json_file:
         config = json.load(input_json_file)

@@ -1,0 +1,24 @@
+{
+    "files": [
+        "/volatile/clas12/dmriser/data/all/root/38622.root", 
+        "/volatile/clas12/dmriser/data/all/root/38623.root", 
+        "/volatile/clas12/dmriser/data/all/root/38624.root", 
+        "/volatile/clas12/dmriser/data/all/root/38625.root", 
+        "/volatile/clas12/dmriser/data/all/root/38626.root", 
+        "/volatile/clas12/dmriser/data/all/root/38627.root", 
+        "/volatile/clas12/dmriser/data/all/root/38628.root", 
+        "/volatile/clas12/dmriser/data/all/root/38629.root", 
+        "/volatile/clas12/dmriser/data/all/root/38630.root"
+    ], 
+    "project_name": "TestSIDIS", 
+    "change_strictness": 0, 
+    "job_id": 53, 
+    "data_type": "data", 
+    "strict_to_change": 0, 
+    "variation": "nominal", 
+    "base_path": "/volatile/clas12/dmriser/farm_out", 
+    "correct_electron_p": 1, 
+    "strictness": 0, 
+    "correct_pion_p": 1, 
+    "acceptance_iteration": 0
+}

@@ -1,0 +1,11 @@
+NAME: SIDISAnalysis_TestSIDIS_48
+PROJECT: E1F
+TRACK: simulation
+TIME: 240
+MEMORY: 4096 MB
+OS: CENTOS7
+
+COMMAND: source /u/home/dmriser/environment/jlab-root6.env ; chmod +x run.py ; run.py
+
+OTHER_FILES:/u/home/dmriser/clas/retro-sidis/farm/configurations/config.48.json
+/u/home/dmriser/clas/retro-sidis/farm/run.py
