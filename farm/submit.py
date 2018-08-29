@@ -107,4 +107,4 @@ if __name__ == '__main__':
                         output_template=None, 
                         input_files=None)
 
-            os.system('jsub submission_files/out.{}.jsub'.format(job_id))
+            #            os.system('jsub submission_files/out.{}.jsub'.format(job_id))
