@@ -452,6 +452,8 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 		       pim_vvp_strict, pim_R1fid_strict, pim_MXcut_strict);
   }
 
+  // Trying this for ease of operation. 
+  outfilename = "out.root"; 
   cout << "Opening output: " << outfilename << endl;
   outputfile = new TFile(outfilename.c_str(), "recreate");
 

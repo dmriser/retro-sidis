@@ -36,7 +36,7 @@ def process(config, base_filename):
         )
 
         # Move our completed job to the destination. 
-        os.system('mv *.root {}/{}/{}/variation_{}/out.{}.root'.format(
+        os.system('mv out.root {}/{}/{}/variation_{}/out.{}.root'.format(
             config['base_path'], 
             config['project_name'], 
             config['data_type'],
