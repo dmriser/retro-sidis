@@ -69,7 +69,9 @@ if __name__ == '__main__':
         config['strictness']        = 0
         process(config, base_filename)
 
-        # Run settings 
+        # Run settings (Can this be done by passing
+        # in a list of variations to run?  For ex:
+        # consider that we just need 3, 8, 15)
         config['change_strictness'] = 1
         for index in range(16):
 
