@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     # Will be supplied at the command line 
     base_directory = '/volatile/clas12/dmriser/farm_out'
-    project_name   = 'sidis_batch_02'
+    project_name   = 'sidis_batch_04'
     data_type      = 'data'
     input_files    = '../mysidis/files.dat'
 
