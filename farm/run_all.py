@@ -55,7 +55,12 @@ if __name__ == '__main__':
 
         # Create a file that contains the list 
         # of files to analyze. 
+
+        if os.path.exists('out.root'):
+            os.system('rm out.root')
+
         root_files = glob.glob('*.root')
+        print('Found the following root files {}'.format(root_files))
         assert(len(root_files) == 1)
         root_file = root_files[0]
         base_filename = root_file.split('.root')[0]

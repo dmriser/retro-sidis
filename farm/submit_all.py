@@ -12,7 +12,7 @@ def create_jsub(output_name='out.jsub', job_name='CreatedFarmJob', project='E1F'
     ''' Create a .jsub file for submission to the Jefferson lab batch farm. '''
 
     with open(output_name, 'w') as output_file:
-        output_file.write('NAME: {}\n'.format(job_name))
+        output_file.write('JOB_NAME: {}\n'.format(job_name))
         output_file.write('PROJECT: {}\n'.format(project))
         output_file.write('TRACK: {}\n'.format(track))
         output_file.write('TIME: {}\n'.format(time))

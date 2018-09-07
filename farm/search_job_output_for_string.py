@@ -1,5 +1,6 @@
 #!/usr/bin/env python 
 
+import argparse 
 import glob 
 
 def process_one_file(input_filename, string_to_count=''):
@@ -14,19 +15,22 @@ def process_one_file(input_filename, string_to_count=''):
 
 if __name__ == '__main__':
 
+    ap = argparse.ArgumentParser()
+    ap.add_argument('-s', '--search_string', required=True)
+    args = ap.parse_args()
+
     base_directory = '/u/home/dmriser/.farm_out'
-    search_string = '38518.root'
 
     # Get lists of files to process 
     output_files = glob.glob('{}/*.out'.format(base_directory))
     error_files  = glob.glob('{}/*.out'.format(base_directory))
     
     for file in output_files:
-        counts = process_one_file(file, search_string)
+        counts = process_one_file(file, args.search_string)
         if counts > 0:
             print('{}: {}'.format(file, counts))
     
     for file in error_files:
-        counts = process_one_file(file, search_string)
+        counts = process_one_file(file, args.search_string)
         if counts > 0:
             print('{}: {}'.format(file, counts))
