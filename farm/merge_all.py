@@ -39,7 +39,8 @@ def load_expected_files_from_list(input_files):
 if __name__ == '__main__':
 
     # Will be supplied at the command line 
-    base_directory = '/volatile/clas12/dmriser/farm_out'
+    #    base_directory = '/volatile/clas12/dmriser/farm_out'
+    base_directory = '/volatile/clas12/dmriser'
     project_name   = 'sidis_batch_06'
     data_type      = 'data'
     #    input_files    = '../mysidis/files.dat'
