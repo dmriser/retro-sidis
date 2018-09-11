@@ -1188,9 +1188,9 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 	}
 	
         // Print the status at some points. 
-	if (i % 10000){
-	  cout << "\rDone processing (" << i << "/" << h22chain->GetEntries() << ")." << flush; 
-	}
+	//	if (i % 10000){
+	//	  cout << "\rDone processing (" << i << "/" << h22chain->GetEntries() << ")." << flush; 
+	//	}
 
     } // end if(genExclusiveEvent == 0)
   } // end of loop over entries

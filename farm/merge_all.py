@@ -1,5 +1,6 @@
 #!/usr/bin/env python 
 
+import argparse
 import os 
 import re 
 
@@ -38,16 +39,15 @@ def load_expected_files_from_list(input_files):
 
 if __name__ == '__main__':
 
-    # Will be supplied at the command line 
-    #    base_directory = '/volatile/clas12/dmriser/farm_out'
-    base_directory = '/volatile/clas12/dmriser'
-    project_name   = 'sidis_batch_06'
-    data_type      = 'data'
-    #    input_files    = '../mysidis/files.dat'
-    input_files    = './problemFiles.dat'
+    ap = argparse.ArgumentParser()
+    ap.add_argument('-i', '--input_files',    required=True)
+    ap.add_argument('-t', '--data_type',      required=True)
+    ap.add_argument('-p', '--project_name',   required=True)
+    ap.add_argument('-b', '--base_directory', required=True)
+    args = ap.parse_args()
 
-    expected_runs, missing_runs = load_expected_files_from_list(input_files) 
-    working_path  = '{}/{}/{}'.format(base_directory, project_name, data_type)
+    expected_runs, missing_runs = load_expected_files_from_list(args.input_files) 
+    working_path  = '{}/{}/{}'.format(args.base_directory, args.project_name, args.data_type)
 
     if len(missing_runs) > 0:
         print('Warning: Found {} missing runs.'.format(len(missing_runs)))
@@ -78,14 +78,23 @@ if __name__ == '__main__':
         
         if missing_tight > 0:
             missing = [run for run in expected_runs if run not in map(extract_run_number, tight_files)]
-            # print(missing)
 
         if missing_loose > 0:
             missing = [run for run in expected_runs if run not in map(extract_run_number, loose_files)]
-            # print(missing)
-        
+
         missing_jobs[dir] = missing 
 
+        # Merge. 
+        if ('nominal' in dir) and (missing_other == 0):
+            print('Merging nominal files from {}'.format(dir))
+            merge_command = 'hadd {}/merged.root {}/*.root'.format(dir, dir)
+            os.system(merge_command)
 
-    for key, value in missing_jobs.iteritems():
-        print('Directory {}: {}'.format(key, value))
+        elif (missing_tight == 0 and missing_loose == 0):
+            print('Merging tight files from {}'.format(dir))
+            merge_command = 'hadd {}/tight.root {}/*tight.root'.format(dir, dir)
+            os.system(merge_command)
+
+            print('Merging loose files from {}'.format(dir))
+            merge_command = 'hadd {}/loose.root {}/*loose.root'.format(dir, dir)
+            os.system(merge_command)

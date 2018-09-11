@@ -16,7 +16,7 @@
 #include "programFiles/eID.C"
 #include "programFiles/hadronID.C"
 #include "programFiles/getGenIndices.C"
-#include "MomCorr.C"
+#include "programFiles/MomCorr.C"
 
 
 // Declaration of all constants 
@@ -207,7 +207,7 @@ void minimalClass(){
 
 
   MinimalAnalysis *analysis = new MinimalAnalysis(); 
-  analysis->AddFiles("../files.dat", 10); 
+  analysis->AddFiles("files.dat", 10); 
   analysis->Run(); 
 
   /* 
