@@ -1,8 +1,8 @@
 {
-    "project_name": "sidis_batch_08", 
+    "project_name": "sidis_batch_09", 
     "change_strictness": 0, 
     "job_id": 0, 
-    "data_type": "data", 
+    "data_type": "mc", 
     "strict_to_change": 0, 
     "variation": "nominal", 
     "base_path": "/volatile/clas12/dmriser/farm_out", 

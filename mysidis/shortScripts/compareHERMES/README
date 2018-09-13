@@ -1,0 +1,12 @@
+email from harut about definition of f(y):
+It is sqrt{2\eps(1+\eps)} (see page 3 of Bacchetta et al (new testament) JHEP02(2007)093
+
+sidisCS5Dtables.tar.gz contains my results (5D w/o fit so I can look see all details, need to do fits here to compare)
+	- the unpacked files are pip_5Dtable.txt and pim_5Dtable.txt
+		- converted to root using E1f_txt2root.C (to create pip_5Dtable.root and pim_5Dtable.root);
+	- columns are: xBin QQBin zBin PT2Bin phiBin <x> <QQ> <z> <PT2> <phi> <y> Ncounts Ncounts_err RCfactor
+		- Ncounts includes acc. corr. and rad. corr.
+		- RCfactor is there just for reference
+
+900bins/ contains the HERMES results, which I converted to root using HERMES_txt2root.C (results are HERMES_Hyd_pip.mom.root and HERMES_Hyd_pim.mom.root)
+	- see HERMESpi(p/m)PhaseSpace.C for my estimates of the hermes binning scheme (it only needs to be close enough so that the ave. kin. values fall into the correct bin number)

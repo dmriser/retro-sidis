@@ -13,7 +13,7 @@ def check_and_create_directory(directory_path):
         else:
             raise ValueError('{} exists and is not a directory!'.format(directory_path))
     else:
-        os.mkdir(directory_path)
+        os.mkdirs(directory_path)
 
 def extract_run_number(input_string):
     return re.findall(r'\D(\d{5})\D', input_string)[0]
@@ -44,6 +44,7 @@ if __name__ == '__main__':
     ap.add_argument('-t', '--data_type',      required=True)
     ap.add_argument('-p', '--project_name',   required=True)
     ap.add_argument('-b', '--base_directory', required=True)
+    ap.add_argument('-m', '--merge',          default=True, type=bool)
     args = ap.parse_args()
 
     expected_runs, missing_runs = load_expected_files_from_list(args.input_files) 
@@ -85,16 +86,27 @@ if __name__ == '__main__':
         missing_jobs[dir] = missing 
 
         # Merge. 
-        if ('nominal' in dir) and (missing_other == 0):
-            print('Merging nominal files from {}'.format(dir))
-            merge_command = 'hadd {}/merged.root {}/*.root'.format(dir, dir)
-            os.system(merge_command)
+        if args.merge:
+            if ('nominal' in dir) and (missing_other == 0):
+                if os.path.exists('{}/merged.root'.format(dir)):
+                    print('Not creating file for {}'.format(dir))
+                else:
+                    print('Merging nominal files from {}'.format(dir))
+                    merge_command = 'hadd {}/merged.root {}/*.root'.format(dir, dir)
+                    os.system(merge_command)
 
-        elif (missing_tight == 0 and missing_loose == 0):
-            print('Merging tight files from {}'.format(dir))
-            merge_command = 'hadd {}/tight.root {}/*tight.root'.format(dir, dir)
-            os.system(merge_command)
+            elif (missing_tight == 0 and missing_loose == 0):
+                
+                if os.path.exists('{}/tight.root'.format(dir)):
+                    print('Not creating file for {} tight'.format(dir))
+                else:
+                    print('Merging nominal files from {}'.format(dir))
+                    merge_command = 'hadd {}/tight.root {}/*.root'.format(dir, dir)
+                    os.system(merge_command)
 
-            print('Merging loose files from {}'.format(dir))
-            merge_command = 'hadd {}/loose.root {}/*loose.root'.format(dir, dir)
-            os.system(merge_command)
+                if os.path.exists('{}/loose.root'.format(dir)):
+                    print('Not creating file for {} loose'.format(dir))
+                else:
+                    print('Merging nominal files from {}'.format(dir))
+                    merge_command = 'hadd {}/loose.root {}/*.root'.format(dir, dir)
+                    os.system(merge_command)

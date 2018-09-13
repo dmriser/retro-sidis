@@ -50,6 +50,8 @@ if(hPT2vz[ix][iQQ]->GetEntries() > 0.5) hPT2vz[ix][iQQ]->Draw("colz");
 }}
 
 new TCanvas;
+hPT2vz_int->GetXaxis()->SetTitle("z");
+hPT2vz_int->GetYaxis()->SetTitle("P_{h#perp}^{2} (GeV^{2})");
 hPT2vz_int->Draw("colz");
 
 TLine *vline0 = new TLine(0.059, 0, 0.059, 1.8);
@@ -123,7 +125,47 @@ TLine *hline10 = new TLine(0, 1.75, 1.0, 1.75);
 hline10->Draw();
 
 new TCanvas;
-hPT2vz[8][3]->Draw("colz");
+hPT2vz[8][4]->GetXaxis()->SetTitle("z");
+hPT2vz[8][4]->GetYaxis()->SetTitle("P_{h#perp}^{2} (GeV^{2})");
+hPT2vz[8][4]->Draw("colz");
+
+vline0->Draw();
+vline1->Draw();
+vline2->Draw();
+vline3->Draw();
+vline4->Draw();
+vline5->Draw();
+vline6->Draw();
+vline7->Draw();
+vline8->Draw();
+vline9->Draw();
+vline10->Draw();
+vline11->Draw();
+vline12->Draw();
+vline13->Draw();
+vline14->Draw();
+vline15->Draw();
+vline16->Draw();
+vline17->Draw();
+vline18->Draw();
+vline19->Draw();
+vline20->Draw();
+vline21->Draw();
+vline22->Draw();
+
+hline0->Draw();
+hline1->Draw();
+hline2->Draw();
+hline3->Draw();
+hline4->Draw();
+hline5->Draw();
+hline6->Draw();
+hline7->Draw();
+hline8->Draw();
+hline9->Draw();
+hline10->Draw();
+
+
 
 
 }

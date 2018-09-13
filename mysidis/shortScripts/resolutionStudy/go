@@ -1,0 +1,63 @@
+#!/bin/csh -f
+
+# root -l -b -q 'quick.C("pip",2,0,4,4,3)' # "middle bin"
+# 
+# # scan x
+# root -l -b -q 'quick.C("pip",0,0,4,4,3)'
+# root -l -b -q 'quick.C("pip",1,0,4,4,3)'
+# #root -l -b -q 'quick.C("pip",2,0,4,4,3)'
+# root -l -b -q 'quick.C("pip",3,0,4,4,3)'
+# root -l -b -q 'quick.C("pip",4,0,4,4,3)'
+# 
+# # scan QQ
+# #root -l -b -q 'quick.C("pip",2,0,4,4,3)'
+# root -l -b -q 'quick.C("pip",2,1,4,4,3)'
+# 
+# # scan z
+# root -l -b -q 'quick.C("pip",2,0,0,4,3)'
+# root -l -b -q 'quick.C("pip",2,0,1,4,3)'
+# root -l -b -q 'quick.C("pip",2,0,2,4,3)'
+# root -l -b -q 'quick.C("pip",2,0,3,4,3)'
+# #root -l -b -q 'quick.C("pip",2,0,4,4,3)'
+# root -l -b -q 'quick.C("pip",2,0,5,4,3)'
+# root -l -b -q 'quick.C("pip",2,0,6,4,3)'
+# root -l -b -q 'quick.C("pip",2,0,7,4,3)'
+# root -l -b -q 'quick.C("pip",2,0,8,4,3)'
+# 
+# # scan PT2
+# root -l -b -q 'quick.C("pip",2,0,4,0,3)'
+# root -l -b -q 'quick.C("pip",2,0,4,1,3)'
+# root -l -b -q 'quick.C("pip",2,0,4,2,3)'
+# root -l -b -q 'quick.C("pip",2,0,4,3,3)'
+# #root -l -b -q 'quick.C("pip",2,0,4,4,3)'
+# root -l -b -q 'quick.C("pip",2,0,4,5,3)'
+# root -l -b -q 'quick.C("pip",2,0,4,6,3)'
+# root -l -b -q 'quick.C("pip",2,0,4,7,3)'
+# root -l -b -q 'quick.C("pip",2,0,4,8,3)'
+# root -l -b -q 'quick.C("pip",2,0,4,9,3)'
+# 
+# # scan phih
+# root -l -b -q 'quick.C("pip",2,0,4,4,0)'
+# root -l -b -q 'quick.C("pip",2,0,4,4,1)'
+# root -l -b -q 'quick.C("pip",2,0,4,4,2)'
+# #root -l -b -q 'quick.C("pip",2,0,4,4,3)'
+# root -l -b -q 'quick.C("pip",2,0,4,4,4)'
+# root -l -b -q 'quick.C("pip",2,0,4,4,5)'
+# root -l -b -q 'quick.C("pip",2,0,4,4,6)'
+# root -l -b -q 'quick.C("pip",2,0,4,4,7)'
+# root -l -b -q 'quick.C("pip",2,0,4,4,8)'
+# root -l -b -q 'quick.C("pip",2,0,4,4,9)'
+# root -l -b -q 'quick.C("pip",2,0,4,4,10)'
+# root -l -b -q 'quick.C("pip",2,0,4,4,11)'
+
+#convert -delay 10 file1 file2 ... -loop 0 out.gif
+
+convert -delay 10 pip_res_x0_QQ0_z4_PT24_phih3.png pip_res_x1_QQ0_z4_PT24_phih3.png pip_res_x2_QQ0_z4_PT24_phih3.png pip_res_x3_QQ0_z4_PT24_phih3.png pip_res_x4_QQ0_z4_PT24_phih3.png -loop 0 pip_res_scanx.gif
+
+convert -delay 10 pip_res_x2_QQ0_z4_PT24_phih3.png pip_res_x2_QQ1_z4_PT24_phih3.png -loop 0 pip_res_scanQQ.gif
+
+convert -delay 10 pip_res_x2_QQ0_z0_PT24_phih3.png pip_res_x2_QQ0_z1_PT24_phih3.png pip_res_x2_QQ0_z2_PT24_phih3.png pip_res_x2_QQ0_z3_PT24_phih3.png pip_res_x2_QQ0_z4_PT24_phih3.png pip_res_x2_QQ0_z5_PT24_phih3.png pip_res_x2_QQ0_z6_PT24_phih3.png pip_res_x2_QQ0_z7_PT24_phih3.png pip_res_x2_QQ0_z8_PT24_phih3.png -loop 0 pip_res_scanz.gif
+
+convert -delay 10 pip_res_x2_QQ0_z4_PT20_phih3.png pip_res_x2_QQ0_z4_PT21_phih3.png pip_res_x2_QQ0_z4_PT22_phih3.png pip_res_x2_QQ0_z4_PT23_phih3.png pip_res_x2_QQ0_z4_PT24_phih3.png pip_res_x2_QQ0_z4_PT25_phih3.png pip_res_x2_QQ0_z4_PT26_phih3.png pip_res_x2_QQ0_z4_PT27_phih3.png pip_res_x2_QQ0_z4_PT28_phih3.png pip_res_x2_QQ0_z4_PT29_phih3.png -loop 0 pip_res_scanPT2.gif
+
+convert -delay 10 pip_res_x2_QQ0_z4_PT24_phih0.png pip_res_x2_QQ0_z4_PT24_phih1.png pip_res_x2_QQ0_z4_PT24_phih2.png pip_res_x2_QQ0_z4_PT24_phih3.png pip_res_x2_QQ0_z4_PT24_phih4.png pip_res_x2_QQ0_z4_PT24_phih5.png pip_res_x2_QQ0_z4_PT24_phih6.png pip_res_x2_QQ0_z4_PT24_phih7.png pip_res_x2_QQ0_z4_PT24_phih8.png pip_res_x2_QQ0_z4_PT24_phih9.png pip_res_x2_QQ0_z4_PT24_phih10.png pip_res_x2_QQ0_z4_PT24_phih11.png -loop 0 pip_res_scanphih.gif

@@ -57,6 +57,7 @@
 
    08-17-2018: Added configuration file setup to programFiles/configuration.C.  
        changing the input of this function to accept just a few arguments. 
+   09-13-2018: Changing the path for parameter files. 
    -----------------------------------------------------------
 */
 
@@ -183,13 +184,13 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
   // those files and adding a SetPath() method to this class.
   // Or the path can just be passed into the contructor since
   // nothing good is going to happen without having those files. 
-  MomCorr_e1f *MomCorr = new MomCorr_e1f("programFiles/momentumCorrections/");
+  MomCorr_e1f *MomCorr = new MomCorr_e1f("requiredFiles/parameters/momentumCorrections/");
 
   // Classes for hadronic identification rely on the 
   // same login as the original function.  The only 
   // difference is the single load of the parameters. 
-  BetaPTable *pipTable = new BetaPTable("programFiles/", "pip"); 
-  BetaPTable *pimTable = new BetaPTable("programFiles/", "pim"); 
+  BetaPTable *pipTable = new BetaPTable("requiredFiles/parameters/pip/", "pip"); 
+  BetaPTable *pimTable = new BetaPTable("requiredFiles/parameters/pim/", "pim"); 
 
   // %%%%% some cut values %%%%%
   float WMin = 2.05;

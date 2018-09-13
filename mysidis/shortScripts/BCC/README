@@ -1,0 +1,27 @@
+haprad try4(aka v4) notes:
+
+commented out a few lines in ihaprad.h ... search for "nate"
+   -I only want the born CS for now, so removed the calculation of rad CS to save CPU time
+
+eventually want to change h3.f and h4.f to Nick's model
+   - pi+ and pi- !!
+	*** this has been done!
+
+improved rcdat_test.f
+
+
+see /home/kjgroup/mysidis/shortScripts/BCC/datfiles/ for results
+
+Binning:
+since these are HAPRAD (fortran) results, indicies start at 1 not 0
+filename gives z-PT2 bin number (e.g. go_pip_1_1.dat)
+   90 z bins from 0.0-0.9
+   100 PT2 bins 0.0-1.0 GeV^2
+each file has 450,000 lines, one line for each x, QQ, phih bin (the value on each line is the Born CS)
+   50 x bins from 0.1-0.6
+   50 QQ bins from 1.0-5.0 GeV^2
+   180 phih bins from -180-180 deg.
+   (note: 50*50*180 = 450,000)
+   first line is first x bin, first QQ bin, first phih bin 
+   second line is first x bin, first QQ bin, second phih bin... etc.
+

@@ -3,7 +3,7 @@
 //int accItN = 2; // 0(flat), 1(default haprad), or 2(Nick)
 //int hapItN = 2; // 0(flat), 1(default haprad), 2(Nick), or 9(no RC applied)
 
-void phih_simple(int xBin = 0, int QQBin = 0, int zBin = 4, int PT2Bin = 1, int accItN = 2, int hapItN = 2, string pipORpim = "pim")
+void phih_simple(int xBin = 0, int QQBin = 0, int zBin = 4, int PT2Bin = 1, int accItN = 2, int hapItN = 2, string pipORpim = "pip")
 {
 gStyle->SetOptStat(0);
 
@@ -11,16 +11,17 @@ bool doSaveTxt = 0;
 bool doSavePic = 0;
 if(hapItN == 9) doSavePic = 0; // saving pics for hapItN == 9 would be redundant and unnecessary
 
-int binSchemeOpt = 6;
+int binSchemeOpt = 5;
 int NphihBins;
 if(binSchemeOpt == 5) NphihBins = 36;
 if(binSchemeOpt == 6) NphihBins = 18;
+if(binSchemeOpt == 8) NphihBins = 36;
 
 TFile *tfdata = new TFile(Form("/home/kjgroup/mysidis/histos/data.s1.n11625.BiSc%i.MoCo11.__0000000000000000__.root", binSchemeOpt));
 TFile *tfmc = new TFile(Form("/home/kjgroup/mysidis/histos/MonteCarlo_v12.it%i.s1.n32255.BiSc%i.__0000000000000000__.root", accItN, binSchemeOpt));
 
 TCanvas *can = new TCanvas("can", "can", 5, 5, 1400, 800);
-can->Divide(3, 2);
+can->Divide(4, 2);
 
 TLatex *tlat = new TLatex();
 tlat->SetNDC();
@@ -227,9 +228,18 @@ if(hsib->Integral() > 0.00000001) hsib->Fit("ffsib", "W", "", -180, 180); // "W"
 tlat->DrawLatex(0.15, 0.82, Form("(%3.2f, %3.4f, %3.4f)", ffsib->GetParameter(0), ffsib->GetParameter(1), ffsib->GetParameter(2)));
 }
 
-//------------------- corr: ---------------------------------
+//------------------ BCC: -----------------------------------
+
+TFile *tfBCC = new TFile(Form("/home/kjgroup/mysidis/shortScripts/BCC/rootfiles/BCC_%s_%i_%i.root", pipORpim.c_str(), zBin, PT2Bin));
+TH1F *hBCCfactor = (TH1F*) tfBCC->Get(Form("BCCvsphih_x%iQQ%i", xBin, QQBin));
 
 can->cd(5);
+hBCCfactor->GetYaxis()->SetRangeUser(0, 1.1*hBCCfactor->GetMaximum());
+hBCCfactor->Draw();
+
+//------------------- corr: ---------------------------------
+
+can->cd(6);
 
 TH1F *hcorr = new TH1F("hcorr", "hcorr", NphihBins, -180, 180);
 hcorr->Sumw2();
@@ -262,7 +272,7 @@ tlat->DrawLatex(0.15, 0.20, Form("Acc = %3.4f #pm %3.4f", ffcorr->GetParameter(2
 
 if(hapItN != 9)
 {
-can->cd(6);
+can->cd(7);
 
 if(hsib->Integral() < 0.00000001 || hsig->Integral() < 0.00000001) category = -2; // defining category = -2 here means no haprad results
 
@@ -296,33 +306,67 @@ tlat->DrawLatex(0.15, 0.20, Form("Acc = %3.4f #pm %3.4f", ffcorrRC->GetParameter
 tlat->DrawLatex(0.25, 0.14, Form("category %i", category));
 }
 
-//-------------------- save: --------------------------------
+//------------------- corrRCBCC: ----------------------------
 
-if(doSaveTxt)
+if(hapItN != 9) // maybe add a condition incase something is wrong with BCC
 {
+can->cd(8);
+
+TH1F *hcorrRCBCC = new TH1F("hcorrRCBCC", "hcorrRCBCC", NphihBins, -180, 180);
+hcorrRCBCC->Sumw2();
+hcorrRCBCC->Divide(hcorrRC, hBCCfactor);
+hcorrRCBCC->GetYaxis()->SetRangeUser(0, 1.1*hcorrRCBCC->GetMaximum());
+hcorrRCBCC->GetXaxis()->SetTitle("phi_h (deg.)");
+hcorrRCBCC->SetTitle("data w/ AC, RC, and BCC");
+hcorrRCBCC->Draw();
+
+TF1 *ffcorrRCBCC = new TF1("ffcorrRCBCC", "[0]*(1.0 + [1]*cos((3.14159265359/180.0)*x) + [2]*cos(2.0*(3.14159265359/180.0)*x))", -180, 180);
+ffcorrRCBCC->SetLineColor(kBlue);
+ffcorrRCBCC->SetParameters(hcorrRCBCC->GetMaximum(), 0.0, 0.0);
 if(category == 1)
 {
-ofstream outfile(Form("%s_AcAcc_it%i_hap%i_BiSc%i_x%iQQ%iz%iPT2%i.txt", pipORpim.c_str(), accItN, hapItN, binSchemeOpt, xBin, QQBin, zBin, PT2Bin));
-if(hapItN == 9) outfile<<ffcorr->GetParameter(1)<<" "<<ffcorr->GetParError(1)<<" "<<ffcorr->GetParameter(2)<<" "<<ffcorr->GetParError(2);
-if(hapItN != 9) outfile<<ffcorrRC->GetParameter(1)<<" "<<ffcorrRC->GetParError(1)<<" "<<ffcorrRC->GetParameter(2)<<" "<<ffcorrRC->GetParError(2);
-outfile.close();
-
-ofstream outfileM(Form("%s_M_it%i_hap%i_BiSc%i_x%iQQ%iz%iPT2%i.txt", pipORpim.c_str(), accItN, hapItN, binSchemeOpt, xBin, QQBin, zBin, PT2Bin));
-if(hapItN == 9) outfileM<<ffcorr->GetParameter(0)<<" "<<ffcorr->GetParError(0);
-if(hapItN != 9) outfileM<<ffcorrRC->GetParameter(0)<<" "<<ffcorrRC->GetParError(0);
-outfileM.close();
+ffcorrRCBCC->SetParLimits(1, -0.99, 0.99);
+ffcorrRCBCC->SetParLimits(2, -0.99, 0.99);
 }
-
-if(category == -13)
+else
 {
-ofstream outfileM(Form("%s_M_it%i_hap%i_BiSc%i_x%iQQ%iz%iPT2%i.txt", pipORpim.c_str(), accItN, hapItN, binSchemeOpt, xBin, QQBin, zBin, PT2Bin));
-if(hapItN == 9) outfileM<<ffcorr->GetParameter(0)<<" "<<ffcorr->GetParError(0);
-if(hapItN != 9) outfileM<<ffcorrRC->GetParameter(0)<<" "<<ffcorrRC->GetParError(0);
-outfileM.close();
+ffcorrRCBCC->SetParLimits(1, -0.30, 0.30);
+ffcorrRCBCC->SetParLimits(2, -0.30, 0.30);
 }
+if(hcorrRCBCC->Integral() > 36) hcorrRCBCC->Fit("ffcorrRCBCC", "", "", -180, 180);
+
+tlat->DrawLatex(0.15, 0.32, Form("M = %3.2f #pm %3.2f", ffcorrRCBCC->GetParameter(0), ffcorrRCBCC->GetParError(0)));
+tlat->DrawLatex(0.15, 0.26, Form("Ac = %3.4f #pm %3.4f", ffcorrRCBCC->GetParameter(1), ffcorrRCBCC->GetParError(1)));
+tlat->DrawLatex(0.15, 0.20, Form("Acc = %3.4f #pm %3.4f", ffcorrRCBCC->GetParameter(2), ffcorrRCBCC->GetParError(2)));
 }
 
-if(doSavePic) can->SaveAs(Form("%s_it%i_hap%i_BiSc%i_x%iQQ%iz%iPT2%i.png", pipORpim.c_str(), accItN, hapItN, binSchemeOpt, xBin, QQBin, zBin, PT2Bin));
+//-------------------- save: --------------------------------
+//   this hasn't been updated for BCC yet!!!
+//   if(doSaveTxt)
+//   {
+//   if(category == 1)
+//   {
+//   ofstream outfile(Form("%s_AcAcc_it%i_hap%i_BiSc%i_x%iQQ%iz%iPT2%i.txt", pipORpim.c_str(), accItN, hapItN, binSchemeOpt, xBin, QQBin, zBin, PT2Bin));
+//   if(hapItN == 9) outfile<<ffcorr->GetParameter(1)<<" "<<ffcorr->GetParError(1)<<" "<<ffcorr->GetParameter(2)<<" "<<ffcorr->GetParError(2);
+//   if(hapItN != 9) outfile<<ffcorrRC->GetParameter(1)<<" "<<ffcorrRC->GetParError(1)<<" "<<ffcorrRC->GetParameter(2)<<" "<<ffcorrRC->GetParError(2);
+//   outfile.close();
+//   
+//   ofstream outfileM(Form("%s_M_it%i_hap%i_BiSc%i_x%iQQ%iz%iPT2%i.txt", pipORpim.c_str(), accItN, hapItN, binSchemeOpt, xBin, QQBin, zBin, PT2Bin));
+//   if(hapItN == 9) outfileM<<ffcorr->GetParameter(0)<<" "<<ffcorr->GetParError(0);
+//   if(hapItN != 9) outfileM<<ffcorrRC->GetParameter(0)<<" "<<ffcorrRC->GetParError(0);
+//   outfileM.close();
+//   }
+//   
+//   if(category == -13)
+//   {
+//   ofstream outfileM(Form("%s_M_it%i_hap%i_BiSc%i_x%iQQ%iz%iPT2%i.txt", pipORpim.c_str(), accItN, hapItN, binSchemeOpt, xBin, QQBin, zBin, PT2Bin));
+//   if(hapItN == 9) outfileM<<ffcorr->GetParameter(0)<<" "<<ffcorr->GetParError(0);
+//   if(hapItN != 9) outfileM<<ffcorrRC->GetParameter(0)<<" "<<ffcorrRC->GetParError(0);
+//   outfileM.close();
+//   }
+//   }
+//   
+//   if(doSavePic) can->SaveAs(Form("%s_it%i_hap%i_BiSc%i_x%iQQ%iz%iPT2%i.png", pipORpim.c_str(), accItN, hapItN, binSchemeOpt, xBin, QQBin, zBin, PT2Bin));
 
 
 

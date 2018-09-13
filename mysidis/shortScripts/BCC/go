@@ -1,0 +1,20 @@
+#!/bin/csh -f
+
+# remember to change pip/pim manually in the code and re-run
+
+foreach z (`seq 0 17`)
+foreach PT2 (`seq 0 19`)
+
+root -l -b -q "BCCfactor_v2.C($z,$PT2)" >& /dev/null &
+
+while(`ps x | grep local | grep root | wc -l` >= 22) # make sure no other root applications are running or this will get messed up!!
+sleep 1
+end
+
+end
+end
+
+
+while(`ps x | grep local | grep root | wc -l` != 0) # make sure no other root applications are running or this will get messed up!!
+sleep 1
+end

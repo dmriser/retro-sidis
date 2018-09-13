@@ -23,7 +23,25 @@ hQQ->Fill(QQ);
 infile.close();
 
 
+hQQvx->GetXaxis()->SetTitle("x");
+hQQvx->GetYaxis()->SetTitle("Q^{2} (GeV^{2})");
 hQQvx->Draw("colz");
+
+float yMax = 0.85;
+float WMin = 2.05;
+float QQMin = 1.0;
+TF1 *yFcn = new TF1("yFcn", Form("2.0*5.498*%3.4f*0.938*x", yMax), 0, 1); 
+TF1 *WFcn = new TF1("WFcn", Form("(pow(%3.4f, 2.0) - pow(0.938, 2.0))/((1.0/x) - 1.0)", WMin), 0, 1); 
+TF1 *QQFcn = new TF1("QQFcn", Form("0.0*x + %3.4f", QQMin), 0, 1);
+yFcn->SetLineWidth(2);
+WFcn->SetLineWidth(2);
+QQFcn->SetLineWidth(2);
+yFcn->SetLineColor(kBlack);
+WFcn->SetLineColor(kBlack);
+QQFcn->SetLineColor(kBlack);
+yFcn->Draw("same");
+WFcn->Draw("same");
+QQFcn->Draw("same");
 
 TLine *vline0 = new TLine(0.128, 0.5, 0.128, 8.5);
 vline0->Draw();

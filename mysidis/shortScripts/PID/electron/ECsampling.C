@@ -91,7 +91,8 @@ can2->cd(1);
 hD[0][sector-1]->Draw("colz");
 can2->cd(2);
 hD[1][sector-1]->Draw("colz");
-for(int st = 0; st < Nstrictnesses; st++)
+//for(int st = 0; st < Nstrictnesses; st++)
+for(int st = 2; st <= 2; st++)
 {
 Ltop[1][sector-1][st]->Draw("same");
 Lbottom[1][sector-1][st]->Draw("same");
@@ -101,7 +102,8 @@ can2->cd(3);
 hMC[0][sector-1]->Draw("colz");
 can2->cd(4);
 hMC[1][sector-1]->Draw("colz");
-for(int st = 0; st < Nstrictnesses; st++)
+//for(int st = 0; st < Nstrictnesses; st++)
+for(int st = 2; st <= 2; st++)
 {
 Ltop[0][sector-1][st]->Draw("same");
 Lbottom[0][sector-1][st]->Draw("same");

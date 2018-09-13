@@ -1,8 +1,10 @@
 #include <algorithm> // for std::max
 
-void phih_vs_PT2Vz_v3(int accItN = 2, int xBin = 0, int QQBin = 0, string pipORpim = "pip") // don't compile
+void phih_vs_PT2Vz_v3(int accItN = 2, int xBin = 1, int QQBin = 1, string pipORpim = "pip") // don't compile
 {
 gStyle->SetOptStat(0);
+gStyle->SetTitleSize(0.045, "XYZ");
+gStyle->SetLabelSize(0.085, "XYZ");
 
 bool doSaveTxt = 0; // make sure zStartBin and PT2StartBin both = 0 if saving, also cutLast... = 0
 bool doSaveTxtRC = 0; // make sure zStartBin and PT2StartBin both = 0 if saving, also cutLast... = 0 ... only do this with final accIt
@@ -21,16 +23,16 @@ int binSchemeOpt = 5;
 TFile *tfdata = new TFile(Form("/home/kjgroup/mysidis/histos/data.s1.n11625.BiSc%i.MoCo11.__0000000000000000__.root", binSchemeOpt));
 TFile *tfmc = new TFile(Form("/home/kjgroup/mysidis/histos/MonteCarlo_v12.it%i.s1.n32255.BiSc%i.__0000000000000000__.root", accItN, binSchemeOpt));
 
-bool sameScale = 1; // for the acceptance corrected plots
+bool sameScale = 0; // for the acceptance corrected plots
 
 if(binSchemeOpt == 5)
 {
 int NphihBins = 36;
-int zStartBin = 5;
-int cutLastNzBins = 8;
+int zStartBin = 8;
+int cutLastNzBins = 9;
 const int NzBins = 18 - zStartBin - cutLastNzBins; // this is the effective number of z bins
-int PT2StartBin = 6;
-int cutLastNPT2Bins = 9;
+int PT2StartBin = 9;
+int cutLastNPT2Bins = 2;
 const int NPT2Bins = 20 - PT2StartBin - cutLastNPT2Bins; // this is the effective number of PT2 bins
 }
 
@@ -378,7 +380,6 @@ Moutfile<<ffRC[z-zStartBin][PT2-PT2StartBin]->GetParameter(0)<<" "<<ffRC[z-zStar
 Moutfile.close();
 }
 }}
-
 
 
 

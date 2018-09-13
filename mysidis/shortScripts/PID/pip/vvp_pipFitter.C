@@ -3,7 +3,7 @@ void vvp_pipFitter(int sector = 1)
 gStyle->SetOptStat(0);
 
 const int Ntypes = 2; // data and MC
-const int Nslices = 70;
+const int Nslices = 70; // if this changes, manually change the Divide line below
 float xStart = 0.2; // x is momentum here
 float xEnd = 3.75;
 const int Nsectors = 6;

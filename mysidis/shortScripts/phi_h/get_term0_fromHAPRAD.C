@@ -18,24 +18,39 @@ void get_term0_fromHAPRAD()
 {
 gStyle->SetOptStat(0);
 
-bool doSave = 1;
+bool doSave = 0;
 
-int binSchemeOpt = 5;
+int binSchemeOpt = 6;
 
-// this is BiSc5:
-int NphihBins = 36;
-const int NxBins = 5;
-const int NQQBins = 2;
-const int NzBins = 18;
-const int NPT2Bins = 20;
-float xpts[NxBins] = {0.15, 0.25, 0.35, 0.45, 0.55}; // center values
-float QQpts[NxBins][NQQBins] = {{1.1, 1.4}, {1.5, 1.8}, {1.9, 2.4}, {2.5, 3.1}, {4.0, 4.0}}; // approx. center values
-float zpts[NzBins] = {0.025, 0.075, 0.125, 0.175, 0.225, 0.275, 0.325, 0.375, 0.425, 0.475, 0.525, 0.575, 0.625, 0.675, 0.725, 0.775, 0.825, 0.875}; // center values
-float zMin = 0.0;
-float zMax = 1.0;
-float PT2pts[NPT2Bins] = {0.025, 0.075, 0.125, 0.175, 0.225, 0.275, 0.325, 0.375, 0.425, 0.475, 0.525, 0.575, 0.625, 0.675, 0.725, 0.775, 0.825, 0.875, 0.925, 0.975}; // center values
+// // this is BiSc5:
+// int NphihBins = 36;
+// const int NxBins = 5;
+// const int NQQBins = 2;
+// const int NzBins = 18;
+// const int NPT2Bins = 20;
+// float xpts[NxBins] = {0.15, 0.25, 0.35, 0.45, 0.55}; // center values
+// float QQpts[NxBins][NQQBins] = {{1.1, 1.4}, {1.5, 1.8}, {1.9, 2.4}, {2.5, 3.1}, {4.0, 4.0}}; // approx. center values
+// float zpts[NzBins] = {0.025, 0.075, 0.125, 0.175, 0.225, 0.275, 0.325, 0.375, 0.425, 0.475, 0.525, 0.575, 0.625, 0.675, 0.725, 0.775, 0.825, 0.875}; // center values
+// float zMin = 0.0;
+// float zMax = 1.0;
+// float PT2pts[NPT2Bins] = {0.025, 0.075, 0.125, 0.175, 0.225, 0.275, 0.325, 0.375, 0.425, 0.475, 0.525, 0.575, 0.625, 0.675, 0.725, 0.775, 0.825, 0.875, 0.925, 0.975}; // center values
+// float PT2Min = 0.0;
+// float PT2Max = 1.0;
+
+// this is BiSc6:
+int NphihBins = 18;
+const int NxBins = 19;
+const int NQQBins = 10;
+const int NzBins = 22;
+const int NPT2Bins = 10;
+float xpts[NxBins] = {0.1465, 0.1755, 0.2055, 0.2365, 0.2685, 0.3025, 0.3375, 0.3745, 0.4135, 0.4535, 0.4955, 0.5395, 0.5855, 0.6335, 0.6835, 0.7355, 0.7905, 0.8465, 0.9065}; // center values
+float QQpts[NxBins][NQQBins] = {{1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}, {1.495, 1.745, 2.015, 2.365, 2.935, 3.425, 4.095, 4.845, 5.715, 6.615}};
+float zpts[NzBins] = {0.0685, 0.0935, 0.1195, 0.1465, 0.1755, 0.2055, 0.2365, 0.2685, 0.3025, 0.3375, 0.3745, 0.4135, 0.4535, 0.4955, 0.5395, 0.5855, 0.6335, 0.6835, 0.7355, 0.7905, 0.8465, 0.9065}; // center values
+float zMin = 0.059;
+float zMax = 0.93;
+float PT2pts[NPT2Bins] = {0.005, 0.025, 0.065, 0.129, 0.217, 0.341, 0.507, 0.743, 1.075, 1.555}; // center values
 float PT2Min = 0.0;
-float PT2Max = 1.0;
+float PT2Max = 1.75;
 
 float Eb = 5.498;
 float alpha = 0.0072973525698; // ~1/137
@@ -60,6 +75,7 @@ TCanvas *can = new TCanvas("can", "can", 10, 10, 1500, 1000);
 can->Divide(NxBins, NQQBins, 0.00001, 0.00001);
 
 for(int ix = 0; ix < NxBins; ix++) {
+cout<<"ix: "<<ix<<endl;
 for(int iQQ = 0; iQQ < NQQBins; iQQ++) {
 
 can->cd(ix + 1 + (NQQBins-1)*NxBins - NxBins*iQQ)->SetLogz();
@@ -95,8 +111,12 @@ float prefactor2 = (PT2/QQ)*rtz*rtz;
 // define the fit function to extract h3 and h4:
 TF1 *ff_h3h4 = new TF1("ff_h3h4", "[0] + [1]*[3]*cos((3.14159265359/180.0)*x) + [2]*[4]*cos(2.0*(3.14159265359/180.0)*x)", -180, 180);
 ff_h3h4->SetParName(0, "prefactor0xterm0"); // prefactor0*term0
-ff_h3h4->FixParameter(1, prefactor0*prefactor1*GTMD*pi_thresh);
-ff_h3h4->FixParameter(2, prefactor0*prefactor2*GTMD*pi_thresh);
+
+if(prefactor0*prefactor1*GTMD*pi_thresh != prefactor0*prefactor1*GTMD*pi_thresh) ff_h3h4->FixParameter(1, 0.0); // to avoid occasional imaginary number
+else ff_h3h4->FixParameter(1, prefactor0*prefactor1*GTMD*pi_thresh);
+if(prefactor0*prefactor2*GTMD*pi_thresh != prefactor0*prefactor2*GTMD*pi_thresh) ff_h3h4->FixParameter(2, 0.0);
+else ff_h3h4->FixParameter(2, prefactor0*prefactor2*GTMD*pi_thresh);
+
 ff_h3h4->SetParName(3, "h3");
 ff_h3h4->SetParName(4, "h4");
 
@@ -123,9 +143,12 @@ if(hsib1000->Integral() > 0.00000001)
 {
 hsib1000->Fit("ff_h3h4", "q", "", -180, 180);
 hterm0[ix][iQQ]->SetBinContent(iz+1, iPT2+1, ff_h3h4->GetParameter(0)/prefactor0);
+if(doSave)
+{
 ofstream outfile(Form("dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, ix, iQQ, iz, iPT2));
-if(doSave) outfile<<ff_h3h4->GetParameter(0)/prefactor0;
+outfile<<ff_h3h4->GetParameter(0)/prefactor0;
 outfile.close();
+}
 }
 
 delete ff_h3h4;

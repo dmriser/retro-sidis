@@ -1,15 +1,23 @@
 {
 gStyle->SetOptStat(0);
-//TFile *tf = new TFile("/home/kjgroup/mysidis/histos/data.s1.n12114.BiSc5.MoCo11.__0000000000000000__.root");
+//TFile *tf = new TFile("/home/kjgroup/mysidis/histos/data.s1.n11625.BiSc5.MoCo11.__0000000000000000__.root");
 TFile *tf = new TFile("/home/kjgroup/mysidis/histos/MonteCarlo_v12.it0.s1.n32255.BiSc5.__0000000000000000__.root");
 
 string pipORpim = "pim";
 string genORrec = "rec";
 
+//scheme 5:
 const int NxBins = 5;
 float xLimits[NxBins + 1] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
 const int NQQBins = 2;
 float QQLimits[NxBins][NQQBins + 1] = {{1.0, 1.3, 5.0}, {1.0, 1.7, 5.0}, {1.0, 2.2, 5.0}, {1.0, 2.9, 5.0}, {1.0, 5.0, 99.9}};
+
+// //scheme 8:
+// const int NxBins = 5*2;
+// float xLimits[NxBins + 1] = {0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60};
+// const int NQQBins = 2*2;
+// float QQLimits[NxBins][NQQBins + 1];
+// QQLimits[0][0] = 1.00; QQLimits[0][1] = 1.15; QQLimits[0][2] = 1.30; QQLimits[0][3] = 1.45; QQLimits[0][4] = 1.80; QQLimits[1][0] = 1.00; QQLimits[1][1] = 1.15; QQLimits[1][2] = 1.30; QQLimits[1][3] = 1.45; QQLimits[1][4] = 1.80; QQLimits[2][0] = 1.00; QQLimits[2][1] = 1.50; QQLimits[2][2] = 1.70; QQLimits[2][3] = 2.00; QQLimits[2][4] = 2.70; QQLimits[3][0] = 1.00; QQLimits[3][1] = 1.50; QQLimits[3][2] = 1.70; QQLimits[3][3] = 2.00; QQLimits[3][4] = 2.70; QQLimits[4][0] = 1.40; QQLimits[4][1] = 1.90; QQLimits[4][2] = 2.20; QQLimits[4][3] = 2.70; QQLimits[4][4] = 3.50; QQLimits[5][0] = 1.40; QQLimits[5][1] = 1.90; QQLimits[5][2] = 2.20; QQLimits[5][3] = 2.70; QQLimits[5][4] = 3.50; QQLimits[6][0] = 2.20; QQLimits[6][1] = 2.70; QQLimits[6][2] = 2.90; QQLimits[6][3] = 3.40; QQLimits[6][4] = 4.30; QQLimits[7][0] = 2.20; QQLimits[7][1] = 2.70; QQLimits[7][2] = 2.90; QQLimits[7][3] = 3.40; QQLimits[7][4] = 4.30; QQLimits[8][0] = 3.30; QQLimits[8][1] = 4.00; QQLimits[8][2] = 5.00; QQLimits[8][3] = 6.00; QQLimits[8][4] = 7.00; QQLimits[9][0] = 3.30; QQLimits[9][1] = 4.00; QQLimits[9][2] = 5.00; QQLimits[9][3] = 6.00; QQLimits[9][4] = 7.00;
 
 float yMax = 0.85;
 float WMin = 2.05;
@@ -33,25 +41,30 @@ QQvsx->GetYaxis()->SetTitle("Q^{2} (GeV^{2})");
 if(pipORpim == "pip") QQvsx->SetTitle("#pi+ channel");
 if(pipORpim == "pim") QQvsx->SetTitle("#pi- channel");
 QQvsx->Draw("colz");
-yFcn->Draw("same");
-WFcn->Draw("same");
-QQFcn->Draw("same");
 TLine *xLine[NxBins + 1];
-TLine *QQLine[NxBins]; // each x bin has 2 QQ bins, I just want to draw the one QQ line that divides each x bin in half
+TLine *QQLine[NxBins][NQQBins + 1];
+
 for(int k = 0; k < NxBins + 1; k++)
 {
 xLine[k] = new TLine(xLimits[k], QQvsx->GetYaxis()->GetXmin(), xLimits[k], QQvsx->GetYaxis()->GetXmax());
-xLine[k]->SetLineColor(kGray);
+xLine[k]->SetLineColor(kGray+1);
 xLine[k]->SetLineWidth(2);
 xLine[k]->Draw();
 	if(k < NxBins)
 	{
-	QQLine[k] = new TLine(xLimits[k], QQLimits[k][1], xLimits[k+1], QQLimits[k][1]);
-	QQLine[k]->SetLineColor(kGray);
-	QQLine[k]->SetLineWidth(2);
-	if(k!=4) QQLine[k]->Draw();
+	for(int j = 0; j < NQQBins + 1; j++)
+	{
+	QQLine[k][j] = new TLine(xLimits[k], QQLimits[k][j], xLimits[k+1], QQLimits[k][j]);
+	QQLine[k][j]->SetLineColor(kGray+1);
+	QQLine[k][j]->SetLineWidth(2);
+	//QQLine[k][j]->Draw();
+	if(!(j == 0 || j == NQQBins)) QQLine[k][j]->Draw(); // don't want to draw the bottom most or top most line
+	}
 	}
 }
 
+yFcn->Draw("same");
+WFcn->Draw("same");
+QQFcn->Draw("same");
 
 }

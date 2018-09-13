@@ -11,3 +11,9 @@
 # The submission and configurations 
 farm/submission_files/*
 farm/configurations/* 
+
+# Major files in the required folders directory. 
+mysidis/requiredFiles/parameters/pip/*.txt
+mysidis/requiredFiles/parameters/pim/*.txt
+mysidis/requiredFiles/hadrad/*/*.dat
+mysidis/requiredFiles/binCategories/*
