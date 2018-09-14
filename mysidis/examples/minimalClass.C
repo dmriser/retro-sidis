@@ -46,7 +46,7 @@ public:
       h22chain->Delete(); 
     }
   }
-
+ 
   void AddFiles(std::string inputListOfFiles, int numberOfFiles){
     ifstream inputFile; 
     inputFile.open(inputListOfFiles.c_str());
