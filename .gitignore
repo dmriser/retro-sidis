@@ -13,10 +13,13 @@ farm/submission_files/*
 farm/configurations/* 
 
 # Major files in the required folders directory. 
+# These can be grabbed with the download_required_files.py script.
+mysidis/requiredFiles/binCategories/*
+mysidis/requiredFiles/hadrad/term0/*
+mysidis/requiredFiles/hadrad/hapradResults/hap00/*
+mysidis/requiredFiles/hadrad/hapradResults/hapDefault/*
+mysidis/requiredFiles/hadrad/hapradResults/NickPipModel/*
+mysidis/requiredFiles/hadrad/hapradResults/NickPimModel/*
+mysidis/requiredFiles/parameters/momentumCorrections/*
 mysidis/requiredFiles/parameters/pip/*
 mysidis/requiredFiles/parameters/pim/*
-mysidis/requiredFiles/hadrad/hap00/*
-mysidis/requiredFiles/hadrad/hapDefault/*
-mysidis/requiredFiles/hadrad/NickPipModel/*
-mysidis/requiredFiles/hadrad/NickPimModel/*
-mysidis/requiredFiles/binCategories/*
