@@ -13,7 +13,10 @@ farm/submission_files/*
 farm/configurations/* 
 
 # Major files in the required folders directory. 
-mysidis/requiredFiles/parameters/pip/*.txt
-mysidis/requiredFiles/parameters/pim/*.txt
-mysidis/requiredFiles/hadrad/*/*.dat
+mysidis/requiredFiles/parameters/pip/*
+mysidis/requiredFiles/parameters/pim/*
+mysidis/requiredFiles/hadrad/hap00/*
+mysidis/requiredFiles/hadrad/hapDefault/*
+mysidis/requiredFiles/hadrad/NickPipModel/*
+mysidis/requiredFiles/hadrad/NickPimModel/*
 mysidis/requiredFiles/binCategories/*

@@ -1067,10 +1067,9 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 	      }
 	    term0file.close();
 	  }
-
 	*/
         
-	// some phase space plots:
+	// Some phase space plots. 
 	if(e_index[1] > -1){
 	  QQvsW->Fill(W[1], QQ[1]);
 	  yvsx ->Fill(x[1], y[1]);
