@@ -1,4 +1,3 @@
-*.tar 
 *.gz 
 *.txt 
 *.pdf 
@@ -14,6 +13,7 @@ farm/configurations/*
 
 # Major files in the required folders directory. 
 # These can be grabbed with the download_required_files.py script.
+mysidis/requiredFiles/ 
 mysidis/requiredFiles/binCategories/*
 mysidis/requiredFiles/hadrad/term0/*
 mysidis/requiredFiles/hadrad/hapradResults/hap00/*
