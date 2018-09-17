@@ -74,11 +74,17 @@ if __name__ == '__main__':
         config['strictness']        = 0
         process(config, base_filename)
 
+        # Run acceptance iteration=0 
+        config['variation'] = 'acceptance'
+        config['acceptance_iteration'] = 0
+        process(config, base_filename)
+        config['acceptance_iteration'] = 2
+
         # Run settings (Can this be done by passing
         # in a list of variations to run?  For ex:
         # consider that we just need 3, 8, 15)
         config['change_strictness'] = 1
-        for index in range(16):
+        for index in range(13):
 
             config['variation'] = str(index)
 
@@ -92,3 +98,4 @@ if __name__ == '__main__':
             config['strictness']        = -1
             process(config, base_filename + '_loose')
             
+

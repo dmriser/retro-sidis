@@ -70,7 +70,7 @@ if __name__ == '__main__':
     config['strictness']           = 0
     config['correct_electron_p']   = 1
     config['correct_pion_p']       = 1
-    config['acceptance_iteration'] = 0
+    config['acceptance_iteration'] = 2
     
     with open('config.json', 'w') as output_json:
         json.dump(config, output_json, indent=4)

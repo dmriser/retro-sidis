@@ -1,5 +1,20 @@
 #!/usr/bin/env python 
 
+''' 
+
+David Riser, 
+University of Connecticut 
+September 17, 2018
+
+Use this script to download the required files from the 
+mass storage system and place them in a large local 
+storage space.  Then ensure that it correctly extracts 
+the contents of requiredFiles.tar (smaller).  Finally,
+a list of files for data/mc is placed into the directory
+requiredFiles/lists/. 
+
+'''
+
 import argparse 
 import os 
 
@@ -32,9 +47,9 @@ if __name__ == '__main__':
         print('jget /mss/home/dmriser/data/all/root/* {}/data/'.format(args.storage_directory))
         print('jget /mss/home/dmriser/data/all/root/* {}/mc/'.format(args.storage_directory))
 
+    # Checkout the required files (large and time consuming). 
     os.system('jget /mss/home/dmriser/data/all/root/* {}/data/'.format(args.storage_directory))
-    os.system('jget /mss/home/dmriser/data/all/root/* {}/mc/'.format(args.storage_directory))
-
+    os.system('jget /mss/home/dmriser/mc/sidis/* {}/mc/'.format(args.storage_directory))
 
     # Unload required files. 
     os.system('tar -xzvf requiredFiles.tar')

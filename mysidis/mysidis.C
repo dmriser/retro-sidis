@@ -61,7 +61,7 @@
    -----------------------------------------------------------
 */
 
-
+ 
 //void mysidis(std::string inputListOfFiles, int accIterationN = 0, int Nfiles = 5, int expOrSim = 1, 
 //	     bool do_momCorr_e = 1, bool do_momCorr_pions = 1, int e_zvertex_strict = 0, 
 //	     int e_ECsampling_strict = 0, int e_ECoutVin_strict = 0, 
@@ -117,7 +117,9 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 
   // If we're asked to change one of the 
   // strictnesses, let's do it and go on 
-  // with our lives! 
+  // with our lives!
+  // As Nathan points out, we can change 
+  // pi+ and pi- cuts at the same time.  
   if (changeStrictness){
     std::cout << "Changing strictness: " << strictToChange << " to level " << strictness << std::endl; 
     
@@ -154,22 +156,16 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
     } 
     else if (strictToChange == 10){
       pip_vvp_strict = strictness; 
+      pim_vvp_strict = strictness; 
     } 
     else if (strictToChange == 11){
       pip_R1fid_strict = strictness; 
+      pim_R1fid_strict = strictness; 
     } 
     else if (strictToChange == 12){
       pip_MXcut_strict = strictness; 
-    } 
-    else if (strictToChange == 13){
-      pim_vvp_strict = strictness; 
-    } 
-    else if (strictToChange == 14){
-      pim_R1fid_strict = strictness; 
-    } 
-    else if (strictToChange == 15){
       pim_MXcut_strict = strictness; 
-    }
+    } 
   }
 
   // Time tracking and benchmarking. 
@@ -177,13 +173,7 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
   runtimeCounter.Reset(); 
   runtimeCounter.Start(); 
 
-  // Class produced by Marco Mirazita.  Current relies on 
-  // having a bunch of text files placed in the current 
-  // working directory.  This is an easy fix, and should 
-  // eventually be cleaned up by creating a directory for 
-  // those files and adding a SetPath() method to this class.
-  // Or the path can just be passed into the contructor since
-  // nothing good is going to happen without having those files. 
+  // Class produced by Marco Mirazita.
   MomCorr_e1f *MomCorr = new MomCorr_e1f("requiredFiles/parameters/momentumCorrections/");
 
   // Classes for hadronic identification rely on the 
@@ -295,19 +285,6 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
   }
   // %%%%% end x, QQ, z, PT2 bin definitions %%%%%
   
-  // This block needs to be updated to read a given 
-  // number of files from the list provided.  Then 
-  // continue to perform the analysis based on those 
-  // files that are loaded.  I don't want the code to 
-  // have to know how many files are in the list. 
-  int NtotalFiles = 11625;
-  if(expOrSim == 0 && MC_VERSION ==  3) NtotalFiles = 33471;
-  if(expOrSim == 0 && MC_VERSION ==  8) NtotalFiles = 32171;
-  if(expOrSim == 0 && MC_VERSION ==  9) NtotalFiles = 1995;
-  if(expOrSim == 0 && MC_VERSION == 10) NtotalFiles = 3950;
-  if(expOrSim == 0 && MC_VERSION == 11) NtotalFiles = 3931;
-  if(expOrSim == 0 && MC_VERSION == 12) NtotalFiles = 32255;
-  
   ifstream filelist;
   filelist.open(inputFileList.c_str()); 
 
@@ -322,7 +299,7 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 	currentFileNumber++; 
       }
   } else {
-    cout << "Fatal: The list of files from " << inputFileList << " was not opened successfully!" << endl; 
+    cerr << "Fatal: The list of files from " << inputFileList << " was not opened successfully!" << endl; 
     return; 
   }
 
@@ -434,6 +411,7 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
   // %%%%% stuff for output root files %%%%%
   string outfilename;
   TFile *outputfile;
+  /* 
   if(expOrSim == 1){ 
     outfilename = Form("data.n%i.BiSc%i.MoCo%i%i.__%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i__.root", 
 		       numberOfFiles, binSchemeOpt, correctElectronP, 
@@ -452,6 +430,7 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 		       yCut_strict, pip_vvp_strict, pip_R1fid_strict, pip_MXcut_strict, 
 		       pim_vvp_strict, pim_R1fid_strict, pim_MXcut_strict);
   }
+  */
 
   // Trying this for ease of operation. 
   outfilename = "out.root"; 
@@ -891,12 +870,6 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 	float pip_weight = 1.0;
 	float pim_weight = 1.0;
         
-	/* 
-        
-	// It remains to be determined exactly what is happening 
-	// in this section of the code, and why the file is loaded 
-	// on every single iteration. 
-	// 
 	// It is the acceptance correction to the phi distributions, 
 	// and currently the value is set to 0 so this part never 
 	// executes. 
@@ -904,7 +877,7 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 	// pip:
 	if(expOrSim == 0 && acceptanceIteration == 1 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pip_index[0] >= 0)
 	  {
-	    ifstream term0file(Form("/scratch/dflt_term0_fromHAPRAD/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pip_zBin[0], pip_PT2Bin[0]));
+	    ifstream term0file(Form("requiredFiles/haprad/term0/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pip_zBin[0], pip_PT2Bin[0]));
 	    if(term0file)
 	      {
 		float term0;
@@ -945,7 +918,7 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 	// pip:
 	if(expOrSim == 0 && acceptanceIteration == 2 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pip_index[0] >= 0)
 	  {
-	    ifstream term0file(Form("/scratch/dflt_term0_fromHAPRAD/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pip_zBin[0], pip_PT2Bin[0]));
+	    ifstream term0file(Form("requiredFiles/haprad/term0/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pip_zBin[0], pip_PT2Bin[0]));
 	    if(term0file)
 	      {
 		float term0;
@@ -988,7 +961,7 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 	// pim:
 	if(expOrSim == 0 && acceptanceIteration == 1 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pim_index[0] >= 0)
 	  {
-	    ifstream term0file(Form("/scratch/dflt_term0_fromHAPRAD/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pim_zBin[0], pim_PT2Bin[0]));
+	    ifstream term0file(Form("requiredFiles/haprad/term0/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pim_zBin[0], pim_PT2Bin[0]));
 	    if(term0file)
 	      {
 		float term0;
@@ -1029,7 +1002,7 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 	// pim:
 	if(expOrSim == 0 && acceptanceIteration == 2 && xBin[0] > -1 && QQBin[0] > -1 && W[0] > WMin && y[0] < yMax && pim_index[0] >= 0)
 	  {
-	    ifstream term0file(Form("/scratch/dflt_term0_fromHAPRAD/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pim_zBin[0], pim_PT2Bin[0]));
+	    ifstream term0file(Form("requiredFiles/haprad/term0/dflt_term0_fromHAPRAD_BiSc%i_x%iQQ%iz%iPT2%i.txt", binSchemeOpt, xBin[0], QQBin[0], pim_zBin[0], pim_PT2Bin[0]));
 	    if(term0file)
 	      {
 		float term0;
@@ -1067,7 +1040,6 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 	      }
 	    term0file.close();
 	  }
-	*/
         
 	// Some phase space plots. 
 	if(e_index[1] > -1){
