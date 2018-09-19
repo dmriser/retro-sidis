@@ -44,13 +44,17 @@ def process(config, base_filename):
             base_filename)
         )
 
+def find_config_filename():
+    config_files = glob.glob('config*.json')
+    return config_files[0]
+
 if __name__ == '__main__':
 
-
+    # Copy from the directory on the interactive farm
+    # to this current node on the batch farm. 
     prepare_analysis_files() 
-
-    # This should be provided for each job. 
-    with open('config.json') as input_json_file:
+    
+    with open(find_config_filename()) as input_json_file:
         config = json.load(input_json_file)
 
         # Create a file that contains the list 

@@ -37,6 +37,60 @@ def load_expected_files_from_list(input_files):
     missing_runs = map(extract_run_number, missing_files)
     return found_runs, missing_runs 
 
+def process_folder(dir, files, expected_runs, args):
+    print('Processing {} with {} files.'.format(dir, len(files)))
+
+    tight_files = [file for file in files if 'tight' in file]
+    loose_files = [file for file in files if 'loose' in file]
+    other_files = [file for file in files if file not in tight_files and file not in loose_files]
+    
+    missing_tight = len(expected_runs) - len(tight_files)
+    missing_loose = len(expected_runs) - len(loose_files)
+    missing_other = len(expected_runs) - len(other_files)
+    
+    if 'nominal' in dir:
+        missing_tight = 0
+        missing_loose = 0
+    else:
+        missing_other = 0 
+        
+    print('    Tight: {} files, Missing {}'.format( len(tight_files), missing_tight))
+    print('    Loose: {} files, Missing {}'.format( len(loose_files), missing_loose))
+    print('    Other: {} files, Missing {}'.format( len(other_files), missing_other))
+    
+    if missing_tight > 0:
+        missing = [run for run in expected_runs if run not in map(extract_run_number, tight_files)]
+ 
+    if missing_loose > 0:
+        missing = [run for run in expected_runs if run not in map(extract_run_number, loose_files)]
+
+    # Merge. 
+    if args.merge:
+        if ('nominal' in dir) and (missing_other == 0):
+            if os.path.exists('{}/merged.root'.format(dir)):
+                print('Not creating file for {}'.format(dir))
+            else:
+                print('Merging nominal files from {}'.format(dir))
+                merge_command = 'hadd {}/merged.root {}/*.root'.format(dir, dir)
+                os.system(merge_command)
+
+        elif (missing_tight == 0 and missing_loose == 0):
+                
+            if os.path.exists('{}/tight.root'.format(dir)):
+                print('Not creating file for {} tight'.format(dir))
+            else:
+                print('Merging nominal files from {}'.format(dir))
+                merge_command = 'hadd {}/tight.root {}/*tight.root'.format(dir, dir)
+                os.system(merge_command)
+
+            if os.path.exists('{}/loose.root'.format(dir)):
+                print('Not creating file for {} loose'.format(dir))
+            else:
+                print('Merging nominal files from {}'.format(dir))
+                merge_command = 'hadd {}/loose.root {}/*loose.root'.format(dir, dir)
+                os.system(merge_command)
+
+
 if __name__ == '__main__':
 
     ap = argparse.ArgumentParser()
@@ -44,7 +98,7 @@ if __name__ == '__main__':
     ap.add_argument('-t', '--data_type',      required=True)
     ap.add_argument('-p', '--project_name',   required=True)
     ap.add_argument('-b', '--base_directory', required=True)
-    ap.add_argument('-m', '--merge',          default=True, type=bool)
+    ap.add_argument('-m', '--merge',          action='store_true')
     args = ap.parse_args()
 
     expected_runs, missing_runs = load_expected_files_from_list(args.input_files) 
@@ -55,58 +109,6 @@ if __name__ == '__main__':
 
     print('Project: {} expecting {} runs.'.format(working_path, len(expected_runs)))
 
-    missing_jobs = {}
+    # Iterate on directories and process each one. 
     for dir, subdirs, files in os.walk(working_path):
-        print('Processing {} with {} files.'.format(dir, len(files)))
-        
-        tight_files = [file for file in files if 'tight' in file]
-        loose_files = [file for file in files if 'loose' in file]
-        other_files = [file for file in files if file not in tight_files and file not in loose_files]
-
-        missing_tight = len(expected_runs) - len(tight_files)
-        missing_loose = len(expected_runs) - len(loose_files)
-        missing_other = len(expected_runs) - len(other_files)
-
-        if 'nominal' in dir:
-            missing_tight = 0
-            missing_loose = 0
-        else:
-            missing_other = 0 
-
-        print('    Tight: {} files, Missing {}'.format( len(tight_files), missing_tight))
-        print('    Loose: {} files, Missing {}'.format( len(loose_files), missing_loose))
-        print('    Other: {} files, Missing {}'.format( len(other_files), missing_other))
-        
-        if missing_tight > 0:
-            missing = [run for run in expected_runs if run not in map(extract_run_number, tight_files)]
-
-        if missing_loose > 0:
-            missing = [run for run in expected_runs if run not in map(extract_run_number, loose_files)]
-
-        missing_jobs[dir] = missing 
-
-        # Merge. 
-        if args.merge:
-            if ('nominal' in dir) and (missing_other == 0):
-                if os.path.exists('{}/merged.root'.format(dir)):
-                    print('Not creating file for {}'.format(dir))
-                else:
-                    print('Merging nominal files from {}'.format(dir))
-                    merge_command = 'hadd {}/merged.root {}/*.root'.format(dir, dir)
-                    os.system(merge_command)
-
-            elif (missing_tight == 0 and missing_loose == 0):
-                
-                if os.path.exists('{}/tight.root'.format(dir)):
-                    print('Not creating file for {} tight'.format(dir))
-                else:
-                    print('Merging nominal files from {}'.format(dir))
-                    merge_command = 'hadd {}/tight.root {}/*.root'.format(dir, dir)
-                    os.system(merge_command)
-
-                if os.path.exists('{}/loose.root'.format(dir)):
-                    print('Not creating file for {} loose'.format(dir))
-                else:
-                    print('Merging nominal files from {}'.format(dir))
-                    merge_command = 'hadd {}/loose.root {}/*.root'.format(dir, dir)
-                    os.system(merge_command)
+        process_folder(dir, files, expected_runs, args)

@@ -1,5 +1,14 @@
 #!/usr/bin/env python 
 
+'''    
+Author: David Riser, University of Connecticut 
+Date:   09/18/2018       
+File:   remove_files.py 
+       
+Purpose: This short program can be used to clean out a directory 
+         which contains too many files to simply rm. 
+'''
+
 import argparse
 import os 
 import glob 
@@ -26,5 +35,5 @@ if __name__ == '__main__':
         string_of_files = ' '.join(files)
         command = 'rm {}'.format(string_of_files)
 
-        print('Removing chunk {}'.format(chunk_index))
+        print('Removing chunk ({}/{})'.format(chunk_index, n_chunks))
         os.system(command)
