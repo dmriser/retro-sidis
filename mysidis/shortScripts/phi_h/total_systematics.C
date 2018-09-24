@@ -1,4 +1,4 @@
-#include <algorithm> // for std::max
+
 void total_systematics(int xBin = 0, int QQBin = 0, int zBin = 3, int PT2Bin = 5, string pipORpim = "pip")
 //void total_systematics(int xBin = 1, int QQBin = 1, int zBin = 6, int PT2Bin = 7, string pipORpim = "pip")
 {

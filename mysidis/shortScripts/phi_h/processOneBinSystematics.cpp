@@ -60,8 +60,6 @@ string createFilename(string baseDirectory, string projectName,
   return (isTight == true ? tightName : looseName); 
 }
 
-//void systematics_v2(int xBin = 0, int QQBin = 0, int zBin = 5, int PT2Bin = 5, string pipORpim = "pip")
-//void systematics_v2(int xBin = 0, int QQBin = 0, int zBin = 3, int PT2Bin = 3, string pipORpim = "pip")
 void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3, 
 			      int PT2Bin = 0, string pipORpim = "pip"){
   gStyle->SetOptStat(0);
@@ -127,11 +125,8 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 					  Nsources, 0, Nsources);
   TH1F *hCategory              = new TH1F(catString.c_str(), catString.c_str(), 
 					  1, 0, 1);
-
   
-
   TFile *tfdata[Nsources][variationsPerSource];
-
   // 
   // This part needs to be done carefully, and I believe
   // that I have done so.  The variation number changes at
@@ -139,15 +134,19 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   // incremented by one.  This is the way that it was done 
   // by Nathan and I don't want to change that. 
   // 
-  // Code Incoming to replace megablock. 
   for (int i = 0; i < 10; i++){
-    tfdata[i][0] = new TFile(createFilename(baseDirectory, projectName, 
-					    "data", arrayIndexToVariation[i], false).c_str()); 
-    tfdata[i][1] = new TFile(createFilename(baseDirectory, projectName, 
-					    "data", arrayIndexToVariation[i],  true).c_str()); 
+    string looseFilename = createFilename(baseDirectory, projectName, 
+					  "data", arrayIndexToVariation[i], false);
+    string tightFilename = createFilename(baseDirectory, projectName, 
+					  "data", arrayIndexToVariation[i], true);
 
-    cout << message << "File " << i << " for data (loose) is " << (tfdata[i][0]->IsOpen() ? "open." : "not open.") << endl; 
-    cout << message << "File " << i << " for data (tight) is " << (tfdata[i][1]->IsOpen() ? "open." : "not open.") << endl; 
+    tfdata[i][0] = new TFile(looseFilename.c_str()); 
+    tfdata[i][1] = new TFile(tightFilename.c_str());
+
+    cout << message << "File " << looseFilename << " for data (loose) is " 
+	 << (tfdata[i][0]->IsOpen() ? "open." : "not open.") << endl; 
+    cout << message << "File " << tightFilename << " for data (tight) is " 
+	 << (tfdata[i][1]->IsOpen() ? "open." : "not open.") << endl; 
   }
 
   // Is it safe to have 6 pointers to an open file?  How many times is the file open? 
@@ -166,13 +165,18 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 
   TFile *tfmc[Nsources][variationsPerSource];
   for (int i = 0; i < 10; i++){
-    tfmc[i][0] = new TFile(createFilename(baseDirectory, projectName, 
-					  "mc", arrayIndexToVariation[i], false).c_str()); 
-    tfmc[i][1] = new TFile(createFilename(baseDirectory, projectName, 
-					  "mc", arrayIndexToVariation[i],  true).c_str()); 
+    string looseFilename = createFilename(baseDirectory, projectName, 
+					  "mc", arrayIndexToVariation[i], false);
+    string tightFilename = createFilename(baseDirectory, projectName, 
+					  "mc", arrayIndexToVariation[i], true);
 
-    cout << message << "File " << i << " for MC (loose) is " << (tfmc[i][0]->IsOpen() ? "open." : "not open.") << endl; 
-    cout << message << "File " << i << " for MC (tight) is " << (tfmc[i][1]->IsOpen() ? "open." : "not open.") << endl; 
+    tfmc[i][0] = new TFile(looseFilename.c_str()); 
+    tfmc[i][1] = new TFile(tightFilename.c_str());
+
+    cout << message << "File " << looseFilename << " for MC (loose) is " 
+	 << (tfmc[i][0]->IsOpen() ? "open." : "not open.") << endl; 
+    cout << message << "File " << tightFilename << " for MC (tight) is " 
+	 << (tfmc[i][1]->IsOpen() ? "open." : "not open.") << endl; 
   }
 
   // [10] is for testing phih cuts (bins with a phih cut only)... don't change the number!
@@ -388,6 +392,13 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   TH1F *hcorrRCS[Nsources][variationsPerSource];
   TF1 *ffcorrRCS[Nsources][variationsPerSource];
 
+
+  // Print table header. 
+  cout << endl; 
+  cout << message << setw(8) << "Source #"
+       << setw(16) << "Source Name" << setw(12) << "dM" 
+       << setw(12) << "dAc" << setw(12) << "dAcc" << endl; 
+
   int count = 0;
   for(int s = 0; s < Nsources; s++) {
     for(int v = 0; v < variationsPerSource; v++) {
@@ -552,8 +563,8 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
       Acc_sysErrorPiece[s] = fabs(ffcorrRCS[s][0]->GetParameter(2) - ffcorrRC->GetParameter(2));
     }
 
-    cout << s << " " << sourceName[s] << " " << M_sysErrorPiece[s] << " " 
-	 << Ac_sysErrorPiece[s] << " " << Acc_sysErrorPiece[s] << endl;
+    cout << message << setw(8) << s << setw(16) << sourceName[s] << setw(12) << M_sysErrorPiece[s] 
+	 << setw(12) << Ac_sysErrorPiece[s] << setw(12) << Acc_sysErrorPiece[s] << endl;
 
     hM_sysEcontributions  ->SetBinContent(s+1, M_sysErrorPiece[s]);
     hAc_sysEcontributions ->SetBinContent(s+1, Ac_sysErrorPiece[s]);
@@ -570,7 +581,8 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   Ac_sysErrorTotal  = sqrt(Ac_sumOfSquaredErrors);
   Acc_sysErrorTotal = sqrt(Acc_sumOfSquaredErrors);
 
-  cout << endl << M_sysErrorTotal << " " << Ac_sysErrorTotal << " " << Acc_sysErrorTotal<<endl;
+  cout << endl << message << setw(12) << M_sysErrorTotal 
+       << setw(12) << Ac_sysErrorTotal << setw(12) << Acc_sysErrorTotal<<endl;
 
   TCanvas *can2 = new TCanvas("can2", "can2", 15, 15, 1400, 700);
   can2->Divide(3, 1, 0.00001, 0.00001);
