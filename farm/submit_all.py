@@ -60,6 +60,10 @@ def build_default_config(args):
     config['correct_electron_p']   = 1
     config['correct_pion_p']       = 1
     config['acceptance_iteration'] = 2
+
+    # This means all sectors (0), 1-6 would
+    # indicate only save that sector. 
+    config['select_sector']        = 0
     return config 
 
 if __name__ == '__main__':

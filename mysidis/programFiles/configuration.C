@@ -15,7 +15,7 @@
 
 struct RunConfiguration {
   std::string inputFileList;
-  int numberOfFiles, acceptanceIteration, strictToChange, strictness;
+  int numberOfFiles, acceptanceIteration, strictToChange, strictness, selectSector;
   bool correctElectronP, correctPionP, changeStrictness, expOrSim;
 };
 
@@ -79,6 +79,9 @@ RunConfiguration loadRunConfiguration(std::string configurationFilename){
 
 	else if (configEntry.first == "strictness"){
 	  runConfig.strictness = atoi(configEntry.second.c_str());
+	}
+	else if (configEntry.first == "selectSector"){
+	  runConfig.selectSector = atoi(configEntry.second.c_str());
 	}
 	
 	// Boolean options (casted as integers)

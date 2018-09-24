@@ -11,7 +11,7 @@ def prepare_analysis_files(base_dir='/u/home/dmriser/clas/retro-sidis/mysidis/')
 def build_root_command(config, run_filename):
     number_of_files = 1
     is_data = int(config['data_type'] == 'data')
-    root_command = 'root -b -q \'mysidis.C("{}",{},{},{},{},{},{},{},{})\''.format(
+    root_command = 'root -b -q \'mysidis.C("{}",{},{},{},{},{},{},{},{},{})\''.format(
         run_filename, 
         number_of_files, 
         is_data, 
@@ -20,7 +20,8 @@ def build_root_command(config, run_filename):
         config['correct_pion_p'],
         config['change_strictness'], 
         config['strict_to_change'], 
-        config['strictness']
+        config['strictness'],
+        config['select_sector']
     )
     return root_command
 
@@ -51,7 +52,8 @@ def find_config_filename():
 if __name__ == '__main__':
 
     # Copy from the directory on the interactive farm
-    # to this current node on the batch farm. 
+    # to this current node on the batch farm. You can 
+    # supply a path to your directory.
     prepare_analysis_files() 
     
     with open(find_config_filename()) as input_json_file:
@@ -59,7 +61,6 @@ if __name__ == '__main__':
 
         # Create a file that contains the list 
         # of files to analyze. 
-
         if os.path.exists('out.root'):
             os.system('rm out.root')
 
@@ -83,6 +84,13 @@ if __name__ == '__main__':
         config['acceptance_iteration'] = 0
         process(config, base_filename)
         config['acceptance_iteration'] = 2
+
+        # We're going to play with the sectors. 
+        for sector in range(1,7):
+            config['select_sector'] = sector
+            process(config, base_filename + '_sector{}'.format(sector))
+            
+        config['select_sector'] = 0 
 
         # Run settings (Can this be done by passing
         # in a list of variations to run?  For ex:

@@ -11,6 +11,6 @@ void runExampleConfiguration(){
 	  testingConfig.expOrSim, testingConfig.acceptanceIteration, 
 	  testingConfig.correctElectronP, testingConfig.correctPionP,
 	  testingConfig.changeStrictness, testingConfig.strictToChange,
-	  testingConfig.strictness);
+	  testingConfig.strictness, testingConfig.selectSector);
 
 }

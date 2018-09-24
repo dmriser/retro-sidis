@@ -73,7 +73,8 @@
 
 void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim, 
 	     int acceptanceIteration, bool correctElectronP, bool correctPionP,
-	     bool changeStrictness, int strictToChange, int strictness){
+	     bool changeStrictness, int strictToChange, int strictness,
+	     int selectSector){
   
   // Constant declaration block (reserved for anything
   // that does not change throughout the run of the code.)
@@ -166,6 +167,14 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
       pip_MXcut_strict = strictness; 
       pim_MXcut_strict = strictness; 
     } 
+  }
+
+  // Setup local boolean flag if we're only 
+  // saving one sector.  This is used to 
+  // compare results between sectors. 
+  bool onlySaveOneSector = false; 
+  if (selectSector > 0 && selectSector < 7){
+    onlySaveOneSector = true; 
   }
 
   // Time tracking and benchmarking. 
@@ -411,26 +420,6 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
   // %%%%% stuff for output root files %%%%%
   string outfilename;
   TFile *outputfile;
-  /* 
-  if(expOrSim == 1){ 
-    outfilename = Form("data.n%i.BiSc%i.MoCo%i%i.__%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i__.root", 
-		       numberOfFiles, binSchemeOpt, correctElectronP, 
-		       correctPionP, e_zvertex_strict, e_ECsampling_strict, 
-		       e_ECoutVin_strict, e_ECgeometric_strict, e_CCthetaMatching_strict, 
-		       e_R1fid_strict, e_R3fid_strict, e_CCphiMatching_strict, 
-		       e_CCfiducial_strict, yCut_strict, pip_vvp_strict, pip_R1fid_strict, 
-		       pip_MXcut_strict, pim_vvp_strict, pim_R1fid_strict, pim_MXcut_strict);
-  }
-  else if(expOrSim == 0){ 
-    outfilename = Form("MonteCarlo_v%i.it%i.n%i.BiSc%i.__%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i__.root", 
-		       MC_VERSION, acceptanceIteration, numberOfFiles, binSchemeOpt, 
-		       e_zvertex_strict, e_ECsampling_strict, e_ECoutVin_strict, 
-		       e_ECgeometric_strict, e_CCthetaMatching_strict, e_R1fid_strict, 
-		       e_R3fid_strict, e_CCphiMatching_strict, e_CCfiducial_strict, 
-		       yCut_strict, pip_vvp_strict, pip_R1fid_strict, pip_MXcut_strict, 
-		       pim_vvp_strict, pim_R1fid_strict, pim_MXcut_strict);
-  }
-  */
 
   // Trying this for ease of operation. 
   outfilename = "out.root"; 
@@ -602,6 +591,9 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
     }
   }
 
+  // This line marks the beginning of the event loop.  This is quite clear
+  // to see by inspection, but this comment makes it helpful at times to jump to
+  // this position.  If you find this useless, feel free to remove it. 
   for(int i = 0; i < h22chain->GetEntries(); i++){
     h22chain->GetEntry(i);
     
@@ -648,6 +640,15 @@ void mysidis(std::string inputFileList, int numberOfFiles, bool expOrSim,
 		       e_R1fid_strict, e_R3fid_strict, e_CCphiMatching_strict, sc_pd, 
 		       e_CCfiducial_strict);
       
+      // If we're only accepting events from one
+      // sector and it isn't the one that this 
+      // electron came from, then let's move on. 
+      // 
+      // In this case, continue takes us to the next event. 
+      if(onlySaveOneSector && dc_sect[e_index[1]] != selectSector){
+	continue; 
+      }
+
       // %%%%% set e- 3 and 4 vectors %%%%%
       // can't set the vectors in a loop because gen uses p, theta, phi but rec uses p, cx, cy, cz
       TVector3 V3_e[2]; // 2 for gen(0) and rec(1)
