@@ -29,6 +29,8 @@
                   tests on one bin. Adding more print statements, just for the 
 		  fun of it.  It helps me see which files are opened successfully. 
 
+      2018-09-25: Various refactorings while waiting for batch farm test jobs.  
+                  Created a struct to hold the systematic error pieces and totals. 
 */
 
 
@@ -47,6 +49,16 @@
 
 #include <iostream>
 #include <map>
+#include <vector>
+
+// This nomenclature is taken from the 
+// naming scheme used by Nathan for his 
+// original code. 
+struct SystematicError {
+  std::vector<float> pieces; 
+  float              sumOfSquares; 
+  float              total; 
+};
 
 string createFilename(string baseDirectory, string projectName, 
 		      string dataType, int variation, bool isTight){
@@ -60,8 +72,61 @@ string createFilename(string baseDirectory, string projectName,
   return (isTight == true ? tightName : looseName); 
 }
 
+int getBinCategory(string categoryFilename, string message){
+  // If the file does not exist, then the bin passes.  There are 
+  // more cuts (according to Nathan) that come later to take care
+  // of these cases. 
+  int category;
+  ifstream categoryFile;
+  categoryFile.open(categoryFilename.c_str());
+  
+  if(categoryFile){ 
+    categoryFile >> category; 
+    categoryFile.close();
+    cout << message << "Found category file." << endl; 
+  } else { 
+    category = 0; 
+    cout << message << "Did not find category file: " << categoryFilename << endl; 
+  } 
+
+  return category; 
+}
+
+int countEmptyBins(TH1F *histo){
+  int numberOfEmptyBins = 0; 
+
+  for(int bin = 0; bin < histo->GetNbinsX(); bin++){
+    if(histo->GetBinContent(bin+1) < 0.1){ 
+      numberOfEmptyBins++;
+    }
+  }
+  
+  return numberOfEmptyBins; 
+}
+
+void killSmallBins(TH1F *histo, int category){
+  // Always kill something with less than 10 counts
+  // if category is positive, kill those too if they're 
+  // below it. 
+
+  for(int bin = 0; bin < histo->GetNbinsX(); bin++){
+    
+    if(histo->GetBinContent(bin+1) < 10){
+      histo->SetBinContent(bin+1, 0);
+      histo->SetBinError(bin+1, 0);
+    }
+   
+    if(category > 0.5 && fabs(histo->GetXaxis()->GetBinCenter(bin+1)) < category){
+      histo->SetBinContent(bin+1, 0);
+      histo->SetBinError(bin+1, 0);
+    }
+  }
+}
+
 void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3, 
 			      int PT2Bin = 0, string pipORpim = "pip"){
+
+
   gStyle->SetOptStat(0);
   
   bool doSaveRoot = 1;
@@ -70,8 +135,8 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
       rootFile = new TFile("Systematics_v2.root", "update");
     }
 
-  const int NphihBins           = 36;
-  const int Nsources            = 13;
+  const int N_PHI_BINS           = 36;
+  const int N_SOURCES            = 13;
   const int variationsPerSource = 2;
 
   map<int, int> arrayIndexToVariation; 
@@ -91,15 +156,18 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   const string projectName("sidis_batch_11"); 
   const string pathToRequiredFiles("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles"); 
 
-  string sourceName[Nsources] = {
+  string sourceName[N_SOURCES] = {
     "e_zvert", "e_ECsamp", "e_ECoVi", "e_ECgeo", "e_CCthMatch", 
     "e_R1fid", "e_R3fid", "e_CCfid", "pi_vvp", "pi_R1fid", 
     "phih_fid", "accModel", "hapModel"
   };
+  
+  // Replacing below with struct. 
+  SystematicError errorM, errorAc, errorAcc; 
 
-  float M_sysErrorPiece[Nsources]; 
-  float Ac_sysErrorPiece[Nsources];
-  float Acc_sysErrorPiece[Nsources];
+  float M_sysErrorPiece[N_SOURCES]; 
+  float Ac_sysErrorPiece[N_SOURCES];
+  float Acc_sysErrorPiece[N_SOURCES];
 
   float M_sumOfSquaredErrors   = 0;
   float Ac_sumOfSquaredErrors  = 0;
@@ -118,15 +186,19 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   string catString = Form("hCategory_%s_%i_%i_%i_%i", 
 			  pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin);
   TH1F *hM_sysEcontributions   = new TH1F(MString.c_str(), MString.c_str(), 
-					  Nsources, 0, Nsources);
+					  N_SOURCES, 0, N_SOURCES);
   TH1F *hAc_sysEcontributions  = new TH1F(AcString.c_str(), AcString.c_str(), 
-					  Nsources, 0, Nsources);
+					  N_SOURCES, 0, N_SOURCES);
   TH1F *hAcc_sysEcontributions = new TH1F(AccString.c_str(), AccString.c_str(), 
-					  Nsources, 0, Nsources);
+					  N_SOURCES, 0, N_SOURCES);
   TH1F *hCategory              = new TH1F(catString.c_str(), catString.c_str(), 
 					  1, 0, 1);
-  
-  TFile *tfdata[Nsources][variationsPerSource];
+
+  // At this point declarations that persist have stopped and the 
+  // loading of files begins.  More declarations occur inside of 
+  // the loop that are out of scope afterward. 
+ 
+  TFile *tfdata[N_SOURCES][variationsPerSource];
   // 
   // This part needs to be done carefully, and I believe
   // that I have done so.  The variation number changes at
@@ -163,7 +235,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   tfdata[12][0] = new TFile(nominalFilenameData.c_str());
   tfdata[12][1] = new TFile(nominalFilenameData.c_str());
 
-  TFile *tfmc[Nsources][variationsPerSource];
+  TFile *tfmc[N_SOURCES][variationsPerSource];
   for (int i = 0; i < 10; i++){
     string looseFilename = createFilename(baseDirectory, projectName, 
 					  "mc", arrayIndexToVariation[i], false);
@@ -204,30 +276,18 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   tlat->SetTextSize(0.06);
 
   // Read into memory the category file for this bin. 
-  //
-  // If the file does not exist, then the bin passes.  There are 
-  // more cuts (according to Nathan) that come later to take care
-  // of these cases. 
-  int category;
-  ifstream categoryFile;
   string categoryFilename = Form("%s/binCategories/%sCategory.BiSc5.x%iQQ%iz%iPTsq%i.txt", 
 				 pathToRequiredFiles.c_str(), pipORpim.c_str(), 
 				 xBin, QQBin, zBin, PT2Bin); 
-  categoryFile.open(categoryFilename.c_str());
-
-  if(categoryFile){ 
-    categoryFile >> category; 
-    categoryFile.close();
-    cout << message << "Found category file." << endl; 
-  } else { 
-    category = 0; 
-    cout << message << "Did not find category file: " << categoryFilename << endl; 
-  } 
+  int defaultCategory = getBinCategory(categoryFilename, message);
+  int category = defaultCategory; 
 
 
   //-----------------------------------------------------------
   //--------------- do the nominal case -----------------------
   //-----------------------------------------------------------
+  cout << message << "Starting calculation for nominal case..." << endl; 
+
   TCanvas *nomcan  = new TCanvas();
   TFile *tfdataNom = new TFile(nominalFilenameData.c_str());
   TFile *tfmcNom   = new TFile(nominalFilenameMC.c_str());
@@ -238,6 +298,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
     cout << message << "Opening sucessfully: " << nominalFilenameData << endl; 
   } else {
     cerr << message << "Dying on not being able to open " << nominalFilenameData << endl; 
+    return; 
   }
 
   
@@ -245,25 +306,14 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
     cout << message << "Opening sucessfully: " << nominalFilenameMC << endl; 
   } else {
     cerr << message << "Dying on not being able to open " << nominalFilenameMC << endl; 
+    return; 
   }
 
   TH1F *hdataphihModified = (TH1F*) tfdataNom->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
 
   // apply some modifications and further define the bin category:
-  int NemptyPhihBins = 0;
-  for(int phih = 0; phih < NphihBins; phih++){
-    if(hdataphihModified->GetBinContent(phih+1) < 10){
-      hdataphihModified->SetBinContent(phih+1, 0);
-      hdataphihModified->SetBinError(phih+1, 0);
-    }
-    if(category > 0.5 && fabs(hdataphihModified->GetXaxis()->GetBinCenter(phih+1)) < category){
-      hdataphihModified->SetBinContent(phih+1, 0);
-      hdataphihModified->SetBinError(phih+1, 0);
-    }
-    if(hdataphihModified->GetBinContent(phih+1) < 0.1){ 
-      NemptyPhihBins++;
-    }
-  }
+  killSmallBins(hdataphihModified, category); 
+  int numberOfEmptyPhiBins = countEmptyBins(hdataphihModified); 
 
   // update/redefine category here:
   // bad statistics and bad coverage, don't use this bin
@@ -275,10 +325,10 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   //     -99 : Bad statistics and bad coverage, DO NOT use this bin.
   //       1 : Measure the values for this bin. 
   //     -13 : Measure only the multiplcity M for this bin.  
-  if(hdataphihModified->Integral() < 180 && NemptyPhihBins >= 26){
+  if(hdataphihModified->Integral() < 180 && numberOfEmptyPhiBins >= 26){
     category = -99; 
   }
-  else if(category != -1 && hdataphihModified->Integral() >= 360 && NemptyPhihBins <= 6){ 
+  else if(category != -1 && hdataphihModified->Integral() >= 360 && numberOfEmptyPhiBins <= 6){ 
     category = 1; 
   }
   else{
@@ -291,17 +341,17 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 
   hgenphih = (TH1F*) tfmcNom->Get(Form("gen_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
   hrecphih = (TH1F*) tfmcNom->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
-  haccphih = new TH1F(Form("haccphih_z%iPT2%i", zBin, PT2Bin), Form("haccphih_z%iPT2%i", zBin, PT2Bin), NphihBins, -180, 180);
+  haccphih = new TH1F(Form("haccphih_z%iPT2%i", zBin, PT2Bin), Form("haccphih_z%iPT2%i", zBin, PT2Bin), N_PHI_BINS, -180, 180);
   haccphih->Sumw2();
   haccphih->Divide(hrecphih, hgenphih);
 
   //------------------ haprad: --------------------------------
 
-  TH1F *hsig = new TH1F("hsig", "hsig", NphihBins, -180, 180);
+  TH1F *hsig = new TH1F("hsig", "hsig", N_PHI_BINS, -180, 180);
   hsig->Sumw2();
-  TH1F *hsib = new TH1F("hsib", "hsib", NphihBins, -180, 180);
+  TH1F *hsib = new TH1F("hsib", "hsib", N_PHI_BINS, -180, 180);
   hsib->Sumw2();
-  TH1F *hRC = new TH1F("hRC", "hRC", NphihBins, -180, 180);
+  TH1F *hRC = new TH1F("hRC", "hRC", N_PHI_BINS, -180, 180);
   hRC->Sumw2();
 
   string happath;
@@ -316,7 +366,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   ifstream hapfile(happath.c_str());
 
   if(hapfile){
-    for(int phih = 0; phih < NphihBins; phih++){
+    for(int phih = 0; phih < N_PHI_BINS; phih++){
       float sig, sib, tail;
       hapfile >> sig >> sib >> tail;
       if(pipORpim == "pim"){
@@ -339,7 +389,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 
   //------------------- corr: ---------------------------------
 
-  TH1F *hcorr = new TH1F("hcorr", "hcorr", NphihBins, -180, 180);
+  TH1F *hcorr = new TH1F("hcorr", "hcorr", N_PHI_BINS, -180, 180);
   hcorr->Sumw2();
   hcorr->Divide(hdataphihModified, haccphih);
 
@@ -349,7 +399,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
     category = -2; 
   }
 
-  TH1F *hcorrRC = new TH1F("hcorrRC", "hcorrRC", NphihBins, -180, 180);
+  TH1F *hcorrRC = new TH1F("hcorrRC", "hcorrRC", N_PHI_BINS, -180, 180);
   hcorrRC->Sumw2();
   hcorrRC->Divide(hcorr, hRC);
   hcorrRC->GetYaxis()->SetRangeUser(0, 1.1*hcorrRC->GetMaximum());
@@ -385,12 +435,12 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   TCanvas *can = new TCanvas("can", "can", 5, 5, 1600, 1000);
   can->Divide(6, 4, 0.00001, 0.00001); // may need manual update
 
-  TH1F *hdataphihModifiedS[Nsources][variationsPerSource]; // S for Systematics
-  TH1F *hgenphihS[Nsources][variationsPerSource], *hrecphihS[Nsources][variationsPerSource], *haccphihS[Nsources][variationsPerSource];
-  TH1F *hsigS[Nsources][variationsPerSource], *hsibS[Nsources][variationsPerSource], *hRCS[Nsources][variationsPerSource];
-  TH1F *hcorrS[Nsources][variationsPerSource];
-  TH1F *hcorrRCS[Nsources][variationsPerSource];
-  TF1 *ffcorrRCS[Nsources][variationsPerSource];
+  TH1F *hdataphihModifiedS[N_SOURCES][variationsPerSource]; // S for Systematics
+  TH1F *hgenphihS[N_SOURCES][variationsPerSource], *hrecphihS[N_SOURCES][variationsPerSource], *haccphihS[N_SOURCES][variationsPerSource];
+  TH1F *hsigS[N_SOURCES][variationsPerSource], *hsibS[N_SOURCES][variationsPerSource], *hRCS[N_SOURCES][variationsPerSource];
+  TH1F *hcorrS[N_SOURCES][variationsPerSource];
+  TH1F *hcorrRCS[N_SOURCES][variationsPerSource];
+  TF1 *ffcorrRCS[N_SOURCES][variationsPerSource];
 
 
   // Print table header. 
@@ -400,25 +450,14 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
        << setw(12) << "dAc" << setw(12) << "dAcc" << endl; 
 
   int count = 0;
-  for(int s = 0; s < Nsources; s++) {
+  for(int s = 0; s < N_SOURCES; s++) {
     for(int v = 0; v < variationsPerSource; v++) {
-      if(!((s == 11 && v == 1) || (s == 12 && v == 1))) // part of the two work-arounds mentioned above
-	{
+      if(!((s == 11 && v == 1) || (s == 12 && v == 1))) {
 	  count++;
 	  can->cd(count);
 
-	  //----------- read in the initial bin category --------------
-
-	  categoryFile.open(Form("%s/binCategories/%sCategory.BiSc5.x%iQQ%iz%iPTsq%i.txt", 
-				 pathToRequiredFiles.c_str(), pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
-	  if(categoryFile){ 
-	    categoryFile >> category; 
-	    categoryFile.close();
-	  } else{ 
-	    category = 0; 
-	  }
-
-
+	  // Reset to the original category. 
+	  category = defaultCategory; 
 	  if(category > 0.5 && s == 10 && v == 0) category = category - 10;
 	  if(category > 0.5 && s == 10 && v == 1) category = category + 10;
 
@@ -428,8 +467,8 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	  hdataphihModifiedS[s][v]->SetName(Form("hdataMS_%i_%i", s, v));
 
 	  // apply some modifications and further define the bin category:
-	  NemptyPhihBins = 0;
-	  for(int phih = 0; phih < NphihBins; phih++){
+	  numberOfEmptyPhiBins = 0;
+	  for(int phih = 0; phih < N_PHI_BINS; phih++){
 	    if(hdataphihModifiedS[s][v]->GetBinContent(phih+1) < 10){
 	      hdataphihModifiedS[s][v]->SetBinContent(phih+1, 0);
 	      hdataphihModifiedS[s][v]->SetBinError(phih+1, 0);
@@ -439,14 +478,14 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	      hdataphihModifiedS[s][v]->SetBinError(phih+1, 0);
 	    } 
 	    if(hdataphihModifiedS[s][v]->GetBinContent(phih+1) < 0.1){
-	      NemptyPhihBins++; 
+	      numberOfEmptyPhiBins++; 
 	    }
 	  }
 	  
 	  // update/redefine category here:
-	  if(hdataphihModifiedS[s][v]->Integral() < 180 && NemptyPhihBins >= 26){ 
+	  if(hdataphihModifiedS[s][v]->Integral() < 180 && numberOfEmptyPhiBins >= 26){ 
 	    category = -99; 
-	  } else if(category != -1 && hdataphihModifiedS[s][v]->Integral() >= 360 && NemptyPhihBins <= 6){ 
+	  } else if(category != -1 && hdataphihModifiedS[s][v]->Integral() >= 360 && numberOfEmptyPhiBins <= 6){ 
 	    category = 1; 
 	  } else { 
 	    category = -13; 
@@ -457,16 +496,16 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	  hgenphihS[s][v]->SetName(Form("hgenphihS_%i_%i", s, v));
 	  hrecphihS[s][v] = (TH1F*) tfmc[s][v]->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
 	  hrecphihS[s][v]->SetName(Form("hrecphihS_%i_%i", s, v));
-	  haccphihS[s][v] = new TH1F(Form("haccphihS_z%iPT2%i_%i_%i", zBin, PT2Bin, s, v), Form("haccphihS_z%iPT2%i", zBin, PT2Bin), NphihBins, -180, 180);
+	  haccphihS[s][v] = new TH1F(Form("haccphihS_z%iPT2%i_%i_%i", zBin, PT2Bin, s, v), Form("haccphihS_z%iPT2%i", zBin, PT2Bin), N_PHI_BINS, -180, 180);
 	  haccphihS[s][v]->Sumw2();
 	  haccphihS[s][v]->Divide(hrecphihS[s][v], hgenphihS[s][v]);
 
 	  //------------------ haprad: --------------------------------
-	  hsigS[s][v] = new TH1F(Form("hsigS_%i_%i", s, v), Form("hsigS_%i_%i", s, v), NphihBins, -180, 180);
+	  hsigS[s][v] = new TH1F(Form("hsigS_%i_%i", s, v), Form("hsigS_%i_%i", s, v), N_PHI_BINS, -180, 180);
 	  hsigS[s][v]->Sumw2();
-	  hsibS[s][v] = new TH1F(Form("hsibS_%i_%i", s, v), Form("hsibS_%i_%i", s, v), NphihBins, -180, 180);
+	  hsibS[s][v] = new TH1F(Form("hsibS_%i_%i", s, v), Form("hsibS_%i_%i", s, v), N_PHI_BINS, -180, 180);
 	  hsibS[s][v]->Sumw2();
-	  hRCS[s][v] = new TH1F(Form("hRCS_%i_%i", s, v), Form("hRCS_%i_%i", s, v), NphihBins, -180, 180);
+	  hRCS[s][v] = new TH1F(Form("hRCS_%i_%i", s, v), Form("hRCS_%i_%i", s, v), N_PHI_BINS, -180, 180);
 	  hRCS[s][v]->Sumw2();
 
 	  string happathS;
@@ -485,7 +524,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	  ifstream hapfileS(happathS.c_str());
 
 	  if(hapfileS){
-	    for(int phih = 0; phih < NphihBins; phih++){
+	    for(int phih = 0; phih < N_PHI_BINS; phih++){
 	      float sig, sib, tail;
 	      hapfileS >> sig >> sib >> tail;
 	      if(pipORpim == "pim"){
@@ -504,7 +543,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 
 	  //------------------- corr: ---------------------------------
 
-	  hcorrS[s][v] = new TH1F(Form("hcorrS_%i_%i", s, v), Form("hcorrS_%i_%i", s, v), NphihBins, -180, 180);
+	  hcorrS[s][v] = new TH1F(Form("hcorrS_%i_%i", s, v), Form("hcorrS_%i_%i", s, v), N_PHI_BINS, -180, 180);
 	  hcorrS[s][v]->Sumw2();
 	  hcorrS[s][v]->Divide(hdataphihModifiedS[s][v], haccphihS[s][v]);
 	  hcorrS[s][v]->Draw();
@@ -515,7 +554,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	    category = -2;
 	  }
 
-	  hcorrRCS[s][v] = new TH1F(Form("hcorrRCS_%i_%i", s, v), Form("hcorrRCS_%i_%i", s, v), NphihBins, -180, 180);
+	  hcorrRCS[s][v] = new TH1F(Form("hcorrRCS_%i_%i", s, v), Form("hcorrRCS_%i_%i", s, v), N_PHI_BINS, -180, 180);
 	  hcorrRCS[s][v]->Sumw2();
 	  hcorrRCS[s][v]->Divide(hcorrS[s][v], hRCS[s][v]);
 	  hcorrRCS[s][v]->GetYaxis()->SetRangeUser(0, 1.1*hcorrRCS[s][v]->GetMaximum());

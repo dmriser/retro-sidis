@@ -87,6 +87,7 @@ if __name__ == '__main__':
 
         # We're going to play with the sectors. 
         for sector in range(1,7):
+            config['variation'] = 'sector'
             config['select_sector'] = sector
             process(config, base_filename + '_sector{}'.format(sector))
             
