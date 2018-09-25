@@ -22,7 +22,7 @@ void processOneBinSectorSystematics(int xBin = 0, int QQBin = 0, int zBin = 3, i
   const int nSec = 6;
 
   const std::string baseDirectory("/volatile/clas12/dmriser/farm_out"); 
-  const std::string projectName("sidis_batch_11"); 
+  const std::string projectName("debugFiles"); 
   const std::string message("[ProcessOneBinSectorSystematics] "); 
 
   bool doSaveRoot = 1;
@@ -46,9 +46,9 @@ void processOneBinSectorSystematics(int xBin = 0, int QQBin = 0, int zBin = 3, i
 
   float corrYmax = 10.0;
   for(int is = 0; is < nSec; is++){
-    TFile *tfdata = new TFile(Form("%s/%s/data/variation_nominal/merged.root", 
+    TFile *tfdata = new TFile(Form("%s/%s/data/variation_nominal/out.root", 
 				   baseDirectory.c_str(), projectName.c_str()));
-    TFile *tfmc   = new TFile(Form("%s/%s/mc/variation_nominal/merged.root", 
+    TFile *tfmc   = new TFile(Form("%s/%s/mc/variation_nominal/out.root", 
 				   baseDirectory.c_str(), projectName.c_str()));
 
     if (tfdata && tfdata->IsOpen()){

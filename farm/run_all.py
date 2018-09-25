@@ -77,12 +77,12 @@ if __name__ == '__main__':
         config['change_strictness'] = 0
         config['strict_to_change']  = 0 
         config['strictness']        = 0
-        process(config, base_filename)
+        #        process(config, base_filename)
 
-        # Run acceptance iteration=0 
+        # Run acceptance iteration = 0 
         config['variation'] = 'acceptance'
         config['acceptance_iteration'] = 0
-        process(config, base_filename)
+        #        process(config, base_filename)
         config['acceptance_iteration'] = 2
 
         # We're going to play with the sectors. 
@@ -90,25 +90,24 @@ if __name__ == '__main__':
             config['variation'] = 'sector'
             config['select_sector'] = sector
             process(config, base_filename + '_sector{}'.format(sector))
-            
+
+        # Return to default setting 
         config['select_sector'] = 0 
 
+        '''
         # Run settings (Can this be done by passing
         # in a list of variations to run?  For ex:
         # consider that we just need 3, 8, 15)
         config['change_strictness'] = 1
         for index in range(13):
-
             config['variation'] = str(index)
-
-            # Tight one 
+        
             config['strict_to_change']  = index 
             config['strictness']        = 1
             process(config, base_filename + '_tight')
 
-            # Loose one 
             config['strict_to_change']  = index 
             config['strictness']        = -1
             process(config, base_filename + '_loose')
             
-
+        '''
