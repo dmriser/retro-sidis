@@ -17,22 +17,22 @@
 		  chambers. I am removing the plotting functions from this macro. 
 */
 
-void processOneBinSectorSystematics(int xBin = 0, int QQBin = 0, int zBin = 3, int PT2Bin = 5, string pipORpim = "pim"){
+void processOneBinSectorSystematics(int xBin = 0, int QQBin = 0, int zBin = 3, 
+				    int PT2Bin = 5, string pipORpim = "pim"){
 
-  const int nSec = 6;
+  const int N_SECTORS = 6;
+  const bool doSaveRoot = 1;
 
   const std::string baseDirectory("/volatile/clas12/dmriser/farm_out"); 
-  const std::string projectName("debugFiles"); 
+  const std::string projectName("sidis_batch_11"); 
   const std::string message("[ProcessOneBinSectorSystematics] "); 
 
-  bool doSaveRoot = 1;
-
-  TH1F *hdataphih[nSec];
-  TH1F *hgenphih[nSec];
-  TH1F *hrecphih[nSec];
-  TH1F *haccphih[nSec];
-  TH1F *hcorrphih[nSec];
-  TF1  *ff[nSec];
+  TH1F *hdataphih[N_SECTORS];
+  TH1F *hgenphih[N_SECTORS];
+  TH1F *hrecphih[N_SECTORS];
+  TH1F *haccphih[N_SECTORS];
+  TH1F *hcorrphih[N_SECTORS];
+  TF1  *ff[N_SECTORS];
 
   TH1F *hM = new TH1F(Form("hM_%s_%i_%i_%i_%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin), 
 		      Form("hM_%s_%i_%i_%i_%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin), 
@@ -45,22 +45,24 @@ void processOneBinSectorSystematics(int xBin = 0, int QQBin = 0, int zBin = 3, i
 			6, 0, 6);
 
   float corrYmax = 10.0;
-  for(int is = 0; is < nSec; is++){
-    TFile *tfdata = new TFile(Form("%s/%s/data/variation_nominal/out.root", 
-				   baseDirectory.c_str(), projectName.c_str()));
-    TFile *tfmc   = new TFile(Form("%s/%s/mc/variation_nominal/out.root", 
-				   baseDirectory.c_str(), projectName.c_str()));
+  for(int is = 0; is < N_SECTORS; is++){
+    TFile *tfdata = new TFile(Form("%s/%s/data/variation_sector/sector%d.root", 
+				   baseDirectory.c_str(), projectName.c_str(), is + 1));
+    TFile *tfmc   = new TFile(Form("%s/%s/mc/variation_sector/sector%d.root", 
+				   baseDirectory.c_str(), projectName.c_str(), is + 1));
 
     if (tfdata && tfdata->IsOpen()){
-      cout << message << "Opened data." << endl; 
+      cout << message << "Opened data sector " << is + 1 << endl; 
     } else {
-      cerr << message << "Troubling opening data." << endl; 
+      cerr << message << "Troubling opening data sector " << is + 1 << endl; 
+      return; 
     }
 
     if (tfmc && tfmc->IsOpen()){
-      cout << message << "Opened MC." << endl; 
+      cout << message << "Opened MC sector " << is + 1 << endl; 
     } else {
-      cerr << message << "Troubling opening MC." << endl; 
+      cerr << message << "Troubling opening MC sector" << is + 1 << endl; 
+      return; 
     }
 
     hdataphih[is] = (TH1F*) tfdata->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
