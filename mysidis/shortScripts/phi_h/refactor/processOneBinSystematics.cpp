@@ -28,9 +28,7 @@
       2018-09-21: Fixing if statements, formatting to my style.  Running initial
                   tests on one bin. Adding more print statements, just for the 
 		  fun of it.  It helps me see which files are opened successfully. 
-
-      2018-09-25: Various refactorings while waiting for batch farm test jobs.  
-                  Created a struct to hold the systematic error pieces and totals. 
+      2018-09-25: Various refactorings while waiting for batch farm test jobs.
 */
 
 
@@ -50,15 +48,6 @@
 #include <iostream>
 #include <map>
 #include <vector>
-
-// This nomenclature is taken from the 
-// naming scheme used by Nathan for his 
-// original code. 
-struct SystematicError {
-  std::vector<float> pieces; 
-  float              sumOfSquares; 
-  float              total; 
-};
 
 string createFilename(string baseDirectory, string projectName, 
 		      string dataType, int variation, bool isTight){
@@ -162,9 +151,6 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
     "phih_fid", "accModel", "hapModel"
   };
   
-  // Replacing below with struct. 
-  SystematicError errorM, errorAc, errorAcc; 
-
   float M_sysErrorPiece[N_SOURCES]; 
   float Ac_sysErrorPiece[N_SOURCES];
   float Acc_sysErrorPiece[N_SOURCES];
@@ -300,7 +286,6 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
     cerr << message << "Dying on not being able to open " << nominalFilenameData << endl; 
     return; 
   }
-
   
   if (tfmcNom && tfmcNom->IsOpen()){
     cout << message << "Opening sucessfully: " << nominalFilenameMC << endl; 
@@ -310,6 +295,15 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   }
 
   TH1F *hdataphihModified = (TH1F*) tfdataNom->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
+
+  // A little bit of protection because the 
+  // code is dying. 
+  if(hdataphihModified){
+    cout << message << "Opened nominal data histogram with entries = " << hdataphihModified->GetEntries() << endl;
+  } else {
+    cout << message << "Dying because the nominal data histogram could not be opened." << endl; 
+    return; 
+  }
 
   // apply some modifications and further define the bin category:
   killSmallBins(hdataphihModified, category); 
@@ -379,9 +373,9 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
       hsib->SetBinError(phih+1, 0);
     }
     hapfile.close();
-    cout << message << "Found haprad file." << endl; 
+    cout << message << "Found haprad file: " << happath << endl; 
   } else {
-    cout << message << "Didn't find haprad file." << happath << endl; 
+    cout << message << "Didn't find haprad file: " << happath << endl; 
   }
 
 
@@ -466,6 +460,8 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	  hdataphihModifiedS[s][v] = (TH1F*) tfdata[s][v]->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
 	  hdataphihModifiedS[s][v]->SetName(Form("hdataMS_%i_%i", s, v));
 
+	  cout << message << "Entries (data) = " << hdataphihModifiedS[s][v]->GetEntries() << endl; 
+
 	  // apply some modifications and further define the bin category:
 	  numberOfEmptyPhiBins = 0;
 	  for(int phih = 0; phih < N_PHI_BINS; phih++){
@@ -494,11 +490,16 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	  //--------------------- MC: ---------------------------------
 	  hgenphihS[s][v] = (TH1F*) tfmc[s][v]->Get(Form("gen_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
 	  hgenphihS[s][v]->SetName(Form("hgenphihS_%i_%i", s, v));
+	  cout << message << "Entries (generated) = " << hgenphihS[s][v]->GetEntries() << endl; 
+
 	  hrecphihS[s][v] = (TH1F*) tfmc[s][v]->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
 	  hrecphihS[s][v]->SetName(Form("hrecphihS_%i_%i", s, v));
+	  cout << message << "Entries (reconstructed) = " << hrecphihS[s][v]->GetEntries() << endl; 
+
 	  haccphihS[s][v] = new TH1F(Form("haccphihS_z%iPT2%i_%i_%i", zBin, PT2Bin, s, v), Form("haccphihS_z%iPT2%i", zBin, PT2Bin), N_PHI_BINS, -180, 180);
 	  haccphihS[s][v]->Sumw2();
 	  haccphihS[s][v]->Divide(hrecphihS[s][v], hgenphihS[s][v]);
+	  cout << message << "Entries (acceptance) = " << haccphihS[s][v]->GetEntries() << endl; 
 
 	  //------------------ haprad: --------------------------------
 	  hsigS[s][v] = new TH1F(Form("hsigS_%i_%i", s, v), Form("hsigS_%i_%i", s, v), N_PHI_BINS, -180, 180);
@@ -540,6 +541,9 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	  hapfileS.close();
 
 	  hRCS[s][v]->Divide(hsigS[s][v], hsibS[s][v]);
+	  cout << message << "Entries (sigS) = " << hsigS[s][v]->GetEntries() << endl; 
+	  cout << message << "Entries (sibS) = " << hsibS[s][v]->GetEntries() << endl; 
+	  cout << message << "Entries (hRCS) = " << hRCS[s][v]->GetEntries() << endl; 
 
 	  //------------------- corr: ---------------------------------
 
@@ -547,6 +551,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	  hcorrS[s][v]->Sumw2();
 	  hcorrS[s][v]->Divide(hdataphihModifiedS[s][v], haccphihS[s][v]);
 	  hcorrS[s][v]->Draw();
+	  cout << message << "Entries (hcorrS) = " << hcorrS[s][v]->GetEntries() << endl; 	  
 
 	  //------------------- corrRC: -------------------------------
 
@@ -573,13 +578,20 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	    ffcorrRCS[s][v]->SetParLimits(1, -0.30, 0.30);
 	    ffcorrRCS[s][v]->SetParLimits(2, -0.30, 0.30);
 	  }
+
 	  if(hcorrRCS[s][v]->Integral() > 36){
-	    hcorrRCS[s][v]->Fit(Form("ffcorrRCS_%i_%i", s, v), "q", "", -180, 180);
+	    cout << message << "Fitting (" << s << "," << v << ")" << endl;
+	    hcorrRCS[s][v]->Fit(Form("ffcorrRCS_%i_%i", s, v), "", "", -180, 180);
+	    //	    hcorrRCS[s][v]->Fit(Form("ffcorrRCS_%i_%i", s, v), "q", "", -180, 180);
+	  } else {
+	    cout << message << "Not Fitting (" << s << "," << v 
+		 << ") with integral = " << hcorrRCS[s][v]->Integral() 
+		 << " and entries = " << hcorrRCS[s][v]->GetEntries() << endl;
 	  }
 
-	  tlat->DrawLatex(0.15, 0.32, Form("M = %3.2f #pm %3.2f", ffcorrRCS[s][v]->GetParameter(0), ffcorrRCS[s][v]->GetParError(0)));
-	  tlat->DrawLatex(0.15, 0.26, Form("Ac = %3.4f #pm %3.4f", ffcorrRCS[s][v]->GetParameter(1), ffcorrRCS[s][v]->GetParError(1)));
-	  tlat->DrawLatex(0.15, 0.20, Form("Acc = %3.4f #pm %3.4f", ffcorrRCS[s][v]->GetParameter(2), ffcorrRCS[s][v]->GetParError(2)));
+	  //	  tlat->DrawLatex(0.15, 0.32, Form("M = %3.2f #pm %3.2f", ffcorrRCS[s][v]->GetParameter(0), ffcorrRCS[s][v]->GetParError(0)));
+	  //	  tlat->DrawLatex(0.15, 0.26, Form("Ac = %3.4f #pm %3.4f", ffcorrRCS[s][v]->GetParameter(1), ffcorrRCS[s][v]->GetParError(1)));
+	  //	  tlat->DrawLatex(0.15, 0.20, Form("Acc = %3.4f #pm %3.4f", ffcorrRCS[s][v]->GetParameter(2), ffcorrRCS[s][v]->GetParError(2)));
 
 	  //tlat->DrawLatex(0.25, 0.14, Form("category %i", category));
 	} // endif
