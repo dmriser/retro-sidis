@@ -26,11 +26,12 @@
   ---------
   2018-09-20: Created this entry, starting modifications. Fixed indentation. 
   2018-09-21: Fixing if statements, formatting to my style.  Running initial
-  tests on one bin. Adding more print statements, just for the 
-  fun of it.  It helps me see which files are opened successfully. 
+              tests on one bin. Adding more print statements, just for the 
+              fun of it.  It helps me see which files are opened successfully. 
   2018-09-25: Various refactorings while waiting for batch farm test jobs.
   2018-09-27: Creating utilities file. Modularizing operations throughout the code. 
-
+  2018-09-28: Adding functions for loading radiative corrections and generating
+              haprad file names.  Fitter starting giving results. 
 */
 
 #include <iostream>
@@ -40,52 +41,10 @@
 // Included files from this project 
 #include "utils.cpp"
 
-std::string buildHapradPath(std::string pathToRequiredFiles, std::string hadronType, 
-			    int xBin, int QQBin, int zBin, int PT2Bin,
-			    int sourceIndex, int variationIndex){
-  
-  std::string path; 
-  if(sourceIndex == 12 && variationIndex == 0){
-    path = Form("%s/haprad/hapradResults/hapDefault/pip_BiSc5_x%iQQ%iz%iPT2%i.dat", 
-		pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin); 
-  } 
-  else {
-    if(hadronType == "pip"){
-      path = Form("%s/haprad/hapradResults/NickPipModel/pip_BiSc5_x%iQQ%iz%iPT2%i.dat", 
-		  pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin); 
-    }
-    else if(hadronType == "pim"){ 
-      path = Form("%s/haprad/hapradResults/NickPimModel/pim_BiSc5_x%iQQ%iz%iPT2%i.dat", 
-		  pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin); 
-    }
-  }
-
-  return path; 
-}
-
-void loadRadiativeCorrection(std::ifstream & hapfile, 
-			     TH1F *hsig, TH1F *hsib, TH1F *hRC,
-			     std::string hadronType){
-  /* This method calculates the radiative correction as a function of 
-   phi for one kinematic bin.  Before calling this function, the file 
-   should be opened and null checked. */
-
-  for(int phih = 0; phih < hsig->GetNbinsX(); phih++){
-    float sig, sib, tail;
-    hapfile >> sig >> sib >> tail;
-
-    if(hadronType == "pim"){
-      sig = sig - tail;
-      tail = 0;
-    }
-    
-    hsig->SetBinContent(phih+1, sig);
-    hsig->SetBinError(phih+1, 0);
-    hsib->SetBinContent(phih+1, sib);
-    hsib->SetBinError(phih+1, 0);
-  }
- 
-  hRC->Divide(hsig, hsib);
+namespace constants { 
+  const int n_phi_bins = 36; 
+  const int n_sources = 13; 
+  const int n_variations_per_source = 2; 
 }
 
 void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3, 
@@ -100,9 +59,13 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
     rootFile = new TFile("Systematics_v2.root", "update");
   }
 
-  const int N_PHI_BINS            = 36;
-  const int N_SOURCES             = 13;
-  const int VARIATIONS_PER_SOURCE = 2;
+  //  const int N_PHI_BINS            = 36;
+  //  const int N_SOURCES             = 13;
+  //  const int VARIATIONS_PER_SOURCE = 2;
+
+  const int N_PHI_BINS = constants::n_phi_bins;
+  const int N_SOURCES = constants::n_sources;
+  const int VARIATIONS_PER_SOURCE = constants::n_variations_per_source;
 
   const string MESSAGE("[ProcessOneBinSystematics] "); 
   const string BASE_DIRECTORY("/volatile/clas12/dmriser/farm_out"); 
@@ -179,10 +142,16 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
     tfdata[i][0] = new TFile(looseFilename.c_str()); 
     tfdata[i][1] = new TFile(tightFilename.c_str());
 
-    cout << MESSAGE << "File " << looseFilename << " for data (loose) is " 
-	 << (tfdata[i][0]->IsOpen() ? "open." : "not open.") << endl; 
-    cout << MESSAGE << "File " << tightFilename << " for data (tight) is " 
-	 << (tfdata[i][1]->IsOpen() ? "open." : "not open.") << endl; 
+    // Safety first. 
+    if ( !tfdata[i][0]->IsOpen() ){
+      cerr << MESSAGE << "Couldn't open " << looseFilename << endl; 
+      return;
+    }
+    if ( !tfdata[i][1]->IsOpen() ){
+      cerr << MESSAGE << "Couldn't open " << tightFilename << endl; 
+      return;
+    }
+ 
   }
 
   // Is it safe to have 6 pointers to an open file?  How many times is the file open? 
@@ -210,10 +179,16 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
     tfmc[i][0] = new TFile(looseFilename.c_str()); 
     tfmc[i][1] = new TFile(tightFilename.c_str());
 
-    cout << MESSAGE << "File " << looseFilename << " for MC (loose) is " 
-	 << (tfmc[i][0]->IsOpen() ? "open." : "not open.") << endl; 
-    cout << MESSAGE << "File " << tightFilename << " for MC (tight) is " 
-	 << (tfmc[i][1]->IsOpen() ? "open." : "not open.") << endl; 
+    // Safety first. 
+    if ( !tfmc[i][0]->IsOpen() ){
+      cerr << MESSAGE << "Couldn't open " << looseFilename << endl; 
+      return;
+    }
+    if ( !tfmc[i][1]->IsOpen() ){
+      cerr << MESSAGE << "Couldn't open " << tightFilename << endl; 
+      return;
+    }
+
   }
 
   // [10] is for testing phih cuts (bins with a phih cut only)... don't change the number!
@@ -326,12 +301,12 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   // and proceed to find and open the file for this bin.  If there 
   // is no file, a message is printed and the calculation continues. 
   //
-  std::string happath = buildHapradPath(PATH_TO_REQUIRED_FILES, hadronType, 
-					xBin, QQBin, zBin, PT2Bin, -1, -1);
+  std::string happath = Utils::buildHapradPath(PATH_TO_REQUIRED_FILES, hadronType, 
+					       xBin, QQBin, zBin, PT2Bin, -1, -1);
 
   ifstream hapfile(happath.c_str());
   if(hapfile){
-    loadRadiativeCorrection(hapfile, hsig, hsib, hRC, hadronType);
+    Utils::loadRadiativeCorrection(hapfile, hsig, hsib, hRC, hadronType);
 
     hapfile.close();
     cout << MESSAGE << "Found haprad file: " << happath << endl; 
@@ -456,12 +431,12 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 	hRCS[s][v] = new TH1F(Form("hRCS_%i_%i", s, v), Form("hRCS_%i_%i", s, v), N_PHI_BINS, -180, 180);
 	hRCS[s][v]->Sumw2();
 
-	string happathS = buildHapradPath(PATH_TO_REQUIRED_FILES, hadronType, 
-					  xBin, QQBin, zBin, PT2Bin, s, v); 
+	string happathS = Utils::buildHapradPath(PATH_TO_REQUIRED_FILES, hadronType, 
+						 xBin, QQBin, zBin, PT2Bin, s, v); 
 	ifstream hapfileS(happathS.c_str());
 
 	if(hapfileS){
-	  loadRadiativeCorrection(hapfileS, hsigS[s][v], hsibS[s][v], hRCS[s][v], hadronType);
+	  Utils::loadRadiativeCorrection(hapfileS, hsigS[s][v], hsibS[s][v], hRCS[s][v], hadronType);
 	} else {
 	  std::cerr << MESSAGE << "Unable to locate HAPRAD file: " << happathS << std::endl;
 	}

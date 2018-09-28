@@ -87,5 +87,53 @@ namespace Utils {
     }
   }
 
+  std::string buildHapradPath(std::string pathToRequiredFiles, std::string hadronType,
+			      int xBin, int QQBin, int zBin, int PT2Bin,
+			      int sourceIndex, int variationIndex){
+
+    std::string path;
+    if(sourceIndex == 12 && variationIndex == 0){
+      path = Form("%s/haprad/hapradResults/hapDefault/pip_BiSc5_x%iQQ%iz%iPT2%i.dat",
+		  pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin);
+    }
+    else {
+      if(hadronType == "pip"){
+	path = Form("%s/haprad/hapradResults/NickPipModel/pip_BiSc5_x%iQQ%iz%iPT2%i.dat",
+		    pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin);
+      }
+      else if(hadronType == "pim"){
+	path = Form("%s/haprad/hapradResults/NickPimModel/pim_BiSc5_x%iQQ%iz%iPT2%i.dat",
+		    pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin);
+      }
+    }
+
+    return path;
+  }
+
+  void loadRadiativeCorrection(std::ifstream & hapfile,
+			       TH1F *hsig, TH1F *hsib, TH1F *hRC,
+			       std::string hadronType){
+    /* This method calculates the radiative correction as a function of
+   phi for one kinematic bin.  Before calling this function, the file
+   should be opened and null checked. */
+
+    for(int phih = 0; phih < hsig->GetNbinsX(); phih++){
+      float sig, sib, tail;
+      hapfile >> sig >> sib >> tail;
+
+      if(hadronType == "pim"){
+	sig = sig - tail;
+	tail = 0;
+      }
+
+      hsig->SetBinContent(phih+1, sig);
+      hsig->SetBinError(phih+1, 0);
+      hsib->SetBinContent(phih+1, sib);
+      hsib->SetBinError(phih+1, 0);
+    }
+
+    hRC->Divide(hsig, hsib);
+  }
+
 }
 #endif 
