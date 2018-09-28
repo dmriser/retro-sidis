@@ -24,109 +24,96 @@
 
   Changelog:
   ---------
-      2018-09-20: Created this entry, starting modifications. Fixed indentation. 
-      2018-09-21: Fixing if statements, formatting to my style.  Running initial
-                  tests on one bin. Adding more print statements, just for the 
-		  fun of it.  It helps me see which files are opened successfully. 
-      2018-09-25: Various refactorings while waiting for batch farm test jobs.
+  2018-09-20: Created this entry, starting modifications. Fixed indentation. 
+  2018-09-21: Fixing if statements, formatting to my style.  Running initial
+  tests on one bin. Adding more print statements, just for the 
+  fun of it.  It helps me see which files are opened successfully. 
+  2018-09-25: Various refactorings while waiting for batch farm test jobs.
+  2018-09-27: Creating utilities file. Modularizing operations throughout the code. 
+
 */
-
-
-
-// Nathan's Comment
-// 
-// same as v1 but saving to root file w/ more details instead of saving only final values to txt file
-// uses "update" instead of "recreate" in TFile to add histos one by one... 
-// loop over all bins must be done externally
-// be careful because this can cause duplicate copies of the same histogram in the same root file
-// safest thing is to delete file and start over if any uncertainty occurs
-//
-// this is a long script... search "Checkpoint" (w/ lowercase C) for key locations
-// a lot of things are hard-coded, be very careful if you change anything
-// this works for BiSc5
 
 #include <iostream>
 #include <map>
 #include <vector>
 
-string createFilename(string baseDirectory, string projectName, 
-		      string dataType, int variation, bool isTight){
+// Included files from this project 
+#include "utils.cpp"
 
-  string tightName = Form("%s/%s/%s/variation_%d/tight.root",
-			  baseDirectory.c_str(), projectName.c_str(),
-			  dataType.c_str(), variation); 
-  string looseName = Form("%s/%s/%s/variation_%d/loose.root",
-			  baseDirectory.c_str(), projectName.c_str(),
-			  dataType.c_str(), variation); 
-  return (isTight == true ? tightName : looseName); 
-}
-
-int getBinCategory(string categoryFilename, string message){
-  // If the file does not exist, then the bin passes.  There are 
-  // more cuts (according to Nathan) that come later to take care
-  // of these cases. 
-  int category;
-  ifstream categoryFile;
-  categoryFile.open(categoryFilename.c_str());
+std::string buildHapradPath(std::string pathToRequiredFiles, std::string hadronType, 
+			    int xBin, int QQBin, int zBin, int PT2Bin,
+			    int sourceIndex, int variationIndex){
   
-  if(categoryFile){ 
-    categoryFile >> category; 
-    categoryFile.close();
-    cout << message << "Found category file." << endl; 
-  } else { 
-    category = 0; 
-    cout << message << "Did not find category file: " << categoryFilename << endl; 
+  std::string path; 
+  if(sourceIndex == 12 && variationIndex == 0){
+    path = Form("%s/haprad/hapradResults/hapDefault/pip_BiSc5_x%iQQ%iz%iPT2%i.dat", 
+		pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin); 
   } 
-
-  return category; 
-}
-
-int countEmptyBins(TH1F *histo){
-  int numberOfEmptyBins = 0; 
-
-  for(int bin = 0; bin < histo->GetNbinsX(); bin++){
-    if(histo->GetBinContent(bin+1) < 0.1){ 
-      numberOfEmptyBins++;
+  else {
+    if(hadronType == "pip"){
+      path = Form("%s/haprad/hapradResults/NickPipModel/pip_BiSc5_x%iQQ%iz%iPT2%i.dat", 
+		  pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin); 
+    }
+    else if(hadronType == "pim"){ 
+      path = Form("%s/haprad/hapradResults/NickPimModel/pim_BiSc5_x%iQQ%iz%iPT2%i.dat", 
+		  pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin); 
     }
   }
-  
-  return numberOfEmptyBins; 
+
+  return path; 
 }
 
-void killSmallBins(TH1F *histo, int category){
-  // Always kill something with less than 10 counts
-  // if category is positive, kill those too if they're 
-  // below it. 
+void loadRadiativeCorrection(std::ifstream & hapfile, 
+			     TH1F *hsig, TH1F *hsib, TH1F *hRC,
+			     std::string hadronType){
+  /* This method calculates the radiative correction as a function of 
+   phi for one kinematic bin.  Before calling this function, the file 
+   should be opened and null checked. */
 
-  for(int bin = 0; bin < histo->GetNbinsX(); bin++){
+  for(int phih = 0; phih < hsig->GetNbinsX(); phih++){
+    float sig, sib, tail;
+    hapfile >> sig >> sib >> tail;
+
+    if(hadronType == "pim"){
+      sig = sig - tail;
+      tail = 0;
+    }
     
-    if(histo->GetBinContent(bin+1) < 10){
-      histo->SetBinContent(bin+1, 0);
-      histo->SetBinError(bin+1, 0);
-    }
-   
-    if(category > 0.5 && fabs(histo->GetXaxis()->GetBinCenter(bin+1)) < category){
-      histo->SetBinContent(bin+1, 0);
-      histo->SetBinError(bin+1, 0);
-    }
+    hsig->SetBinContent(phih+1, sig);
+    hsig->SetBinError(phih+1, 0);
+    hsib->SetBinContent(phih+1, sib);
+    hsib->SetBinError(phih+1, 0);
   }
+ 
+  hRC->Divide(hsig, hsib);
 }
 
 void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3, 
-			      int PT2Bin = 0, string pipORpim = "pip"){
+			      int PT2Bin = 0, string hadronType = "pip"){
 
 
-  gStyle->SetOptStat(0);
+  //  gStyle->SetOptStat(0);
   
-  bool doSaveRoot = 1;
+  const bool SAVE_ROOT_FILE = 1;
   TFile *rootFile;
-  if(doSaveRoot){
-      rootFile = new TFile("Systematics_v2.root", "update");
-    }
+  if(SAVE_ROOT_FILE){
+    rootFile = new TFile("Systematics_v2.root", "update");
+  }
 
-  const int N_PHI_BINS           = 36;
-  const int N_SOURCES            = 13;
-  const int variationsPerSource = 2;
+  const int N_PHI_BINS            = 36;
+  const int N_SOURCES             = 13;
+  const int VARIATIONS_PER_SOURCE = 2;
+
+  const string MESSAGE("[ProcessOneBinSystematics] "); 
+  const string BASE_DIRECTORY("/volatile/clas12/dmriser/farm_out"); 
+  const string PROJECT_NAME("sidis_batch_11"); 
+  const string PATH_TO_REQUIRED_FILES("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles"); 
+
+  const string SOURCE_NAME[N_SOURCES] = {
+    "e_zvert", "e_ECsamp", "e_ECoVi", "e_ECgeo", "e_CCthMatch", 
+    "e_R1fid", "e_R3fid", "e_CCfid", "pi_vvp", "pi_R1fid", 
+    "phih_fid", "accModel", "hapModel"
+  };
 
   map<int, int> arrayIndexToVariation; 
   arrayIndexToVariation[0] =  0; 
@@ -140,16 +127,6 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   arrayIndexToVariation[8] = 10; 
   arrayIndexToVariation[9] = 11; 
 
-  const string message("[ProcessOneBinSystematics] "); 
-  const string baseDirectory("/volatile/clas12/dmriser/farm_out"); 
-  const string projectName("sidis_batch_11"); 
-  const string pathToRequiredFiles("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles"); 
-
-  string sourceName[N_SOURCES] = {
-    "e_zvert", "e_ECsamp", "e_ECoVi", "e_ECgeo", "e_CCthMatch", 
-    "e_R1fid", "e_R3fid", "e_CCfid", "pi_vvp", "pi_R1fid", 
-    "phih_fid", "accModel", "hapModel"
-  };
   
   float M_sysErrorPiece[N_SOURCES]; 
   float Ac_sysErrorPiece[N_SOURCES];
@@ -163,14 +140,15 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   float Ac_sysErrorTotal;
   float Acc_sysErrorTotal;
 
+
   string MString   = Form("hM_sysEcontributions_%s_%i_%i_%i_%i", 
-			  pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin);
+			  hadronType.c_str(), xBin, QQBin, zBin, PT2Bin);
   string AcString  = Form("hAc_sysEcontributions_%s_%i_%i_%i_%i", 
-			  pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin);
+			  hadronType.c_str(), xBin, QQBin, zBin, PT2Bin);
   string AccString = Form("hAcc_sysEcontributions_%s_%i_%i_%i_%i", 
-			  pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin);
+			  hadronType.c_str(), xBin, QQBin, zBin, PT2Bin);
   string catString = Form("hCategory_%s_%i_%i_%i_%i", 
-			  pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin);
+			  hadronType.c_str(), xBin, QQBin, zBin, PT2Bin);
   TH1F *hM_sysEcontributions   = new TH1F(MString.c_str(), MString.c_str(), 
 					  N_SOURCES, 0, N_SOURCES);
   TH1F *hAc_sysEcontributions  = new TH1F(AcString.c_str(), AcString.c_str(), 
@@ -184,7 +162,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   // loading of files begins.  More declarations occur inside of 
   // the loop that are out of scope afterward. 
  
-  TFile *tfdata[N_SOURCES][variationsPerSource];
+  TFile *tfdata[N_SOURCES][VARIATIONS_PER_SOURCE];
   // 
   // This part needs to be done carefully, and I believe
   // that I have done so.  The variation number changes at
@@ -192,18 +170,18 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   // incremented by one.  This is the way that it was done 
   // by Nathan and I don't want to change that. 
   // 
-  for (int i = 0; i < 10; i++){
-    string looseFilename = createFilename(baseDirectory, projectName, 
-					  "data", arrayIndexToVariation[i], false);
-    string tightFilename = createFilename(baseDirectory, projectName, 
-					  "data", arrayIndexToVariation[i], true);
+  for (int i = 0; i < N_SOURCES; i++){
+    string looseFilename = Utils::createFilename(BASE_DIRECTORY, PROJECT_NAME, 
+						 "data", arrayIndexToVariation[i], false);
+    string tightFilename = Utils::createFilename(BASE_DIRECTORY, PROJECT_NAME, 
+						 "data", arrayIndexToVariation[i], true);
 
     tfdata[i][0] = new TFile(looseFilename.c_str()); 
     tfdata[i][1] = new TFile(tightFilename.c_str());
 
-    cout << message << "File " << looseFilename << " for data (loose) is " 
+    cout << MESSAGE << "File " << looseFilename << " for data (loose) is " 
 	 << (tfdata[i][0]->IsOpen() ? "open." : "not open.") << endl; 
-    cout << message << "File " << tightFilename << " for data (tight) is " 
+    cout << MESSAGE << "File " << tightFilename << " for data (tight) is " 
 	 << (tfdata[i][1]->IsOpen() ? "open." : "not open.") << endl; 
   }
 
@@ -213,7 +191,8 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   // for hap. model dependence. See note below (at tfmc[12][0])!!
 
   string nominalFilenameData = Form("%s/%s/data/variation_nominal/merged.root", 
-				baseDirectory.c_str(), projectName.c_str());
+				    BASE_DIRECTORY.c_str(), PROJECT_NAME.c_str());
+
   tfdata[10][0] = new TFile(nominalFilenameData.c_str());
   tfdata[10][1] = new TFile(nominalFilenameData.c_str());
   tfdata[11][0] = new TFile(nominalFilenameData.c_str());
@@ -221,19 +200,19 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   tfdata[12][0] = new TFile(nominalFilenameData.c_str());
   tfdata[12][1] = new TFile(nominalFilenameData.c_str());
 
-  TFile *tfmc[N_SOURCES][variationsPerSource];
+  TFile *tfmc[N_SOURCES][VARIATIONS_PER_SOURCE];
   for (int i = 0; i < 10; i++){
-    string looseFilename = createFilename(baseDirectory, projectName, 
-					  "mc", arrayIndexToVariation[i], false);
-    string tightFilename = createFilename(baseDirectory, projectName, 
-					  "mc", arrayIndexToVariation[i], true);
+    string looseFilename = Utils::createFilename(BASE_DIRECTORY, PROJECT_NAME, 
+						 "mc", arrayIndexToVariation[i], false);
+    string tightFilename = Utils::createFilename(BASE_DIRECTORY, PROJECT_NAME, 
+						 "mc", arrayIndexToVariation[i], true);
 
     tfmc[i][0] = new TFile(looseFilename.c_str()); 
     tfmc[i][1] = new TFile(tightFilename.c_str());
 
-    cout << message << "File " << looseFilename << " for MC (loose) is " 
+    cout << MESSAGE << "File " << looseFilename << " for MC (loose) is " 
 	 << (tfmc[i][0]->IsOpen() ? "open." : "not open.") << endl; 
-    cout << message << "File " << tightFilename << " for MC (tight) is " 
+    cout << MESSAGE << "File " << tightFilename << " for MC (tight) is " 
 	 << (tfmc[i][1]->IsOpen() ? "open." : "not open.") << endl; 
   }
 
@@ -249,13 +228,15 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   // see below where the haprad files are read in for details
 
   string nominalFilenameMC = Form("%s/%s/mc/variation_nominal/merged.root", 
-				  baseDirectory.c_str(), projectName.c_str());
-  tfmc[10][0] = new TFile(nominalFilenameMC.c_str()); 
-  tfmc[10][1] = new TFile(nominalFilenameMC.c_str()); 
-  tfmc[11][0] = new TFile(nominalFilenameMC.c_str()); 
-  tfmc[11][1] = new TFile(nominalFilenameMC.c_str()); 
-  tfmc[12][0] = new TFile(nominalFilenameMC.c_str()); 
-  tfmc[12][1] = new TFile(nominalFilenameMC.c_str()); 
+				  BASE_DIRECTORY.c_str(), PROJECT_NAME.c_str());
+  string acceptanceFilenameMC = Form("%s/%s/mc/variation_acceptance/merged.root", 
+				     BASE_DIRECTORY.c_str(), PROJECT_NAME.c_str());
+  tfmc[10][0] = new TFile(   nominalFilenameMC.c_str()); 
+  tfmc[10][1] = new TFile(   nominalFilenameMC.c_str()); 
+  tfmc[11][0] = new TFile(acceptanceFilenameMC.c_str()); 
+  tfmc[11][1] = new TFile(   nominalFilenameMC.c_str()); 
+  tfmc[12][0] = new TFile(   nominalFilenameMC.c_str()); 
+  tfmc[12][1] = new TFile(   nominalFilenameMC.c_str()); 
 
   TLatex *tlat = new TLatex();
   tlat->SetNDC();
@@ -263,16 +244,15 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
 
   // Read into memory the category file for this bin. 
   string categoryFilename = Form("%s/binCategories/%sCategory.BiSc5.x%iQQ%iz%iPTsq%i.txt", 
-				 pathToRequiredFiles.c_str(), pipORpim.c_str(), 
+				 PATH_TO_REQUIRED_FILES.c_str(), hadronType.c_str(), 
 				 xBin, QQBin, zBin, PT2Bin); 
-  int defaultCategory = getBinCategory(categoryFilename, message);
+  int defaultCategory = Utils::getBinCategory(categoryFilename, MESSAGE);
   int category = defaultCategory; 
-
 
   //-----------------------------------------------------------
   //--------------- do the nominal case -----------------------
   //-----------------------------------------------------------
-  cout << message << "Starting calculation for nominal case..." << endl; 
+  cout << MESSAGE << "Starting calculation for nominal case..." << endl; 
 
   TCanvas *nomcan  = new TCanvas();
   TFile *tfdataNom = new TFile(nominalFilenameData.c_str());
@@ -281,33 +261,34 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   
   // Simple safety checks on the file. 
   if (tfdataNom && tfdataNom->IsOpen()){
-    cout << message << "Opening sucessfully: " << nominalFilenameData << endl; 
+    cout << MESSAGE << "Opening sucessfully: " << nominalFilenameData << endl; 
   } else {
-    cerr << message << "Dying on not being able to open " << nominalFilenameData << endl; 
+    cerr << MESSAGE << "Dying on not being able to open " << nominalFilenameData << endl; 
     return; 
   }
   
   if (tfmcNom && tfmcNom->IsOpen()){
-    cout << message << "Opening sucessfully: " << nominalFilenameMC << endl; 
+    cout << MESSAGE << "Opening sucessfully: " << nominalFilenameMC << endl; 
   } else {
-    cerr << message << "Dying on not being able to open " << nominalFilenameMC << endl; 
+    cerr << MESSAGE << "Dying on not being able to open " << nominalFilenameMC << endl; 
     return; 
   }
 
-  TH1F *hdataphihModified = (TH1F*) tfdataNom->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
+  TH1F *hdataphihModified = (TH1F*) tfdataNom->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
 
   // A little bit of protection because the 
   // code is dying. 
   if(hdataphihModified){
-    cout << message << "Opened nominal data histogram with entries = " << hdataphihModified->GetEntries() << endl;
+    cout << MESSAGE << "Opened nominal data histogram with entries = " << hdataphihModified->GetEntries() << endl;
   } else {
-    cout << message << "Dying because the nominal data histogram could not be opened." << endl; 
+    cout << MESSAGE << "Dying because the nominal data histogram could not be opened." << endl; 
     return; 
   }
 
   // apply some modifications and further define the bin category:
-  killSmallBins(hdataphihModified, category); 
-  int numberOfEmptyPhiBins = countEmptyBins(hdataphihModified); 
+  Utils::removeBinsWithCountsLower(hdataphihModified, 10); 
+  Utils::removeBinsInCentralPhi(hdataphihModified, category); 
+  int numberOfEmptyPhiBins = Utils::countEmptyBins(hdataphihModified); 
 
   // update/redefine category here:
   // bad statistics and bad coverage, don't use this bin
@@ -319,22 +300,15 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   //     -99 : Bad statistics and bad coverage, DO NOT use this bin.
   //       1 : Measure the values for this bin. 
   //     -13 : Measure only the multiplcity M for this bin.  
-  if(hdataphihModified->Integral() < 180 && numberOfEmptyPhiBins >= 26){
-    category = -99; 
-  }
-  else if(category != -1 && hdataphihModified->Integral() >= 360 && numberOfEmptyPhiBins <= 6){ 
-    category = 1; 
-  }
-  else{
-    category = -13; 
-  }
-
+  category = Utils::updateCategoryBasedOnEmptyBins(hdataphihModified, 
+						   numberOfEmptyPhiBins, 
+						   category); 
   
   //--------------------- MC: ---------------------------------
   TH1F *hgenphih, *hrecphih, *haccphih;
 
-  hgenphih = (TH1F*) tfmcNom->Get(Form("gen_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
-  hrecphih = (TH1F*) tfmcNom->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
+  hgenphih = (TH1F*) tfmcNom->Get(Form("gen_%s_phih_x%i_QQ%i_z%i_PT2%i", hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
+  hrecphih = (TH1F*) tfmcNom->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
   haccphih = new TH1F(Form("haccphih_z%iPT2%i", zBin, PT2Bin), Form("haccphih_z%iPT2%i", zBin, PT2Bin), N_PHI_BINS, -180, 180);
   haccphih->Sumw2();
   haccphih->Divide(hrecphih, hgenphih);
@@ -342,47 +316,32 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   //------------------ haprad: --------------------------------
 
   TH1F *hsig = new TH1F("hsig", "hsig", N_PHI_BINS, -180, 180);
-  hsig->Sumw2();
   TH1F *hsib = new TH1F("hsib", "hsib", N_PHI_BINS, -180, 180);
+  TH1F *hRC  = new TH1F( "hRC",  "hRC", N_PHI_BINS, -180, 180);
+  hsig->Sumw2();
   hsib->Sumw2();
-  TH1F *hRC = new TH1F("hRC", "hRC", N_PHI_BINS, -180, 180);
-  hRC->Sumw2();
+  hRC ->Sumw2();
 
-  string happath;
-  if(pipORpim == "pip"){
-    happath = Form("%s/haprad/hapradResults/NickPipModel/pip_BiSc5_x%iQQ%iz%iPT2%i.dat", 
-		   pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin); 
-  }
-  else if(pipORpim == "pim"){ 
-    happath = Form("%s/haprad/hapradResults/NickPimModel/pim_BiSc5_x%iQQ%iz%iPT2%i.dat", 
-		   pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin); 
-  }
+  // Build path to HAPRAD output files for radiative corrections 
+  // and proceed to find and open the file for this bin.  If there 
+  // is no file, a message is printed and the calculation continues. 
+  //
+  std::string happath = buildHapradPath(PATH_TO_REQUIRED_FILES, hadronType, 
+					xBin, QQBin, zBin, PT2Bin, -1, -1);
+
   ifstream hapfile(happath.c_str());
-
   if(hapfile){
-    for(int phih = 0; phih < N_PHI_BINS; phih++){
-      float sig, sib, tail;
-      hapfile >> sig >> sib >> tail;
-      if(pipORpim == "pim"){
-	sig = sig - tail;
-	tail = 0;
-      }
-      hsig->SetBinContent(phih+1, sig);
-      hsig->SetBinError(phih+1, 0);
-      hsib->SetBinContent(phih+1, sib);
-      hsib->SetBinError(phih+1, 0);
-    }
-    hapfile.close();
-    cout << message << "Found haprad file: " << happath << endl; 
-  } else {
-    cout << message << "Didn't find haprad file: " << happath << endl; 
-  }
+    loadRadiativeCorrection(hapfile, hsig, hsib, hRC, hadronType);
 
+    hapfile.close();
+    cout << MESSAGE << "Found haprad file: " << happath << endl; 
+  } else {
+    cout << MESSAGE << "Didn't find haprad file: " << happath << endl; 
+  }
 
   hRC->Divide(hsig, hsib);
 
   //------------------- corr: ---------------------------------
-
   TH1F *hcorr = new TH1F("hcorr", "hcorr", N_PHI_BINS, -180, 180);
   hcorr->Sumw2();
   hcorr->Divide(hdataphihModified, haccphih);
@@ -429,172 +388,139 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   TCanvas *can = new TCanvas("can", "can", 5, 5, 1600, 1000);
   can->Divide(6, 4, 0.00001, 0.00001); // may need manual update
 
-  TH1F *hdataphihModifiedS[N_SOURCES][variationsPerSource]; // S for Systematics
-  TH1F *hgenphihS[N_SOURCES][variationsPerSource], *hrecphihS[N_SOURCES][variationsPerSource], *haccphihS[N_SOURCES][variationsPerSource];
-  TH1F *hsigS[N_SOURCES][variationsPerSource], *hsibS[N_SOURCES][variationsPerSource], *hRCS[N_SOURCES][variationsPerSource];
-  TH1F *hcorrS[N_SOURCES][variationsPerSource];
-  TH1F *hcorrRCS[N_SOURCES][variationsPerSource];
-  TF1 *ffcorrRCS[N_SOURCES][variationsPerSource];
+  TH1F *hdataphihModifiedS[N_SOURCES][VARIATIONS_PER_SOURCE]; // S for Systematics
+  TH1F *hgenphihS[N_SOURCES][VARIATIONS_PER_SOURCE], *hrecphihS[N_SOURCES][VARIATIONS_PER_SOURCE], *haccphihS[N_SOURCES][VARIATIONS_PER_SOURCE];
+  TH1F *hsigS[N_SOURCES][VARIATIONS_PER_SOURCE], *hsibS[N_SOURCES][VARIATIONS_PER_SOURCE], *hRCS[N_SOURCES][VARIATIONS_PER_SOURCE];
+  TH1F *hcorrS[N_SOURCES][VARIATIONS_PER_SOURCE];
+  TH1F *hcorrRCS[N_SOURCES][VARIATIONS_PER_SOURCE];
+  TF1 *ffcorrRCS[N_SOURCES][VARIATIONS_PER_SOURCE];
 
-
-  // Print table header. 
-  cout << endl; 
-  cout << message << setw(8) << "Source #"
-       << setw(16) << "Source Name" << setw(12) << "dM" 
-       << setw(12) << "dAc" << setw(12) << "dAcc" << endl; 
 
   int count = 0;
   for(int s = 0; s < N_SOURCES; s++) {
-    for(int v = 0; v < variationsPerSource; v++) {
+    for(int v = 0; v < VARIATIONS_PER_SOURCE; v++) {
       if(!((s == 11 && v == 1) || (s == 12 && v == 1))) {
-	  count++;
-	  can->cd(count);
+	count++;
+	can->cd(count);
 
-	  // Reset to the original category. 
-	  category = defaultCategory; 
-	  if(category > 0.5 && s == 10 && v == 0) category = category - 10;
-	  if(category > 0.5 && s == 10 && v == 1) category = category + 10;
+	// Reset to the original category. 
+	category = defaultCategory; 
+	if(category > 0.5 && s == 10 && v == 0){ 
+	  category -= 10; 
+	}
+	if(category > 0.5 && s == 10 && v == 1){
+	  category += 10;
+	}
+	//-------------------- data: --------------------------------
 
-	  //-------------------- data: --------------------------------
+	hdataphihModifiedS[s][v] = (TH1F*) tfdata[s][v]->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
+	hdataphihModifiedS[s][v]->SetName(Form("hdataMS_%i_%i", s, v));
 
-	  hdataphihModifiedS[s][v] = (TH1F*) tfdata[s][v]->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
-	  hdataphihModifiedS[s][v]->SetName(Form("hdataMS_%i_%i", s, v));
+	//	cout << MESSAGE << "Entries (data) = " << hdataphihModifiedS[s][v]->GetEntries() << endl; 
 
-	  cout << message << "Entries (data) = " << hdataphihModifiedS[s][v]->GetEntries() << endl; 
+	// apply some modifications and further define the bin category:	  
+	Utils::removeBinsWithCountsLower(hdataphihModifiedS[s][v], 10);
+	Utils::removeBinsInCentralPhi(hdataphihModifiedS[s][v], category);
+	int numberOfEmptyPhiBins = Utils::countEmptyBins(hdataphihModifiedS[s][v]);
 
-	  // apply some modifications and further define the bin category:
-	  numberOfEmptyPhiBins = 0;
-	  for(int phih = 0; phih < N_PHI_BINS; phih++){
-	    if(hdataphihModifiedS[s][v]->GetBinContent(phih+1) < 10){
-	      hdataphihModifiedS[s][v]->SetBinContent(phih+1, 0);
-	      hdataphihModifiedS[s][v]->SetBinError(phih+1, 0);
-	    }
-	    if(category > 0.5 && fabs(hdataphihModifiedS[s][v]->GetXaxis()->GetBinCenter(phih+1)) < category){
-	      hdataphihModifiedS[s][v]->SetBinContent(phih+1, 0);
-	      hdataphihModifiedS[s][v]->SetBinError(phih+1, 0);
-	    } 
-	    if(hdataphihModifiedS[s][v]->GetBinContent(phih+1) < 0.1){
-	      numberOfEmptyPhiBins++; 
-	    }
-	  }
-	  
-	  // update/redefine category here:
-	  if(hdataphihModifiedS[s][v]->Integral() < 180 && numberOfEmptyPhiBins >= 26){ 
-	    category = -99; 
-	  } else if(category != -1 && hdataphihModifiedS[s][v]->Integral() >= 360 && numberOfEmptyPhiBins <= 6){ 
-	    category = 1; 
-	  } else { 
-	    category = -13; 
-	  }
+	// Category codes below (as far as I could workout from the comments above).
+	//     -99 : Bad statistics and bad coverage, DO NOT use this bin.
+	//       1 : Measure the values for this bin.
+	//     -13 : Measure only the multiplcity M for this bin.
+	category = Utils::updateCategoryBasedOnEmptyBins(hdataphihModifiedS[s][v],
+							 numberOfEmptyPhiBins,
+							 category);
 
-	  //--------------------- MC: ---------------------------------
-	  hgenphihS[s][v] = (TH1F*) tfmc[s][v]->Get(Form("gen_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
-	  hgenphihS[s][v]->SetName(Form("hgenphihS_%i_%i", s, v));
-	  cout << message << "Entries (generated) = " << hgenphihS[s][v]->GetEntries() << endl; 
 
-	  hrecphihS[s][v] = (TH1F*) tfmc[s][v]->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", pipORpim.c_str(), xBin, QQBin, zBin, PT2Bin));
-	  hrecphihS[s][v]->SetName(Form("hrecphihS_%i_%i", s, v));
-	  cout << message << "Entries (reconstructed) = " << hrecphihS[s][v]->GetEntries() << endl; 
+	//--------------------- MC: ---------------------------------
+	hgenphihS[s][v] = (TH1F*) tfmc[s][v]->Get(Form("gen_%s_phih_x%i_QQ%i_z%i_PT2%i", hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
+	hgenphihS[s][v]->SetName(Form("hgenphihS_%i_%i", s, v));
+	//	cout << MESSAGE << "Entries (generated) = " << hgenphihS[s][v]->GetEntries() << endl; 
 
-	  haccphihS[s][v] = new TH1F(Form("haccphihS_z%iPT2%i_%i_%i", zBin, PT2Bin, s, v), Form("haccphihS_z%iPT2%i", zBin, PT2Bin), N_PHI_BINS, -180, 180);
-	  haccphihS[s][v]->Sumw2();
-	  haccphihS[s][v]->Divide(hrecphihS[s][v], hgenphihS[s][v]);
-	  cout << message << "Entries (acceptance) = " << haccphihS[s][v]->GetEntries() << endl; 
+	hrecphihS[s][v] = (TH1F*) tfmc[s][v]->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
+	hrecphihS[s][v]->SetName(Form("hrecphihS_%i_%i", s, v));
+	//	cout << MESSAGE << "Entries (reconstructed) = " << hrecphihS[s][v]->GetEntries() << endl; 
 
-	  //------------------ haprad: --------------------------------
-	  hsigS[s][v] = new TH1F(Form("hsigS_%i_%i", s, v), Form("hsigS_%i_%i", s, v), N_PHI_BINS, -180, 180);
-	  hsigS[s][v]->Sumw2();
-	  hsibS[s][v] = new TH1F(Form("hsibS_%i_%i", s, v), Form("hsibS_%i_%i", s, v), N_PHI_BINS, -180, 180);
-	  hsibS[s][v]->Sumw2();
-	  hRCS[s][v] = new TH1F(Form("hRCS_%i_%i", s, v), Form("hRCS_%i_%i", s, v), N_PHI_BINS, -180, 180);
-	  hRCS[s][v]->Sumw2();
+	// Might want to set the errors directly using manual loop over bins.  Sometimes this division does weird things 
+	// even when Sumw2 is called first.  Perhaps it doesn't matter anymore. 
+	haccphihS[s][v] = new TH1F(Form("haccphihS_z%iPT2%i_%i_%i", zBin, PT2Bin, s, v), Form("haccphihS_z%iPT2%i", zBin, PT2Bin), N_PHI_BINS, -180, 180);
+	haccphihS[s][v]->Sumw2();
+	haccphihS[s][v]->Divide(hrecphihS[s][v], hgenphihS[s][v]);
+	//	cout << MESSAGE << "Entries (acceptance) = " << haccphihS[s][v]->GetEntries() << endl; 
 
-	  string happathS;
-	  if(s == 12 && v == 0){
-	      happathS = Form("%s/hapradResults/hapDefault/pip_BiSc5_x%iQQ%iz%iPT2%i.dat", 
-			      pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin); 
-	    } else {
-	    if(pipORpim == "pip"){
-	      happathS = Form("%s/hapradResults/NickPipModel/pip_BiSc5_x%iQQ%iz%iPT2%i.dat", 
-			      pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin);
-	    } else if(pipORpim == "pim"){
-	      happathS = Form("%s/hapradResults/NickPimModel/pim_BiSc5_x%iQQ%iz%iPT2%i.dat", 
-			      pathToRequiredFiles.c_str(), xBin, QQBin, zBin, PT2Bin);
-	    }
-	  }
-	  ifstream hapfileS(happathS.c_str());
+	//------------------ haprad: --------------------------------
+	hsigS[s][v] = new TH1F(Form("hsigS_%i_%i", s, v), Form("hsigS_%i_%i", s, v), N_PHI_BINS, -180, 180);
+	hsigS[s][v]->Sumw2();
+	hsibS[s][v] = new TH1F(Form("hsibS_%i_%i", s, v), Form("hsibS_%i_%i", s, v), N_PHI_BINS, -180, 180);
+	hsibS[s][v]->Sumw2();
+	hRCS[s][v] = new TH1F(Form("hRCS_%i_%i", s, v), Form("hRCS_%i_%i", s, v), N_PHI_BINS, -180, 180);
+	hRCS[s][v]->Sumw2();
 
-	  if(hapfileS){
-	    for(int phih = 0; phih < N_PHI_BINS; phih++){
-	      float sig, sib, tail;
-	      hapfileS >> sig >> sib >> tail;
-	      if(pipORpim == "pim"){
-		sig = sig - tail;
-		tail = 0;
-	      }
-	      hsigS[s][v]->SetBinContent(phih+1, sig);
-	      hsigS[s][v]->SetBinError(phih+1, 0);
-	      hsibS[s][v]->SetBinContent(phih+1, sib);
-	      hsibS[s][v]->SetBinError(phih+1, 0);
-	    }
-	  }
-	  hapfileS.close();
+	string happathS = buildHapradPath(PATH_TO_REQUIRED_FILES, hadronType, 
+					  xBin, QQBin, zBin, PT2Bin, s, v); 
+	ifstream hapfileS(happathS.c_str());
 
-	  hRCS[s][v]->Divide(hsigS[s][v], hsibS[s][v]);
-	  cout << message << "Entries (sigS) = " << hsigS[s][v]->GetEntries() << endl; 
-	  cout << message << "Entries (sibS) = " << hsibS[s][v]->GetEntries() << endl; 
-	  cout << message << "Entries (hRCS) = " << hRCS[s][v]->GetEntries() << endl; 
+	if(hapfileS){
+	  loadRadiativeCorrection(hapfileS, hsigS[s][v], hsibS[s][v], hRCS[s][v], hadronType);
+	} else {
+	  std::cerr << MESSAGE << "Unable to locate HAPRAD file: " << happathS << std::endl;
+	}
 
-	  //------------------- corr: ---------------------------------
 
-	  hcorrS[s][v] = new TH1F(Form("hcorrS_%i_%i", s, v), Form("hcorrS_%i_%i", s, v), N_PHI_BINS, -180, 180);
-	  hcorrS[s][v]->Sumw2();
-	  hcorrS[s][v]->Divide(hdataphihModifiedS[s][v], haccphihS[s][v]);
-	  hcorrS[s][v]->Draw();
-	  cout << message << "Entries (hcorrS) = " << hcorrS[s][v]->GetEntries() << endl; 	  
+	hRCS[s][v]->Divide(hsigS[s][v], hsibS[s][v]);
+	//	cout << MESSAGE << "Entries (sigS) = " << hsigS[s][v]->GetEntries() << endl; 
+	//	cout << MESSAGE << "Entries (sibS) = " << hsibS[s][v]->GetEntries() << endl; 
+	//	cout << MESSAGE << "Entries (hRCS) = " << hRCS[s][v]->GetEntries() << endl; 
 
-	  //------------------- corrRC: -------------------------------
+	//------------------- corr: ---------------------------------
 
-	  if(hsibS[s][v]->Integral() < 0.00000001 || hsigS[s][v]->Integral() < 0.00000001){
-	    category = -2;
-	  }
+	hcorrS[s][v] = new TH1F(Form("hcorrS_%i_%i", s, v), Form("hcorrS_%i_%i", s, v), N_PHI_BINS, -180, 180);
+	hcorrS[s][v]->Sumw2();
+	hcorrS[s][v]->Divide(hdataphihModifiedS[s][v], haccphihS[s][v]);
+	hcorrS[s][v]->Draw();
+	//	cout << MESSAGE << "Entries (hcorrS) = " << hcorrS[s][v]->GetEntries() << endl; 	  
 
-	  hcorrRCS[s][v] = new TH1F(Form("hcorrRCS_%i_%i", s, v), Form("hcorrRCS_%i_%i", s, v), N_PHI_BINS, -180, 180);
-	  hcorrRCS[s][v]->Sumw2();
-	  hcorrRCS[s][v]->Divide(hcorrS[s][v], hRCS[s][v]);
-	  hcorrRCS[s][v]->GetYaxis()->SetRangeUser(0, 1.1*hcorrRCS[s][v]->GetMaximum());
-	  hcorrRCS[s][v]->GetXaxis()->SetTitle("phi_h (deg.)");
-	  hcorrRCS[s][v]->SetTitle(sourceName[s].c_str());
-	  hcorrRCS[s][v]->Draw();
+	//------------------- corrRC: -------------------------------
 
-	  ffcorrRCS[s][v] = new TF1(Form("ffcorrRCS_%i_%i", s, v), "[0]*(1.0 + [1]*cos((3.14159265359/180.0)*x) + [2]*cos(2.0*(3.14159265359/180.0)*x))", -180, 180);
-	  ffcorrRCS[s][v]->SetLineColor(kBlue);
-	  ffcorrRCS[s][v]->SetParameters(hcorrRCS[s][v]->GetMaximum(), 0.0, 0.0);
+	if(hsibS[s][v]->Integral() < 0.00000001 || hsigS[s][v]->Integral() < 0.00000001){
+	  category = -2;
+	}
 
-	  if(category == 1){
-	    ffcorrRCS[s][v]->SetParLimits(1, -0.99, 0.99);
-	    ffcorrRCS[s][v]->SetParLimits(2, -0.99, 0.99);
-	  } else {
-	    ffcorrRCS[s][v]->SetParLimits(1, -0.30, 0.30);
-	    ffcorrRCS[s][v]->SetParLimits(2, -0.30, 0.30);
-	  }
+	hcorrRCS[s][v] = new TH1F(Form("hcorrRCS_%i_%i", s, v), Form("hcorrRCS_%i_%i", s, v), N_PHI_BINS, -180, 180);
+	hcorrRCS[s][v]->Sumw2();
+	hcorrRCS[s][v]->Divide(hcorrS[s][v], hRCS[s][v]);
+	hcorrRCS[s][v]->GetYaxis()->SetRangeUser(0, 1.1*hcorrRCS[s][v]->GetMaximum());
+	hcorrRCS[s][v]->GetXaxis()->SetTitle("phi_h (deg.)");
+	hcorrRCS[s][v]->SetTitle(SOURCE_NAME[s].c_str());
+	hcorrRCS[s][v]->Draw();
 
-	  if(hcorrRCS[s][v]->Integral() > 36){
-	    cout << message << "Fitting (" << s << "," << v << ")" << endl;
-	    hcorrRCS[s][v]->Fit(Form("ffcorrRCS_%i_%i", s, v), "", "", -180, 180);
-	    //	    hcorrRCS[s][v]->Fit(Form("ffcorrRCS_%i_%i", s, v), "q", "", -180, 180);
-	  } else {
-	    cout << message << "Not Fitting (" << s << "," << v 
-		 << ") with integral = " << hcorrRCS[s][v]->Integral() 
-		 << " and entries = " << hcorrRCS[s][v]->GetEntries() << endl;
-	  }
+	ffcorrRCS[s][v] = new TF1(Form("ffcorrRCS_%i_%i", s, v), "[0]*(1.0 + [1]*cos((3.14159265359/180.0)*x) + [2]*cos(2.0*(3.14159265359/180.0)*x))", -180, 180);
+	ffcorrRCS[s][v]->SetLineColor(kBlue);
+	ffcorrRCS[s][v]->SetParameters(hcorrRCS[s][v]->GetMaximum(), 0.0, 0.0);
 
-	  //	  tlat->DrawLatex(0.15, 0.32, Form("M = %3.2f #pm %3.2f", ffcorrRCS[s][v]->GetParameter(0), ffcorrRCS[s][v]->GetParError(0)));
-	  //	  tlat->DrawLatex(0.15, 0.26, Form("Ac = %3.4f #pm %3.4f", ffcorrRCS[s][v]->GetParameter(1), ffcorrRCS[s][v]->GetParError(1)));
-	  //	  tlat->DrawLatex(0.15, 0.20, Form("Acc = %3.4f #pm %3.4f", ffcorrRCS[s][v]->GetParameter(2), ffcorrRCS[s][v]->GetParError(2)));
+	if(category == 1){
+	  ffcorrRCS[s][v]->SetParLimits(1, -0.99, 0.99);
+	  ffcorrRCS[s][v]->SetParLimits(2, -0.99, 0.99);
+	} else {
+	  ffcorrRCS[s][v]->SetParLimits(1, -0.30, 0.30);
+	  ffcorrRCS[s][v]->SetParLimits(2, -0.30, 0.30);
+	}
 
-	  //tlat->DrawLatex(0.25, 0.14, Form("category %i", category));
-	} // endif
+	if(hcorrRCS[s][v]->Integral() > 36){
+	  //	  cout << MESSAGE << "Fitting (" << s << "," << v << ")" << endl;
+	  hcorrRCS[s][v]->Fit(Form("ffcorrRCS_%i_%i", s, v), "q", "", -180, 180);
+	} else {
+	  cout << MESSAGE << "Not Fitting (" << s << "," << v 
+	       << ") with integral = " << hcorrRCS[s][v]->Integral() 
+	       << " and entries = " << hcorrRCS[s][v]->GetEntries() << endl;
+	}
+      
+	//	  tlat->DrawLatex(0.15, 0.32, Form("M = %3.2f #pm %3.2f", ffcorrRCS[s][v]->GetParameter(0), ffcorrRCS[s][v]->GetParError(0)));
+	//	  tlat->DrawLatex(0.15, 0.26, Form("Ac = %3.4f #pm %3.4f", ffcorrRCS[s][v]->GetParameter(1), ffcorrRCS[s][v]->GetParError(1)));
+	//	  tlat->DrawLatex(0.15, 0.20, Form("Acc = %3.4f #pm %3.4f", ffcorrRCS[s][v]->GetParameter(2), ffcorrRCS[s][v]->GetParError(2)));
+
+	//tlat->DrawLatex(0.25, 0.14, Form("category %i", category));
+      } // endif
     } // end v loop
     
 
@@ -614,9 +540,6 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
       Acc_sysErrorPiece[s] = fabs(ffcorrRCS[s][0]->GetParameter(2) - ffcorrRC->GetParameter(2));
     }
 
-    cout << message << setw(8) << s << setw(16) << sourceName[s] << setw(12) << M_sysErrorPiece[s] 
-	 << setw(12) << Ac_sysErrorPiece[s] << setw(12) << Acc_sysErrorPiece[s] << endl;
-
     hM_sysEcontributions  ->SetBinContent(s+1, M_sysErrorPiece[s]);
     hAc_sysEcontributions ->SetBinContent(s+1, Ac_sysErrorPiece[s]);
     hAcc_sysEcontributions->SetBinContent(s+1, Acc_sysErrorPiece[s]);
@@ -632,7 +555,24 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   Ac_sysErrorTotal  = sqrt(Ac_sumOfSquaredErrors);
   Acc_sysErrorTotal = sqrt(Acc_sumOfSquaredErrors);
 
-  cout << endl << message << setw(12) << M_sysErrorTotal 
+  // Print out a table summarizing what happened. 
+  // Print table header. 
+
+  cout << MESSAGE << setw(8) << "Source #"
+       << setw(16) << "Source Name" << setw(12) << "dM" 
+       << setw(12) << "dAc" << setw(12) << "dAcc" << endl; 
+
+  for (int sourceIndex = 0; sourceIndex < N_SOURCES; sourceIndex++){
+    std::cout << MESSAGE 
+	      << setw(8)  << sourceIndex 
+	      << setw(16) << SOURCE_NAME[sourceIndex] 
+	      << setw(12) << std::setprecision(2) << std::scientific << M_sysErrorPiece[sourceIndex] 
+	      << setw(12) << std::setprecision(2) << std::scientific << Ac_sysErrorPiece[sourceIndex] 
+	      << setw(12) << std::setprecision(2) << std::scientific << Acc_sysErrorPiece[sourceIndex] 
+	      << std::endl;
+  }
+
+  cout << MESSAGE << setw(12) << M_sysErrorTotal 
        << setw(12) << Ac_sysErrorTotal << setw(12) << Acc_sysErrorTotal<<endl;
 
   TCanvas *can2 = new TCanvas("can2", "can2", 15, 15, 1400, 700);
@@ -650,7 +590,7 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   hAcc_sysEcontributions->SetTitle("A^{cos2#phi}_{UU} systematic errors");
   hAcc_sysEcontributions->Draw();
 
-  if(doSaveRoot){
+  if(SAVE_ROOT_FILE){
     rootFile->Write();
   }
 } 
