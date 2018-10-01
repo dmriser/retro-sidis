@@ -355,6 +355,8 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
   tlat->DrawLatex(0.15, 0.26, Form("Ac = %3.4f #pm %3.4f", ffcorrRC->GetParameter(1), ffcorrRC->GetParError(1)));
   tlat->DrawLatex(0.15, 0.20, Form("Acc = %3.4f #pm %3.4f", ffcorrRC->GetParameter(2), ffcorrRC->GetParError(2)));
 
+  std::cout << MESSAGE << "nominal M: " << ffcorrRC->GetParameter(0) << " +/- " << ffcorrRC->GetParError(0) << std::endl; 
+
   int finalNomCategory = category;
   //-----------------------------------------------------------
   //----------------- do the variations ----------------------- checkpoint
@@ -518,10 +520,11 @@ void processOneBinSystematics(int xBin = 0, int QQBin = 0, int zBin = 3,
     hM_sysEcontributions  ->SetBinContent(s+1, M_sysErrorPiece[s]);
     hAc_sysEcontributions ->SetBinContent(s+1, Ac_sysErrorPiece[s]);
     hAcc_sysEcontributions->SetBinContent(s+1, Acc_sysErrorPiece[s]);
- 
-    M_sumOfSquaredErrors   = M_sumOfSquaredErrors + M_sysErrorPiece[s]*M_sysErrorPiece[s];
-    Ac_sumOfSquaredErrors  = Ac_sumOfSquaredErrors + Ac_sysErrorPiece[s]*Ac_sysErrorPiece[s];
-    Acc_sumOfSquaredErrors = Acc_sumOfSquaredErrors + Acc_sysErrorPiece[s]*Acc_sysErrorPiece[s];
+
+    // Add in quadrature
+    M_sumOfSquaredErrors   += pow(  M_sysErrorPiece[s], 2); 
+    Ac_sumOfSquaredErrors  += pow( Ac_sysErrorPiece[s], 2);
+    Acc_sumOfSquaredErrors += pow(Acc_sysErrorPiece[s], 2); 
 
   } 
 
