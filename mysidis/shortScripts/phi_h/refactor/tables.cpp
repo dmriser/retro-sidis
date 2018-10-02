@@ -86,4 +86,49 @@ protected:
   std::string fHadronType; 
 };
 
+// These are the names that Nathan used, i'm not really 
+// sure what they mean. 
+struct HapradDataEntry {
+  TH1F *sig, *sib, *tail; 
+};
+
+// This is really now a five dimensional table.  Four 
+// dimensional phase space but for each point there are 
+// 3 histograms which contain constants::n_phi_bins each. 
+// 
+// Perhaps this should just be FiveDimensionalTable. 
+class HapradTable : public FourDimensionalTable<HapradDataEntry> {
+public:
+  HapradTable(std::string path, std::string hadronType) : FourDimensionalTable(path), fHadronType(hadronType) {
+    loadTable(); 
+  }
+
+  ~HapradTable(){
+  }
+
+  void loadTable(){
+    for (int i = 0; i < constants::n_x_bins; i++){
+      for (int j = 0; j < constants::n_q2_bins; j++){
+	for (int k = 0; k < constants::n_z_bins; k++){
+	  for (int m = 0; m < constants::n_pt2_bins; m++){
+	    HapradDataEntry tableEntry; 
+	    tableEntry.sig = new TH1F("", "", 
+				      constants::n_phi_bins, constants::phi_min, constants::phi_max); 
+	    tableEntry.sib = new TH1F("", "", 
+				      constants::n_phi_bins, constants::phi_min, constants::phi_max); 
+	    tableEntry.tail = new TH1F("", "", 
+				       constants::n_phi_bins, constants::phi_min, constants::phi_max); 
+
+	    table[i][j][k][m] = tableEntry; 
+	  }
+	}
+      }
+    }
+
+  }
+
+protected:
+  std::string fHadronType;
+};
+
 #endif 

@@ -24,4 +24,9 @@ void test_tables(){
 
   print(pipTable); 
   print(pimTable);
+
+
+  HapradTable pipHap("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/haprad/hapradResults/NickPipModel/", "pip"); 
+  HapradTable pimHap("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/haprad/hapradResults/NickPimModel/", "pim"); 
+
 }
