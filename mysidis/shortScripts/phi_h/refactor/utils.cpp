@@ -9,6 +9,21 @@
 
 namespace Utils {
 
+  void split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss;
+    ss.str(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+      elems.push_back(item);
+    }
+  }
+
+  std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+  }
+
   string createFilename(string baseDirectory, string projectName,
 			string dataType, int variation, bool isTight){
 
@@ -25,11 +40,13 @@ namespace Utils {
     // If the file does not exist, then the bin passes.  There are
     // more cuts (according to Nathan) that come later to take care
     // of these cases.
+
+    // This should be some default value...
     int category;
     ifstream categoryFile;
     categoryFile.open(categoryFilename.c_str());
 
-    if(categoryFile){
+    if(categoryFile && categoryFile.is_open()){
       categoryFile >> category;
       categoryFile.close();
       cout << message << "Found category file." << endl;
@@ -133,6 +150,27 @@ namespace Utils {
     }
 
     hRC->Divide(hsig, hsib);
+  }
+
+  int convertIndexIntoVariation(int index){
+    int id = -1; 
+
+    // Less code than a switch with explicit cases,
+    // but mayber longer than a switch with default. 
+    if (index <= 6){
+      id = index; 
+    } 
+    else if(index == 7){
+      id = 8; 
+    }
+    else if (index == 8){
+      id = 10;
+    }
+    else if (index == 9){
+      id = 11; 
+    }
+
+  return id; 
   }
 
 }
