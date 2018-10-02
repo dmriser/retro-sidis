@@ -47,6 +47,50 @@ protected:
   T table[constants::n_x_bins][constants::n_q2_bins][constants::n_z_bins][constants::n_pt2_bins]; 
 };
 
+template <class T>
+class FiveDimensionalTable {
+public:
+
+  FiveDimensionalTable(std::string path) : fPath(path) { 
+
+  }
+  
+  virtual ~FiveDimensionalTable(){
+
+  }
+  
+  virtual void loadTable(){
+    return; 
+  }
+
+  T query(int i, int j, int k, int m, int n){
+    return table[i][j][k][m][n]; 
+  }
+
+  bool inBounds(int i, int j, int k, int m, int n){
+    return ( 
+	    (i > -1) && (i <   constants::n_x_bins) &&
+	    (j > -1) && (j <  constants::n_q2_bins) &&
+	    (k > -1) && (k <   constants::n_z_bins) &&
+	    (m > -1) && (m < constants::n_pt2_bins) && 
+	    (n > -1) && (n < constants::n_phi_bins)
+	     ); 
+  }
+
+  T querySafe(int i, int j, int k, int m, int n){
+    if (inBounds(i,j,k,m,n)) {
+      return query(i,j,k,m,n); 
+    } else {
+      std::cerr << "Querying a bin that isn't part of the table" << std::endl; 
+      return constants::tiny; 
+    }
+  }
+
+protected:
+  std::string fPath; 
+  T table[constants::n_x_bins][constants::n_q2_bins][constants::n_z_bins][constants::n_pt2_bins][constants::n_phi_bins]; 
+};
+
 class BinCategoryTable : public FourDimensionalTable<int> {
 public: 
   BinCategoryTable (std::string path, std::string hadronType) : FourDimensionalTable(path), fHadronType(hadronType) {
@@ -89,46 +133,22 @@ protected:
 // These are the names that Nathan used, i'm not really 
 // sure what they mean. 
 struct HapradDataEntry {
-  TH1F *sig, *sib, *tail; 
+  float sig, sib, tail; 
 };
 
-// This is really now a five dimensional table.  Four 
-// dimensional phase space but for each point there are 
-// 3 histograms which contain constants::n_phi_bins each. 
-// 
-// Perhaps this should just be FiveDimensionalTable. 
-class HapradTable : public FourDimensionalTable<HapradDataEntry> {
+
+class HapradTable : public FiveDimensionalTable<HapradDataEntry> {
 public:
-  HapradTable(std::string path, std::string hadronType) : FourDimensionalTable(path), fHadronType(hadronType) {
+  HapradTable(std::string path, std::string hadronType) : fHadronType(hadronType) {
     loadTable(); 
   }
 
-  ~HapradTable(){
-  }
-
   void loadTable(){
-    for (int i = 0; i < constants::n_x_bins; i++){
-      for (int j = 0; j < constants::n_q2_bins; j++){
-	for (int k = 0; k < constants::n_z_bins; k++){
-	  for (int m = 0; m < constants::n_pt2_bins; m++){
-	    HapradDataEntry tableEntry; 
-	    tableEntry.sig = new TH1F("", "", 
-				      constants::n_phi_bins, constants::phi_min, constants::phi_max); 
-	    tableEntry.sib = new TH1F("", "", 
-				      constants::n_phi_bins, constants::phi_min, constants::phi_max); 
-	    tableEntry.tail = new TH1F("", "", 
-				       constants::n_phi_bins, constants::phi_min, constants::phi_max); 
-
-	    table[i][j][k][m] = tableEntry; 
-	  }
-	}
-      }
-    }
-
+    // To be implemented tomorrow. Now I am tired. 
   }
 
 protected:
-  std::string fHadronType;
+  std::string fHadronType; 
 };
 
 #endif 
