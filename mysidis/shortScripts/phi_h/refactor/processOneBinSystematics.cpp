@@ -34,6 +34,9 @@
               haprad file names.  Fitter starting giving results. 
   2018-10-02: Added the Dataset feature, making this function callable 
               without having to load the entire dataset each time. 
+  2018-10-03: Introducing four and five dimensional tables for tracking the 
+              bin category and haprad data. 
+
 */
 
 // Standard c++ Libraries 
@@ -44,9 +47,12 @@
 // Included files from this project 
 #include "constants.cpp"
 #include "dataset.cpp"
+#include "histograms.cpp"
+#include "tables.cpp"
 #include "utils.cpp"
 
-void processOneBinSystematics(Dataset & dataset, 
+void processOneBinSystematics(Dataset & dataset, BinCategoryTable & binCategoryTable, 
+			      HapradTable & hapradTable, 
 			      int xBin = 0, int QQBin = 0, int zBin = 3, 
 			      int PT2Bin = 4, string hadronType = "pip"){
 
@@ -66,19 +72,6 @@ void processOneBinSystematics(Dataset & dataset,
     "e_R1fid", "e_R3fid", "e_CCfid", "pi_vvp", "pi_R1fid", 
     "phih_fid", "accModel", "hapModel"
   };
-
-  map<int, int> arrayIndexToVariation; 
-  arrayIndexToVariation[0] =  0; 
-  arrayIndexToVariation[1] =  1; 
-  arrayIndexToVariation[2] =  2; 
-  arrayIndexToVariation[3] =  3; 
-  arrayIndexToVariation[4] =  4; 
-  arrayIndexToVariation[5] =  5; 
-  arrayIndexToVariation[6] =  6; 
-  arrayIndexToVariation[7] =  8; 
-  arrayIndexToVariation[8] = 10; 
-  arrayIndexToVariation[9] = 11; 
-
    
   float M_sysErrorPiece[constants::n_sources]; 
   float Ac_sysErrorPiece[constants::n_sources];
@@ -91,7 +84,6 @@ void processOneBinSystematics(Dataset & dataset,
   float M_sysErrorTotal;
   float Ac_sysErrorTotal;
   float Acc_sysErrorTotal;
-
 
   string MString   = Form("hM_sysEcontributions_%s_%i_%i_%i_%i", 
 			  hadronType.c_str(), xBin, QQBin, zBin, PT2Bin);
@@ -111,10 +103,15 @@ void processOneBinSystematics(Dataset & dataset,
 					  1, 0, 1);
  
   // Read into memory the category file for this bin. 
+  /* 
   string categoryFilename = Form("%s/binCategories/%sCategory.BiSc5.x%iQQ%iz%iPTsq%i.txt", 
 				 PATH_TO_REQUIRED_FILES.c_str(), hadronType.c_str(), 
 				 xBin, QQBin, zBin, PT2Bin); 
   int defaultCategory = Utils::getBinCategory(categoryFilename, MESSAGE);
+  int category = defaultCategory; 
+  */
+
+  int defaultCategory = binCategoryTable.querySafe(xBin, QQBin, zBin, PT2Bin);
   int category = defaultCategory; 
 
   //-----------------------------------------------------------
@@ -122,21 +119,25 @@ void processOneBinSystematics(Dataset & dataset,
   //-----------------------------------------------------------
   cout << MESSAGE << "Starting calculation for nominal case..." << endl; 
 
-  TH1F *hdataphihModified = (TH1F*) dataset.fDataNominalFile->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
+  HistogramPack nominalHistos = createPack(hadronType, xBin, QQBin, zBin, PT2Bin); 
+  nominalHistos.data = (TH1F*) dataset.fDataNominalFile->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
+
+  //  TH1F *hdataphihModified = (TH1F*) dataset.fDataNominalFile->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
 
   // A little bit of protection because the 
   // code is dying. 
+  /* 
   if(hdataphihModified){
     cout << MESSAGE << "Opened nominal data histogram with entries = " << hdataphihModified->GetEntries() << endl;
   } else {
     cout << MESSAGE << "Dying because the nominal data histogram could not be opened." << endl; 
     return; 
   }
+  */
 
-  // apply some modifications and further define the bin category:
-  Utils::removeBinsWithCountsLower(hdataphihModified, 10); 
-  Utils::removeBinsInCentralPhi(hdataphihModified, category); 
-  int numberOfEmptyPhiBins = Utils::countEmptyBins(hdataphihModified); 
+  Utils::removeBinsWithCountsLower(nominalHistos.data, 10); 
+  Utils::removeBinsInCentralPhi(nominalHistos.data, category); 
+  int numberOfEmptyPhiBins = Utils::countEmptyBins(nominalHistos.data); 
 
   // update/redefine category here:
   // bad statistics and bad coverage, don't use this bin
@@ -148,13 +149,13 @@ void processOneBinSystematics(Dataset & dataset,
   //     -99 : Bad statistics and bad coverage, DO NOT use this bin.
   //       1 : Measure the values for this bin. 
   //     -13 : Measure only the multiplcity M for this bin.  
-  category = Utils::updateCategoryBasedOnEmptyBins(hdataphihModified, 
+  category = Utils::updateCategoryBasedOnEmptyBins(nominalHistos.data, 
 						   numberOfEmptyPhiBins, 
 						   category); 
   
   //--------------------- MC: ---------------------------------
-  TH1F *hgenphih, *hrecphih, *haccphih;
-
+  //  TH1F *hgenphih, *hrecphih, *haccphih;
+  /*
   hgenphih = (TH1F*) dataset.fMCNominalFile->Get(Form("gen_%s_phih_x%i_QQ%i_z%i_PT2%i", 
 						      hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
   hrecphih = (TH1F*) dataset.fMCNominalFile->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", 
@@ -164,16 +165,42 @@ void processOneBinSystematics(Dataset & dataset,
 		      constants::n_phi_bins, -180, 180);
   haccphih->Sumw2();
   haccphih->Divide(hrecphih, hgenphih);
+  */
+
+  nominalHistos.gen = (TH1F*) dataset.fMCNominalFile->Get(Form("gen_%s_phih_x%i_QQ%i_z%i_PT2%i", 
+							       hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
+  nominalHistos.rec = (TH1F*) dataset.fMCNominalFile->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", 
+							       hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
+  nominalHistos.acc->Divide(nominalHistos.rec, nominalHistos.gen); 
 
   //------------------ haprad: --------------------------------
 
-  TH1F *hsig = new TH1F("hsig", "hsig", constants::n_phi_bins, -180, 180);
-  TH1F *hsib = new TH1F("hsib", "hsib", constants::n_phi_bins, -180, 180);
-  TH1F *hRC  = new TH1F( "hRC",  "hRC", constants::n_phi_bins, -180, 180);
+  TH1F *hsig = new TH1F("hsig", "hsig", constants::n_phi_bins, constants::phi_min, constants::phi_max);
+  TH1F *hsib = new TH1F("hsib", "hsib", constants::n_phi_bins, constants::phi_min, constants::phi_max);
+  TH1F *hRC  = new TH1F( "hRC",  "hRC", constants::n_phi_bins, constants::phi_min, constants::phi_max);
   hsig->Sumw2();
   hsib->Sumw2();
   hRC ->Sumw2();
 
+  // This small block loads the radiative correction histograms 
+  // from the haprad table provided in the input. 
+  for (int i = 0; i < constants::n_phi_bins; i++) {
+    HapradDataEntry entry = hapradTable.querySafe(xBin, QQBin, zBin, PT2Bin, i); 
+
+    if (hadronType == "pim"){
+      entry.sig -= entry.tail; 
+      entry.tail = 0; 
+    }
+
+    hsig->SetBinContent(i + 1, entry.sig);
+    hsig->SetBinError(i + 1, 0);
+    hsib->SetBinContent(i + 1, entry.sib);
+    hsib->SetBinError(i + 1, 0);
+  }
+
+  nominalHistos.rc->Divide(hsig, hsib);
+
+  /* 
   // Build path to HAPRAD output files for radiative corrections 
   // and proceed to find and open the file for this bin.  If there 
   // is no file, a message is printed and the calculation continues. 
@@ -190,13 +217,13 @@ void processOneBinSystematics(Dataset & dataset,
   } else {
     cout << MESSAGE << "Didn't find haprad file: " << happath << endl; 
   }
-
-  hRC->Divide(hsig, hsib);
+  */
 
   //------------------- corr: ---------------------------------
-  TH1F *hcorr = new TH1F("hcorr", "hcorr", constants::n_phi_bins, -180, 180);
-  hcorr->Sumw2();
-  hcorr->Divide(hdataphihModified, haccphih);
+  //  TH1F *hcorr = new TH1F("hcorr", "hcorr", constants::n_phi_bins, -180, 180);
+  //  hcorr->Sumw2();
+  //  hcorr->Divide(hdataphihModified, haccphih);
+  nominalHistos.corrAcc->Divide(nominalHistos.data, nominalHistos.acc); 
 
   //------------------- corrRC: -------------------------------
   // defining category = -2 here means no haprad results
@@ -204,16 +231,21 @@ void processOneBinSystematics(Dataset & dataset,
     category = -2; 
   }
 
+  /* 
   TH1F *hcorrRC = new TH1F("hcorrRC", "hcorrRC", constants::n_phi_bins, -180, 180);
   hcorrRC->Sumw2();
   hcorrRC->Divide(hcorr, hRC);
   hcorrRC->GetYaxis()->SetRangeUser(0, 1.1*hcorrRC->GetMaximum());
   hcorrRC->GetXaxis()->SetTitle("phi_h (deg.)");
   hcorrRC->SetTitle("acc. corr. and rad. corr. data");
+  */
+  nominalHistos.corrRC->Divide(nominalHistos.data, nominalHistos.rc);
+  nominalHistos.corr->Divide(nominalHistos.corrAcc, nominalHistos.rc);
 
-  TF1 *ffcorrRC = new TF1("ffcorrRC", "[0]*(1.0 + [1]*cos((3.14159265359/180.0)*x) + [2]*cos(2.0*(3.14159265359/180.0)*x))", -180, 180);
+  TF1 *ffcorrRC = new TF1("ffcorrRC", "[0]*(1.0 + [1]*cos((3.14159265359/180.0)*x) + [2]*cos(2.0*(3.14159265359/180.0)*x))", 
+			  constants::phi_min, constants::phi_max);
   ffcorrRC->SetLineColor(kBlue);
-  ffcorrRC->SetParameters(hcorrRC->GetMaximum(), 0.0, 0.0);
+  ffcorrRC->SetParameters(nominalHistos.corr->GetMaximum(), 0.0, 0.0);
 
   if(category == 1){
     ffcorrRC->SetParLimits(1, -0.99, 0.99);
@@ -223,8 +255,8 @@ void processOneBinSystematics(Dataset & dataset,
     ffcorrRC->SetParLimits(2, -0.30, 0.30);
   }
 
-  if(hcorrRC->Integral() > 36){ 
-    hcorrRC->Fit("ffcorrRC", "q", "", -180, 180); 
+  if(nominalHistos.corr->Integral() > 36){ 
+    nominalHistos.corr->Fit("ffcorrRC", "q", "", constants::phi_min, constants::phi_max); 
   }
 
   std::cout << MESSAGE << "nominal M: " << ffcorrRC->GetParameter(0) << " +/- " << ffcorrRC->GetParError(0) << std::endl; 
@@ -234,13 +266,13 @@ void processOneBinSystematics(Dataset & dataset,
   //----------------- do the variations ----------------------- checkpoint
   //-----------------------------------------------------------
 
-  TH1F *hdataphihModifiedS[constants::n_sources][constants::n_variations_per_source]; // S for Systematics
-  TH1F *hgenphihS[constants::n_sources][constants::n_variations_per_source], *hrecphihS[constants::n_sources][constants::n_variations_per_source], *haccphihS[constants::n_sources][constants::n_variations_per_source];
-  TH1F *hsigS[constants::n_sources][constants::n_variations_per_source], *hsibS[constants::n_sources][constants::n_variations_per_source], *hRCS[constants::n_sources][constants::n_variations_per_source];
-  TH1F *hcorrS[constants::n_sources][constants::n_variations_per_source];
-  TH1F *hcorrRCS[constants::n_sources][constants::n_variations_per_source];
+  //  TH1F *hdataphihModifiedS[constants::n_sources][constants::n_variations_per_source]; // S for Systematics
+  //  TH1F *hgenphihS[constants::n_sources][constants::n_variations_per_source], *hrecphihS[constants::n_sources][constants::n_variations_per_source], *haccphihS[constants::n_sources][constants::n_variations_per_source];
+  //  TH1F *hsigS[constants::n_sources][constants::n_variations_per_source], *hsibS[constants::n_sources][constants::n_variations_per_source], *hRCS[constants::n_sources][constants::n_variations_per_source];
+  TH1F *hsigS[constants::n_sources][constants::n_variations_per_source], *hsibS[constants::n_sources][constants::n_variations_per_source];
+  //  TH1F *hcorrS[constants::n_sources][constants::n_variations_per_source];
+  //  TH1F *hcorrRCS[constants::n_sources][constants::n_variations_per_source];
   TF1 *ffcorrRCS[constants::n_sources][constants::n_variations_per_source];
-
 
   int count = 0;
   for(int s = 0; s < constants::n_sources; s++) {
@@ -300,31 +332,31 @@ void processOneBinSystematics(Dataset & dataset,
 	hRCS[s][v] = new TH1F(Form("hRCS_%i_%i", s, v), Form("hRCS_%i_%i", s, v), constants::n_phi_bins, -180, 180);
 	hRCS[s][v]->Sumw2();
 
-	string happathS = Utils::buildHapradPath(PATH_TO_REQUIRED_FILES, hadronType, 
-						 xBin, QQBin, zBin, PT2Bin, s, v); 
-	ifstream hapfileS(happathS.c_str());
+	// This small block loads the radiative correction histograms 
+	// from the haprad table provided in the input. 
+	for (int i = 0; i < constants::n_phi_bins; i++) {
+	  HapradDataEntry entry = hapradTable.querySafe(xBin, QQBin, zBin, PT2Bin, i); 
 
-	if(hapfileS){
-	  Utils::loadRadiativeCorrection(hapfileS, hsigS[s][v], hsibS[s][v], hRCS[s][v], hadronType);
-	} else {
-	  std::cerr << MESSAGE << "Unable to locate HAPRAD file: " << happathS << std::endl;
+	  if (hadronType == "pim"){
+	    entry.sig -= entry.tail; 
+	    entry.tail = 0; 
+	  }
+
+	  hsigS[s][v]->SetBinContent(i + 1, entry.sig);
+	  hsigS[s][v]->SetBinError(i + 1, 0);
+	  hsibS[s][v]->SetBinContent(i + 1, entry.sib);
+	  hsibS[s][v]->SetBinError(i + 1, 0);
 	}
 
-
 	hRCS[s][v]->Divide(hsigS[s][v], hsibS[s][v]);
-	//	cout << MESSAGE << "Entries (sigS) = " << hsigS[s][v]->GetEntries() << endl; 
-	//	cout << MESSAGE << "Entries (sibS) = " << hsibS[s][v]->GetEntries() << endl; 
-	//	cout << MESSAGE << "Entries (hRCS) = " << hRCS[s][v]->GetEntries() << endl; 
 
-	//------------------- corr: ---------------------------------
-
+	// Apply acceptance correction. 
 	hcorrS[s][v] = new TH1F(Form("hcorrS_%i_%i", s, v), Form("hcorrS_%i_%i", s, v), constants::n_phi_bins, -180, 180);
 	hcorrS[s][v]->Sumw2();
 	hcorrS[s][v]->Divide(hdataphihModifiedS[s][v], haccphihS[s][v]);
-	//	cout << MESSAGE << "Entries (hcorrS) = " << hcorrS[s][v]->GetEntries() << endl; 	  
 
-	//------------------- corrRC: -------------------------------
 
+	// Apply radiative correction. 
 	if(hsibS[s][v]->Integral() < constants::tiny || hsigS[s][v]->Integral() < constants::tiny){
 	  category = -2;
 	}

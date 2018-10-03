@@ -38,7 +38,7 @@ public:
       return query(i,j,k,m); 
     } else {
       std::cerr << "Querying a bin that isn't part of the table" << std::endl; 
-      return constants::tiny; 
+      return T(); 
     }
   }
 
@@ -82,7 +82,7 @@ public:
       return query(i,j,k,m,n); 
     } else {
       std::cerr << "Querying a bin that isn't part of the table" << std::endl; 
-      return constants::tiny; 
+      return T(); 
     }
   }
 
@@ -123,7 +123,6 @@ public:
 	}
       }
     }
-
   }
 
 protected:
@@ -139,12 +138,42 @@ struct HapradDataEntry {
 
 class HapradTable : public FiveDimensionalTable<HapradDataEntry> {
 public:
-  HapradTable(std::string path, std::string hadronType) : fHadronType(hadronType) {
+  HapradTable(std::string path, std::string hadronType) : FiveDimensionalTable(path), fHadronType(hadronType) {
     loadTable(); 
   }
 
   void loadTable(){
-    // To be implemented tomorrow. Now I am tired. 
+    std::string filename(Form("%s/%s.dat", fPath.c_str(), fHadronType.c_str()));
+
+    std::ifstream input(filename.c_str());
+    if (input && input.is_open()){
+      
+      std::string currentLine; 
+      while(getline(input, currentLine)){
+	std::vector<std::string> tokens = Utils::split(currentLine, ','); 
+	std::vector<int> intTokens; 
+	std::vector<float> floatTokens; 
+
+	for (std::string token : tokens){
+	  intTokens.push_back(atoi(token.c_str()));
+	  floatTokens.push_back(atof(token.c_str()));
+	}
+
+	if (tokens.size() == 8){
+	  HapradDataEntry entry; 
+	  entry.sig = floatTokens[5];
+	  entry.sib = floatTokens[6];
+	  entry.tail = floatTokens[7];
+	  table[intTokens[0]][intTokens[1]][intTokens[2]][intTokens[3]][intTokens[4]] = entry; 
+	} else {
+	  std::cerr << "Something is wrong with file " << filename << std::endl; 
+	}
+      }
+      
+    } else {
+      std::cerr << "Trouble opening file: " << filename << std::endl; 
+    }
+
   }
 
 protected:
