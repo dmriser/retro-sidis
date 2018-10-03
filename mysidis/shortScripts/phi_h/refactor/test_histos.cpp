@@ -1,7 +1,7 @@
 #include "histograms.cpp"
 
 void test_histos(){
-  HistogramPack histos = createPack("pip", 0, 0, 3, 4); 
+  HistogramPack histos = createPack("test", "pip", 0, 0, 3, 4); 
 
   std::cout << histos.data->GetTitle() << std::endl; 
   std::cout << histos.rec->GetTitle() << std::endl; 

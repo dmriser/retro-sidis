@@ -5,7 +5,7 @@
 
 struct HistogramPack {
   TH1F *data, *rec, *gen; 
-  TH1F *acc, *rc; 
+  TH1F *acc, *rc, *sig, *sib; 
   TH1F *corrAcc, *corrRC, *corr; 
 };
 
@@ -18,22 +18,27 @@ TH1F * buildHistogram(std::string base, std::string hadronType, int x_bin,
 		  constants::phi_min, constants::phi_max); 
 }
 
-HistogramPack createPack (std::string hadronType, int x_bin, int q2_bin, int z_bin, int pt2_bin) {
+HistogramPack createPack (std::string base, std::string hadronType, 
+			  int x_bin, int q2_bin, int z_bin, int pt2_bin) {
   HistogramPack histos; 
-  histos.data = buildHistogram("data", hadronType, x_bin, q2_bin, z_bin, pt2_bin);
-  histos.rec = buildHistogram("rec", hadronType, x_bin, q2_bin, z_bin, pt2_bin);
-  histos.gen = buildHistogram("gen", hadronType, x_bin, q2_bin, z_bin, pt2_bin);
-  histos.acc = buildHistogram("acc", hadronType, x_bin, q2_bin, z_bin, pt2_bin);
-  histos.rc = buildHistogram("rc", hadronType, x_bin, q2_bin, z_bin, pt2_bin);
-  histos.corrAcc = buildHistogram("corrAcc", hadronType, x_bin, q2_bin, z_bin, pt2_bin);
-  histos.corrRC = buildHistogram("corrRC", hadronType, x_bin, q2_bin, z_bin, pt2_bin);
-  histos.corr = buildHistogram("corr", hadronType, x_bin, q2_bin, z_bin, pt2_bin);
+  histos.data = buildHistogram(Form("data_%s", base.c_str()), hadronType, x_bin, q2_bin, z_bin, pt2_bin);
+  histos.rec = buildHistogram(Form("rec_%s", base.c_str()), hadronType, x_bin, q2_bin, z_bin, pt2_bin);
+  histos.gen = buildHistogram(Form("gen_%s", base.c_str()), hadronType, x_bin, q2_bin, z_bin, pt2_bin);
+  histos.acc = buildHistogram(Form("acc_%s", base.c_str()), hadronType, x_bin, q2_bin, z_bin, pt2_bin);
+  histos.rc = buildHistogram(Form("rc_%s", base.c_str()), hadronType, x_bin, q2_bin, z_bin, pt2_bin);
+  histos.sig = buildHistogram(Form("sig_%s", base.c_str()), hadronType, x_bin, q2_bin, z_bin, pt2_bin);
+  histos.sib = buildHistogram(Form("sib_%s", base.c_str()), hadronType, x_bin, q2_bin, z_bin, pt2_bin);
+  histos.corrAcc = buildHistogram(Form("corrAcc_%s", base.c_str()), hadronType, x_bin, q2_bin, z_bin, pt2_bin);
+  histos.corrRC = buildHistogram(Form("corrRC_%s", base.c_str()), hadronType, x_bin, q2_bin, z_bin, pt2_bin);
+  histos.corr = buildHistogram(Form("corr_%s", base.c_str()), hadronType, x_bin, q2_bin, z_bin, pt2_bin);
 
   histos.data->Sumw2(); 
   histos.rec->Sumw2(); 
   histos.gen->Sumw2(); 
   histos.acc->Sumw2(); 
   histos.rc->Sumw2(); 
+  histos.sig->Sumw2(); 
+  histos.sib->Sumw2(); 
   histos.corrAcc->Sumw2(); 
   histos.corrRC->Sumw2(); 
   histos.corr->Sumw2(); 
