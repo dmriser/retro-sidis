@@ -48,6 +48,7 @@
 #include "constants.cpp"
 #include "dataset.cpp"
 #include "histograms.cpp"
+#include "results.cpp"
 #include "tables.cpp"
 #include "utils.cpp"
 
@@ -58,11 +59,11 @@ struct measurement {
   float acc, acc_err; 
 };
 
-std::pair<HistogramPack, measurement> calculateResult(std::string name, TFile *dataFile, TFile *mcFile,
-						      BinCategoryTable & binCategoryTable,
-						      HapradTable & hapradTable,
-						      int xBin, int QQBin, int zBin, int PT2Bin, 
-						      std::string hadronType){
+std::pair<FourDResult, FiveDResult> calculateResult(std::string name, TFile *dataFile, TFile *mcFile,
+						    BinCategoryTable & binCategoryTable,
+						    HapradTable & hapradTable,
+						    int xBin, int QQBin, int zBin, int PT2Bin, 
+						    std::string hadronType){
   
   // Setup the category for this bin. 
   int category = binCategoryTable.querySafe(xBin, QQBin, zBin, PT2Bin);
@@ -135,16 +136,17 @@ std::pair<HistogramPack, measurement> calculateResult(std::string name, TFile *d
     histos.corr->Fit("ffcorrRC", "q", "", constants::phi_min, constants::phi_max); 
   }
 
-  measurement m; 
-  m.m = ffcorrRC->GetParameter(0);
-  m.m_err = ffcorrRC->GetParError(0); 
-  m.ac = ffcorrRC->GetParameter(1);
-  m.ac_err = ffcorrRC->GetParError(1); 
-  m.acc = ffcorrRC->GetParameter(2);
-  m.acc_err = ffcorrRC->GetParError(2); 
-  m.category = category; 
+  FourDResult fourDResult; 
+  fourDResult.m = ffcorrRC->GetParameter(0);
+  fourDResult.m_err = ffcorrRC->GetParError(0); 
+  fourDResult.ac = ffcorrRC->GetParameter(1);
+  fourDResult.ac_err = ffcorrRC->GetParError(1); 
+  fourDResult.acc = ffcorrRC->GetParameter(2);
+  fourDResult.acc_err = ffcorrRC->GetParError(2); 
+  fourDResult.bin_category = category; 
 
-  return std::make_pair(histos, m); 
+  FiveDResult fiveDResult; 
+  return std::make_pair(fourDResult, fiveDResult); 
 }
 
 void processOneBinSystematics(Dataset & dataset, 
@@ -153,17 +155,13 @@ void processOneBinSystematics(Dataset & dataset,
 			      int xBin = 0, int QQBin = 0, int zBin = 3, 
 			      int PT2Bin = 4, string hadronType = "pip"){
 
-  const bool SAVE_ROOT_FILE = true;
+  const bool SAVE_ROOT_FILE = false;
   TFile *rootFile;
   if(SAVE_ROOT_FILE){
     rootFile = new TFile("Systematics_v2.root", "update");
   }
  
   const string MESSAGE("[ProcessOneBinSystematics] "); 
-  const string BASE_DIRECTORY("/volatile/clas12/dmriser/farm_out"); 
-  const string PROJECT_NAME("sidis_batch_11"); 
-  const string PATH_TO_REQUIRED_FILES("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles"); 
-
   const string SOURCE_NAME[constants::n_sources] = {
     "e_zvert", "e_ECsamp", "e_ECoVi", "e_ECgeo", "e_CCthMatch", 
     "e_R1fid", "e_R3fid", "e_CCfid", "pi_vvp", "pi_R1fid", 
@@ -201,16 +199,16 @@ void processOneBinSystematics(Dataset & dataset,
  
 
   // Process Nominal Configuration 
-  std::pair<HistogramPack, measurement> nominalResults = calculateResult("nominal", dataset.fDataNominalFile, 
+  std::pair<FourDResult, FiveDResult> nominalResults = calculateResult("nominal", dataset.fDataNominalFile, 
 									 dataset.fMCNominalFile, binCategoryTable, 
 									 hapradTable, xBin, QQBin, zBin, PT2Bin, hadronType); 
 
-  std::cout << "Nominal Results: " << nominalResults.second.m << " +/- " << nominalResults.second.m_err << std::endl;
+  std::cout << "Nominal Results: " << nominalResults.first.m << " +/- " << nominalResults.first.m_err << std::endl;
 
   // Setup for variations 
-  std::pair<HistogramPack, measurement> variationResults[constants::n_sources][constants::n_variations_per_source]; 
+  std::pair<FourDResult, FiveDResult> variationResults[constants::n_sources][constants::n_variations_per_source]; 
 
-  int finalNomCategory = nominalResults.second.category;
+  int finalNomCategory = nominalResults.first.bin_category; 
   for(int s = 0; s < constants::n_sources; s++) {
     for(int v = 0; v < constants::n_variations_per_source; v++) {
       if(!((s == 11 && v == 1) || (s == 12 && v == 1))) {
@@ -227,18 +225,18 @@ void processOneBinSystematics(Dataset & dataset,
     
     // This is part of the work-around Nathan mentions above. 
     if (s < 10){
-      M_sysErrorPiece[s] = sqrt( pow(variationResults[s][0].second.m - nominalResults.second.m, 2) + 
-				 pow(variationResults[s][1].second.m - nominalResults.second.m, 2) ) / sqrt(2.0);
-      Ac_sysErrorPiece[s] = sqrt( pow(variationResults[s][0].second.ac - nominalResults.second.ac, 2) + 
-				  pow(variationResults[s][1].second.ac - nominalResults.second.ac, 2) ) / sqrt(2.0);
-      Acc_sysErrorPiece[s] = sqrt( pow(variationResults[s][0].second.acc - nominalResults.second.acc, 2) + 
-				   pow(variationResults[s][1].second.acc - nominalResults.second.acc, 2) ) / sqrt(2.0);
+      M_sysErrorPiece[s] = sqrt( pow(variationResults[s][0].first.m - nominalResults.first.m, 2) + 
+				 pow(variationResults[s][1].first.m - nominalResults.first.m, 2) ) / sqrt(2.0);
+      Ac_sysErrorPiece[s] = sqrt( pow(variationResults[s][0].first.ac - nominalResults.first.ac, 2) + 
+				  pow(variationResults[s][1].first.ac - nominalResults.first.ac, 2) ) / sqrt(2.0);
+      Acc_sysErrorPiece[s] = sqrt( pow(variationResults[s][0].first.acc - nominalResults.first.acc, 2) + 
+				   pow(variationResults[s][1].first.acc - nominalResults.first.acc, 2) ) / sqrt(2.0);
     }
     
     else {
-      M_sysErrorPiece[s] = fabs(variationResults[s][0].second.m - nominalResults.second.m); 
-      Ac_sysErrorPiece[s] = fabs(variationResults[s][0].second.ac - nominalResults.second.ac); 
-      Acc_sysErrorPiece[s] = fabs(variationResults[s][0].second.acc - nominalResults.second.acc); 
+      M_sysErrorPiece[s] = fabs(variationResults[s][0].first.m - nominalResults.first.m); 
+      Ac_sysErrorPiece[s] = fabs(variationResults[s][0].first.ac - nominalResults.first.ac); 
+      Acc_sysErrorPiece[s] = fabs(variationResults[s][0].first.acc - nominalResults.first.acc); 
     }
 
     hM_sysEcontributions  ->SetBinContent(s+1, M_sysErrorPiece[s]);
@@ -278,6 +276,17 @@ void processOneBinSystematics(Dataset & dataset,
        << setw(12) << Ac_sysErrorTotal << setw(12) << Acc_sysErrorTotal<<endl;
 
   if(SAVE_ROOT_FILE){
+
+    // The pieces of the calculation. 
+    //    writeHistogramPackToFile(rootFile, nominalResults.first); 
+
+    // The important results. 
+    hCategory->Write(); 
+    hM_sysEcontributions->Write();
+    hAc_sysEcontributions->Write();
+    hAcc_sysEcontributions->Write();
+
+    // Maybe not needed. 
     rootFile->Write();
   }
 } 

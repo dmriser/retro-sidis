@@ -1,6 +1,11 @@
 #ifndef HISTOGRAMS_CPP
 #define HISTOGRAMS_CPP
 
+// root 
+#include "TFile.h"
+#include "TH1.h"
+
+// this projects 
 #include "constants.cpp"
 
 struct HistogramPack {
@@ -44,6 +49,23 @@ HistogramPack createPack (std::string base, std::string hadronType,
   histos.corr->Sumw2(); 
 
   return histos; 
+}
+
+void writeHistogramPackToFile(TFile *file, HistogramPack & histos){
+  if (file && file->IsOpen()){
+    histos.data->Write(); 
+    histos.rec->Write(); 
+    histos.gen->Write(); 
+    histos.acc->Write(); 
+    histos.rc->Write(); 
+    histos.sig->Write(); 
+    histos.sib->Write(); 
+    histos.corrAcc->Write(); 
+    histos.corrRC->Write(); 
+    histos.corr->Write();     
+  } else {
+    std::cerr << "Trouble writing to file! " << std::endl; 
+  }
 }
 
 #endif

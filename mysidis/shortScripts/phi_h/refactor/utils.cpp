@@ -9,6 +9,26 @@
 
 namespace Utils {
 
+  class BinEncoder {
+  public:
+    static int encodeBinCoordinates(const std::vector<int> & binIndex, const std::vector<int> & axisSizes){
+      int index = 0; 
+      
+      for(int i = 0; i < axisSizes.size(); i++){
+	index += binIndex[i] * prefactor(axisSizes, i); 
+      }
+      
+      return index; 
+    }
+  protected:
+    static int prefactor(std::vector<int> axisSizes, int axisIndex){
+      if (axisIndex == 0){
+	return 1; 
+      }
+      else return (axisSizes[axisIndex - 1] * prefactor(axisSizes, axisIndex - 1)); 
+    }
+  };
+
   void split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss;
     ss.str(s);
