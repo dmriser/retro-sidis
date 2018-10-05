@@ -13,7 +13,6 @@ public:
   }
   
   virtual ~FourDimensionalTable(){
-
   }
   
   virtual void loadTable(){
@@ -180,19 +179,13 @@ protected:
   std::string fHadronType; 
 };
 
-struct FourDimensionalResult {
-  float m, ac, acc; 
-  float m_err, ac_err, acc_err; 
-  float chi2; 
-  int bin_category; 
-};
-
-class FourDimensionalResultsTable : public FourDimensionalTable<FourDimensionalResult> {
+class FourDimensionalResultsTable : public FourDimensionalTable<FourDResult> {
+public:
   FourDimensionalResultsTable(std::string path, std::string hadronType) : FourDimensionalTable(path), fHadronType(hadronType) {
     
   }
 
-  void insert(FourDimensionalResult result, int x_bin, int q2_bin, int z_bin, int pt2_bin){
+  void insert(FourDResult result, int x_bin, int q2_bin, int z_bin, int pt2_bin){
     if ( inBounds(x_bin, q2_bin, z_bin, pt2_bin) ){
       table[x_bin][q2_bin][z_bin][pt2_bin] = result; 
     }
@@ -233,6 +226,74 @@ protected:
     output << table[i][j][k][m].ac_err << ",";
     output << table[i][j][k][m].acc << ",";
     output << table[i][j][k][m].acc_err << ",";
+
+    for (int s = 0; s < constants::n_sources; s++){
+      output << table[i][j][k][m].m_sys_err[s] << ","; 
+      output << table[i][j][k][m].ac_sys_err[s] << ","; 
+      output << table[i][j][k][m].acc_sys_err[s]; 
+      
+      if (s != constants::n_sources - 1){
+	output << ",";
+      }
+    }
+
+    output << std::endl; 
+  }
+
+};
+
+
+class FiveDimensionalResultsTable : public FiveDimensionalTable<FiveDResult> {
+public:
+  FiveDimensionalResultsTable(std::string path, std::string hadronType) : FiveDimensionalTable(path), fHadronType(hadronType) {
+    
+  }
+
+  void insert(FiveDResult result, int x_bin, int q2_bin, int z_bin, int pt2_bin, int phi_bin){
+    if ( inBounds(x_bin, q2_bin, z_bin, pt2_bin, phi_bin) ){
+      table[x_bin][q2_bin][z_bin][pt2_bin][phi_bin] = result; 
+    }
+  }
+
+  void write(){
+    std::string filename(Form("%s/five_dimensional_table_%s.dat", fPath.c_str(), fHadronType.c_str()));
+    std::ofstream output(filename.c_str());
+    
+    if (output && output.is_open()){
+      for (int i = 0; i < constants::n_x_bins; i++){
+	for (int j = 0; j < constants::n_q2_bins; j++){
+	  for (int k = 0; k < constants::n_z_bins; k++){
+	    for (int m = 0; m < constants::n_pt2_bins; m++){
+	      for (int n = 0; n < constants::n_phi_bins; n++){
+		writeRow(output, i, j, k, m, n); 
+	      }
+	    }
+	  }
+	}
+      }
+    }
+    
+    output.close(); 
+  }
+  
+protected:
+  std::string fHadronType; 
+
+  void writeRow(std::ofstream & output, int i, int j, int k, int m, int n){
+    output << i << ",";
+    output << j << ",";
+    output << k << ",";
+    output << m << ",";
+    output << n << ",";
+
+    for (int s = 0; s < constants::n_sources; s++){
+      output << table[i][j][k][m][n].sys_err[s]; 
+      
+      if (s != constants::n_sources - 1){
+	output << ",";
+      }
+    }
+
     output << std::endl; 
   }
 

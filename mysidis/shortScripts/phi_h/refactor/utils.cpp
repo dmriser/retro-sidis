@@ -29,6 +29,10 @@ namespace Utils {
     }
   };
 
+  float combineVariations(float nominal, float left, float right){
+    return sqrt(pow(nominal - left, 2) + pow(nominal - right, 2)) / sqrt(2.0); 
+  }
+
   void split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss;
     ss.str(s);

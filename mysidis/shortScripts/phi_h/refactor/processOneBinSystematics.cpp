@@ -52,14 +52,7 @@
 #include "tables.cpp"
 #include "utils.cpp"
 
-struct measurement {
-  int category; 
-  float m, m_err; 
-  float ac, ac_err; 
-  float acc, acc_err; 
-};
-
-std::pair<FourDResult, FiveDResult> calculateResult(std::string name, TFile *dataFile, TFile *mcFile,
+std::pair<FourDResult, std::vector<FiveDResult> > calculateResult(std::string name, TFile *dataFile, TFile *mcFile,
 						    BinCategoryTable & binCategoryTable,
 						    HapradTable & hapradTable,
 						    int xBin, int QQBin, int zBin, int PT2Bin, 
@@ -143,10 +136,23 @@ std::pair<FourDResult, FiveDResult> calculateResult(std::string name, TFile *dat
   fourDResult.ac_err = ffcorrRC->GetParError(1); 
   fourDResult.acc = ffcorrRC->GetParameter(2);
   fourDResult.acc_err = ffcorrRC->GetParError(2); 
+  fourDResult.chi2 = ffcorrRC->GetChisquare(); 
   fourDResult.bin_category = category; 
 
-  FiveDResult fiveDResult; 
-  return std::make_pair(fourDResult, fiveDResult); 
+
+  std::vector<FiveDResult> fiveDResults; 
+  for(int i = 1; i <= constants::n_phi_bins; i++){
+    FiveDResult fiveDResult;
+    fiveDResult.counts = histos.corr->GetBinContent(i);
+    fiveDResult.stat_err = histos.corr->GetBinError(i);
+    fiveDResult.acceptance = histos.acc->GetBinContent(i);
+    fiveDResult.acceptance_err = histos.acc->GetBinError(i);
+    fiveDResult.rad_corr = histos.rc->GetBinContent(i);
+    fiveDResult.rad_corr_err = histos.rc->GetBinError(i);    
+    fiveDResults.push_back(fiveDResult);
+  }
+
+  return std::make_pair(fourDResult, fiveDResults); 
 }
 
 void processOneBinSystematics(Dataset & dataset, 
@@ -199,14 +205,14 @@ void processOneBinSystematics(Dataset & dataset,
  
 
   // Process Nominal Configuration 
-  std::pair<FourDResult, FiveDResult> nominalResults = calculateResult("nominal", dataset.fDataNominalFile, 
-									 dataset.fMCNominalFile, binCategoryTable, 
-									 hapradTable, xBin, QQBin, zBin, PT2Bin, hadronType); 
+  std::pair<FourDResult, std::vector<FiveDResult> > nominalResults = calculateResult("nominal", dataset.fDataNominalFile, 
+										     dataset.fMCNominalFile, binCategoryTable, 
+										     hapradTable, xBin, QQBin, zBin, PT2Bin, hadronType); 
 
   std::cout << "Nominal Results: " << nominalResults.first.m << " +/- " << nominalResults.first.m_err << std::endl;
 
   // Setup for variations 
-  std::pair<FourDResult, FiveDResult> variationResults[constants::n_sources][constants::n_variations_per_source]; 
+  std::pair<FourDResult, std::vector<FiveDResult> > variationResults[constants::n_sources][constants::n_variations_per_source]; 
 
   int finalNomCategory = nominalResults.first.bin_category; 
   for(int s = 0; s < constants::n_sources; s++) {
