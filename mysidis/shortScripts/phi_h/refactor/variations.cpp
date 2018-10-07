@@ -14,6 +14,8 @@
 */
 
 void variations(int startIndex = 0, int stopIndex = 4){
+  std::cout << "This line prints no matter what." << std::endl; 
+
   std::string baseDirectory("/volatile/clas12/dmriser/farm_out");
   std::string projectName("sidis_batch_11"); 
 
@@ -49,7 +51,7 @@ void variations(int startIndex = 0, int stopIndex = 4){
 	    if (index >= startIndex && index < stopIndex){
 	      std::cout << "\rProcessing (" << index-startIndex << "/" << stopIndex-startIndex << ")" << std::flush; 
 
-	      std::pair<FourDResult, std::vector<FiveDResult> > nominalResult = calculateResult("nominal", 
+	      std::pair<FourDResult, CollectionOfFiveDResults> nominalResult = calculateResult("nominal", 
 												dataset.fDataNominalFile, 
 												dataset.fMCNominalFile, 
 												pipBinCategoryTable,
@@ -59,14 +61,14 @@ void variations(int startIndex = 0, int stopIndex = 4){
 	      for (int sourceIndex = 0; sourceIndex < constants::n_sources; sourceIndex++){
 
 		std::string looseName(Form("source%d_var0", sourceIndex));
-		std::pair<FourDResult, std::vector<FiveDResult> > looseResults = calculateResult(looseName,
+		std::pair<FourDResult, CollectionOfFiveDResults> looseResults = calculateResult(looseName,
 												 dataset.fDataFiles[sourceIndex][0],
 												 dataset.fMCFiles[sourceIndex][0],
 												 pipBinCategoryTable,
 												 pipHapradTable,
 												 i, j, k, m, "pip");
 		std::string tightName(Form("source%d_var1", sourceIndex));
-		std::pair<FourDResult, std::vector<FiveDResult> > tightResults = calculateResult(tightName,
+		std::pair<FourDResult, CollectionOfFiveDResults> tightResults = calculateResult(tightName,
 												 dataset.fDataFiles[sourceIndex][1],
 												 dataset.fMCFiles[sourceIndex][1],
 												 pipBinCategoryTable,
@@ -87,7 +89,7 @@ void variations(int startIndex = 0, int stopIndex = 4){
 	      fourResults.insert(nominalResult.first, i, j, k, m); 										  
 	      
 	      for (int phi_bin = 0; phi_bin < constants::n_phi_bins; phi_bin++){
-		fiveResults.insert(nominalResult.second.at(phi_bin), i, j, k, m, phi_bin); 
+		fiveResults.insert(nominalResult.second.get(phi_bin), i, j, k, m, phi_bin); 
 	      }
 
 	    }

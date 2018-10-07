@@ -52,7 +52,7 @@
 #include "tables.cpp"
 #include "utils.cpp"
 
-std::pair<FourDResult, std::vector<FiveDResult> > calculateResult(std::string name, TFile *dataFile, TFile *mcFile,
+std::pair<FourDResult, CollectionOfFiveDResults> calculateResult(std::string name, TFile *dataFile, TFile *mcFile,
 						    BinCategoryTable & binCategoryTable,
 						    HapradTable & hapradTable,
 						    int xBin, int QQBin, int zBin, int PT2Bin, 
@@ -140,7 +140,7 @@ std::pair<FourDResult, std::vector<FiveDResult> > calculateResult(std::string na
   fourDResult.bin_category = category; 
 
 
-  std::vector<FiveDResult> fiveDResults; 
+  CollectionOfFiveDResults fiveDResults; 
   for(int i = 1; i <= constants::n_phi_bins; i++){
     FiveDResult fiveDResult;
     fiveDResult.counts = histos.corr->GetBinContent(i);
@@ -149,7 +149,7 @@ std::pair<FourDResult, std::vector<FiveDResult> > calculateResult(std::string na
     fiveDResult.acceptance_err = histos.acc->GetBinError(i);
     fiveDResult.rad_corr = histos.rc->GetBinContent(i);
     fiveDResult.rad_corr_err = histos.rc->GetBinError(i);    
-    fiveDResults.push_back(fiveDResult);
+    fiveDResults.set(fiveDResult, i);
   }
 
   return std::make_pair(fourDResult, fiveDResults); 
@@ -205,14 +205,14 @@ void processOneBinSystematics(Dataset & dataset,
  
 
   // Process Nominal Configuration 
-  std::pair<FourDResult, std::vector<FiveDResult> > nominalResults = calculateResult("nominal", dataset.fDataNominalFile, 
+  std::pair<FourDResult, CollectionOfFiveDResults> nominalResults = calculateResult("nominal", dataset.fDataNominalFile, 
 										     dataset.fMCNominalFile, binCategoryTable, 
 										     hapradTable, xBin, QQBin, zBin, PT2Bin, hadronType); 
 
   std::cout << "Nominal Results: " << nominalResults.first.m << " +/- " << nominalResults.first.m_err << std::endl;
 
   // Setup for variations 
-  std::pair<FourDResult, std::vector<FiveDResult> > variationResults[constants::n_sources][constants::n_variations_per_source]; 
+  std::pair<FourDResult, CollectionOfFiveDResults> variationResults[constants::n_sources][constants::n_variations_per_source]; 
 
   int finalNomCategory = nominalResults.first.bin_category; 
   for(int s = 0; s < constants::n_sources; s++) {

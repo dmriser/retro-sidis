@@ -22,4 +22,23 @@ struct FiveDResult {
   float sys_err[constants::n_sources];
 };
 
+class CollectionOfFiveDResults {
+public:
+  CollectionOfFiveDResults(){
+  }
+  ~CollectionOfFiveDResults(){
+  }
+
+  void set(const FiveDResult & result, int index){
+    fData[index] = result; 
+  }
+
+  FiveDResult get(int index) const {
+    return fData[index];
+  }
+
+protected:
+  FiveDResult fData[constants::n_phi_bins];
+};
+
 #endif 
