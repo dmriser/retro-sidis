@@ -134,7 +134,6 @@ struct HapradDataEntry {
   float sig, sib, tail; 
 };
 
-
 class HapradTable : public FiveDimensionalTable<HapradDataEntry> {
 public:
   HapradTable(std::string path, std::string hadronType) : FiveDimensionalTable(path), fHadronType(hadronType) {
@@ -243,15 +242,23 @@ protected:
 };
 
 
-class FiveDimensionalResultsTable : public FiveDimensionalTable<FiveDResult> {
+class FiveDimensionalResultsTable {
 public:
-  FiveDimensionalResultsTable(std::string path, std::string hadronType) : FiveDimensionalTable(path), fHadronType(hadronType) {
-    
+  FiveDimensionalResultsTable(std::string path, std::string hadronType) : fPath(path), fHadronType(hadronType) {
+    std::vector<int> dimensions = {constants::n_x_bins, constants::n_q2_bins, 
+				   constants::n_z_bins, constants::n_pt2_bins, constants::n_phi_bins};
+    table = new SparseContainer<FiveDResult>(dimensions); 
   }
 
   void insert(FiveDResult result, int x_bin, int q2_bin, int z_bin, int pt2_bin, int phi_bin){
     if ( inBounds(x_bin, q2_bin, z_bin, pt2_bin, phi_bin) ){
-      table[x_bin][q2_bin][z_bin][pt2_bin][phi_bin] = result; 
+      if (result.counts != 0){
+	// constantly re-allocating a vector is probably slow,
+	// maybe this class shoudl accept arrays and then current
+	// point should be a member of this class which is updated. 
+	std::vector<int> point = {x_bin, q2_bin, z_bin, pt2_bin, phi_bin};
+	table->insert(result, point); 
+      }
     }
   }
 
@@ -275,9 +282,20 @@ public:
     
     output.close(); 
   }
+
+  bool inBounds(int i, int j, int k, int m, int n){
+    return (
+            (i > -1) && (i <   constants::n_x_bins) &&
+            (j > -1) && (j <  constants::n_q2_bins) &&
+            (k > -1) && (k <   constants::n_z_bins) &&
+            (m > -1) && (m < constants::n_pt2_bins) &&
+            (n > -1) && (n < constants::n_phi_bins)
+	    );
+  }
   
 protected:
-  std::string fHadronType; 
+  std::string fHadronType, fPath; 
+  SparseContainer<FiveDResult> *table; 
 
   void writeRow(std::ofstream & output, int i, int j, int k, int m, int n){
     output << i << ",";
@@ -286,8 +304,10 @@ protected:
     output << m << ",";
     output << n << ",";
 
+    std::vector<int> point = {i, j, k, m, n};
+    FiveDResult r = table->query(point);
     for (int s = 0; s < constants::n_sources; s++){
-      output << table[i][j][k][m][n].sys_err[s]; 
+      output << r.sys_err[s]; 
       
       if (s != constants::n_sources - 1){
 	output << ",";

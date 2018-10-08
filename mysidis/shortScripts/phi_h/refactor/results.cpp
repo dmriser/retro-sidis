@@ -20,6 +20,10 @@ struct FiveDResult {
   float rad_corr, rad_corr_err; 
   float stat_err; 
   float sys_err[constants::n_sources];
+
+  FiveDResult(){
+    counts = 0; 
+  }
 };
 
 class CollectionOfFiveDResults {

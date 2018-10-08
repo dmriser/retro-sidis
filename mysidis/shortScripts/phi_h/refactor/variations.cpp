@@ -1,4 +1,5 @@
 #include "dataset.cpp"
+#include "encoder.cpp"
 #include "processOneBinSystematics.cpp"
 #include "tables.cpp"
 
@@ -14,8 +15,6 @@
 */
 
 void variations(int startIndex = 0, int stopIndex = 4){
-  std::cout << "This line prints no matter what." << std::endl; 
-
   std::string baseDirectory("/volatile/clas12/dmriser/farm_out");
   std::string projectName("sidis_batch_11"); 
 
@@ -34,7 +33,7 @@ void variations(int startIndex = 0, int stopIndex = 4){
   HapradTable pipHapradTable("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/haprad/hapradResults/NickPipModel", "pip");
   HapradTable pimHapradTable("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/haprad/hapradResults/NickPimModel", "pim");
   std::cout << "done!" << std::endl; 
-  
+
   if (verifyDataset(dataset)){
     std::cout << "The dataset is opened correctly." << std::endl; 
 
@@ -91,7 +90,7 @@ void variations(int startIndex = 0, int stopIndex = 4){
 	      for (int phi_bin = 0; phi_bin < constants::n_phi_bins; phi_bin++){
 		fiveResults.insert(nominalResult.second.get(phi_bin), i, j, k, m, phi_bin); 
 	      }
-
+	      
 	    }
 
 	    index++; 
@@ -99,11 +98,15 @@ void variations(int startIndex = 0, int stopIndex = 4){
 	}
       }
     }
-
+    
+    std::cout << std::endl; 
+    std::cout << "Writing tables... "; 
     fourResults.write(); 
     fiveResults.write(); 
+    std::cout << "done!" << std::endl; 
 
   } else {
     std::cout << "The dataset is not opened correctly." << std::endl; 
   }
+
 }
