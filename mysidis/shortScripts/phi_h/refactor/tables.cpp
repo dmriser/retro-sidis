@@ -2,6 +2,8 @@
 #define TABLES_CPP
 
 #include "constants.cpp"
+#include "encoder.cpp"
+#include "results.cpp"
 #include "utils.cpp"
 
 template <class T>
@@ -306,6 +308,14 @@ protected:
 
     std::vector<int> point = {i, j, k, m, n};
     FiveDResult r = table->query(point);
+
+    output << r.counts << ",";
+    output << r.acceptance << ",";
+    output << r.acceptance_err << ",";
+    output << r.rad_corr << ",";
+    output << r.rad_corr_err << ",";
+    output << r.stat_err << ",";
+
     for (int s = 0; s < constants::n_sources; s++){
       output << r.sys_err[s]; 
       

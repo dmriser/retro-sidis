@@ -23,3 +23,6 @@ mysidis/requiredFiles/hadrad/hapradResults/NickPimModel/*
 mysidis/requiredFiles/parameters/momentumCorrections/*
 mysidis/requiredFiles/parameters/pip/*
 mysidis/requiredFiles/parameters/pim/*
+
+# Some big results 
+mysidis/shortScripts/phi_h/refactor/*.dat

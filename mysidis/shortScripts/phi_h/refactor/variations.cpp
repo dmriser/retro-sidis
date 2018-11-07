@@ -12,13 +12,21 @@
   This file replaces processOneBinSystematics as the 
   main workhorse for calculating systematic uncertainties.
 
+  Please Do: 
+  1. Check that the variations are done correctly, perhaps one needs 
+     to pass a different haprad table into one of the variations. 
+  2. Run a complete run with Nathan's good run list.
+  3. Compare in an automated way the results produced by myself and Nathan. 
+
 */
 
 void variations(int startIndex = 0, int stopIndex = 4){
-  std::string baseDirectory("/volatile/clas12/dmriser/farm_out");
-  std::string projectName("sidis_batch_11"); 
 
-  // Load the entire dataset. 
+  std::string baseDirectory("/volatile/clas12/dmriser/farm_out");
+  std::string projectName("Nathan_03"); 
+
+  // Load the entire dataset, these are the output room files 
+  // from all the different variations. 
   std::cout << "Loading data... "; 
   Dataset dataset = loadDataset(baseDirectory, projectName); 
   std::cout << "done!" << std::endl; 
