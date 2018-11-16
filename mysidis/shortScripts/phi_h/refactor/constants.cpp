@@ -12,6 +12,7 @@ namespace constants {
   const int n_variations_per_source = 2;
 
   const float tiny = 1e-8; 
+  const float huge = 1e8; 
   const float phi_min = -180; 
   const float phi_max = 180; 
 

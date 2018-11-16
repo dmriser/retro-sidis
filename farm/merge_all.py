@@ -23,7 +23,7 @@ def process_folder(dir, files, n_expected_files, args):
     elif folder_type == 'nominal':
         process_nominal(dir, files, n_expected_files, args)
     elif folder_type == 'acceptance':
-        process_nominal(dir, files, n_expected_files, args)
+        process_acceptance(dir, files, n_expected_files, args)
     elif folder_type == 'sector':
         process_sector(dir, files, n_expected_files, args)
     else:
@@ -39,7 +39,44 @@ def determine_folder_type(dir):
 
     return default_type
 
+def process_variation(dir, files, n_expected_files, args):
+    clean_and_merge(filename='tight', dir=dir, files=files, 
+        n_expected_files=n_expected_files, args=args
+    )
+    clean_and_merge(filename='loose', dir=dir, files=files, 
+        n_expected_files=n_expected_files, args=args
+    )
+        
+def process_acceptance(dir, files, n_expected_files, args):
+    clean_and_merge(filename='acceptance', dir=dir, files=files, 
+        n_expected_files=n_expected_files, args=args
+    )
 
+def process_nominal(dir, files, n_expected_files, args):
+    clean_and_merge(filename='nominal', dir=dir, files=files, 
+        n_expected_files=n_expected_files, args=args
+    )
+
+def process_sector(dir, files, n_expected_files, args):
+    clean_and_merge(filename='sector1', dir=dir, files=files, 
+        n_expected_files=n_expected_files, args=args
+    )
+    clean_and_merge(filename='sector2', dir=dir, files=files, 
+        n_expected_files=n_expected_files, args=args
+    )
+    clean_and_merge(filename='sector3', dir=dir, files=files, 
+        n_expected_files=n_expected_files, args=args
+    )
+    clean_and_merge(filename='sector4', dir=dir, files=files, 
+        n_expected_files=n_expected_files, args=args
+    )
+    clean_and_merge(filename='sector5', dir=dir, files=files, 
+        n_expected_files=n_expected_files, args=args
+    )
+    clean_and_merge(filename='sector6', dir=dir, files=files, 
+        n_expected_files=n_expected_files, args=args
+    )
+ 
 def clean_and_merge(filename, dir, files, n_expected_files, args):
     ''' This function does the brunt of the work.  Taking a stub name and 
     cleaning existing files if needed and merging the sub files. '''
@@ -64,39 +101,7 @@ def clean_and_merge(filename, dir, files, n_expected_files, args):
             print('Merging files from {}'.format(dir))
             merge_command = 'hadd {}/{}.root {}/*{}.root'.format(dir, filename, dir, filename)
             os.system(merge_command)
-
-def process_variation(dir, files, n_expected_files, args):
-    clean_and_merge(filename='tight', dir=dir, files=files, 
-        n_expected_files=n_expected_files, args=args
-    )
-    clean_and_merge(filename='loose', dir=dir, files=files, 
-        n_expected_files=n_expected_files, args=args
-    )
-        
-def process_nominal(dir, files, n_expected_files, args):
-    clean_and_merge(filename='out', dir=dir, files=files, 
-        n_expected_files=n_expected_files, args=args
-    )
-
-def process_sector(dir, files, n_expected_files, args):
-    clean_and_merge(filename='sector1', dir=dir, files=files, 
-        n_expected_files=n_expected_files, args=args
-    )
-    clean_and_merge(filename='sector2', dir=dir, files=files, 
-        n_expected_files=n_expected_files, args=args
-    )
-    clean_and_merge(filename='sector3', dir=dir, files=files, 
-        n_expected_files=n_expected_files, args=args
-    )
-    clean_and_merge(filename='sector4', dir=dir, files=files, 
-        n_expected_files=n_expected_files, args=args
-    )
-    clean_and_merge(filename='sector5', dir=dir, files=files, 
-        n_expected_files=n_expected_files, args=args
-    )
-    clean_and_merge(filename='sector6', dir=dir, files=files, 
-        n_expected_files=n_expected_files, args=args
-    )
+            print(merge_command)
 
 if __name__ == '__main__':
 

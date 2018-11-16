@@ -4,7 +4,8 @@ import os
 
 if __name__ == '__main__':
 
-    input_list = '/u/home/dmriser/clas/analysis-main/lists/files/data/nathan_goodrun.dat'
+#    input_list = '/u/home/dmriser/clas/analysis-main/lists/files/data/nathan_goodrun.dat'
+    input_list = '/u/home/dmriser/clas/analysis-main/lists/files/data/empty_target.dat'
     file_dir = '/volatile/clas12/dmriser/data/all/root'
 
     found_files = []
@@ -14,8 +15,9 @@ if __name__ == '__main__':
         run_numbers = [line.strip() for line in input_file.readlines()]
         
         # Strip off the leading zero from the run number 
-        runs = [run[1:] for run in run_numbers]
-        
+        #runs = [run[1:] for run in run_numbers]
+        runs = run_numbers 
+
         for run in runs:
             filename = '{}/{}.root'.format(file_dir, run)
 

@@ -69,6 +69,10 @@ std::pair<FourDResult, CollectionOfFiveDResults> calculateResult(std::string nam
   HistogramPack histos = createPack(name, hadronType, xBin, QQBin, zBin, PT2Bin); 
   histos.data = (TH1F*) dataFile->Get(Form("rec_%s_phih_x%i_QQ%i_z%i_PT2%i", hadronType.c_str(), xBin, QQBin, zBin, PT2Bin));
 
+  // There is some need for protection here, the 
+  // code can die anytime if even one of these 
+  // histograms won't open or doesn't exist. 
+
   Utils::removeBinsWithCountsLower(histos.data, 10); 
   Utils::removeBinsInCentralPhi(histos.data, category); 
   int numberOfEmptyPhiBins = Utils::countEmptyBins(histos.data); 
@@ -138,7 +142,6 @@ std::pair<FourDResult, CollectionOfFiveDResults> calculateResult(std::string nam
   fourDResult.acc_err = ffcorrRC->GetParError(2); 
   fourDResult.chi2 = ffcorrRC->GetChisquare(); 
   fourDResult.bin_category = category; 
-
 
   CollectionOfFiveDResults fiveDResults; 
   for(int i = 1; i <= constants::n_phi_bins; i++){

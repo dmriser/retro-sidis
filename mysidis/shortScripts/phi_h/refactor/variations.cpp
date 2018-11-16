@@ -17,13 +17,15 @@
      to pass a different haprad table into one of the variations. 
   2. Run a complete run with Nathan's good run list.
   3. Compare in an automated way the results produced by myself and Nathan. 
+  4. Add support for pi- and pi+ with some flag. 
 
 */
 
 void variations(int startIndex = 0, int stopIndex = 4){
 
-  std::string baseDirectory("/volatile/clas12/dmriser/farm_out");
-  std::string projectName("Nathan_03"); 
+  const std::string baseDirectory("/volatile/clas12/dmriser/farm_out");
+  const std::string projectName("nathan_05"); 
+  const std::string hadronType("pim");
 
   // Load the entire dataset, these are the output room files 
   // from all the different variations. 
@@ -33,20 +35,21 @@ void variations(int startIndex = 0, int stopIndex = 4){
 
   // Load bin category tables and haprad tables. 
   std::cout << "Loading bin categories... ";
-  BinCategoryTable pipBinCategoryTable("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/binCategories", "pip");
-  BinCategoryTable pimBinCategoryTable("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/binCategories", "pim");
+  BinCategoryTable binCategoryTable("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/binCategories", hadronType);
   std::cout << "done!" << std::endl; 
 
   std::cout << "Loading haprad tables... "; 
-  HapradTable pipHapradTable("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/haprad/hapradResults/NickPipModel", "pip");
-  HapradTable pimHapradTable("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/haprad/hapradResults/NickPimModel", "pim");
+  std::string hapradPath = (hadronType == "pip" ? "/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/haprad/hapradResults/NickPipModel"
+			    : "/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/haprad/hapradResults/NickPimModel");
+  HapradTable hapradTable(hapradPath, hadronType);
+  HapradTable hapradDefaultTable("/u/home/dmriser/clas/retro-sidis/mysidis/requiredFiles/haprad/hapradResults/hapDefault", hadronType);
   std::cout << "done!" << std::endl; 
 
   if (verifyDataset(dataset)){
     std::cout << "The dataset is opened correctly." << std::endl; 
 
-    FourDimensionalResultsTable fourResults(".", "pip"); 
-    FiveDimensionalResultsTable fiveResults(".", "pip");
+    FourDimensionalResultsTable fourResults(".", hadronType); 
+    FiveDimensionalResultsTable fiveResults(".", hadronType);
 
     int index = 0; 
     for(int i = 0; i < constants::n_x_bins; i++){
@@ -59,28 +62,32 @@ void variations(int startIndex = 0, int stopIndex = 4){
 	      std::cout << "\rProcessing (" << index-startIndex << "/" << stopIndex-startIndex << ")" << std::flush; 
 
 	      std::pair<FourDResult, CollectionOfFiveDResults> nominalResult = calculateResult("nominal", 
-												dataset.fDataNominalFile, 
-												dataset.fMCNominalFile, 
-												pipBinCategoryTable,
-												pipHapradTable,
-												i, j, k, m, "pip");
+											       dataset.fDataNominalFile, 
+											       dataset.fMCNominalFile, 
+											       binCategoryTable,
+											       hapradTable,
+											       i, j, k, m, 
+											       hadronType);
 
 	      for (int sourceIndex = 0; sourceIndex < constants::n_sources; sourceIndex++){
+
+		// For the 13th source we change the haprad table. 
+		HapradTable hap = (sourceIndex == 12 ? hapradDefaultTable : hapradTable);
 
 		std::string looseName(Form("source%d_var0", sourceIndex));
 		std::pair<FourDResult, CollectionOfFiveDResults> looseResults = calculateResult(looseName,
 												 dataset.fDataFiles[sourceIndex][0],
 												 dataset.fMCFiles[sourceIndex][0],
-												 pipBinCategoryTable,
-												 pipHapradTable,
-												 i, j, k, m, "pip");
+												 binCategoryTable,
+												 hap,
+												 i, j, k, m, hadronType);
 		std::string tightName(Form("source%d_var1", sourceIndex));
 		std::pair<FourDResult, CollectionOfFiveDResults> tightResults = calculateResult(tightName,
 												 dataset.fDataFiles[sourceIndex][1],
 												 dataset.fMCFiles[sourceIndex][1],
-												 pipBinCategoryTable,
-												 pipHapradTable,
-												 i, j, k, m, "pip");
+												 binCategoryTable,
+												 hapradTable,
+												 i, j, k, m, hadronType);
 		
 		nominalResult.first.m_sys_err[sourceIndex] = Utils::combineVariations(nominalResult.first.m, 
 										      looseResults.first.m, 

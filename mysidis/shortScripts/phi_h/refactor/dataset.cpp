@@ -30,9 +30,9 @@ struct Dataset {
 
 void loadNominal(Dataset & dataset, std::string baseDirectory,
 		 std::string projectName){
-  dataset.fDataNominalFile = new TFile(Form("%s/%s/data/variation_nominal/merged.root",
+  dataset.fDataNominalFile = new TFile(Form("%s/%s/data/variation_nominal/nominal.root",
 					    baseDirectory.c_str(), projectName.c_str())); 
-  dataset.fMCNominalFile = new TFile(Form("%s/%s/mc/variation_nominal/merged.root",
+  dataset.fMCNominalFile = new TFile(Form("%s/%s/mc/variation_nominal/nominal.root",
 					  baseDirectory.c_str(), projectName.c_str())); 
 }
 
@@ -69,15 +69,15 @@ void loadVariations(Dataset & dataset, std::string baseDirectory,
       loadVariation(dataset, baseDirectory, projectName,   "mc", i, 0); 
       loadVariation(dataset, baseDirectory, projectName,   "mc", i, 1); 
     } else {
-      std::string filename = Form("%s/%s/data/variation_nominal/merged.root",
+      std::string filename = Form("%s/%s/data/variation_nominal/nominal.root",
                                              baseDirectory.c_str(), projectName.c_str());
       dataset.fDataFiles[i][0] = new TFile(filename.c_str());
       dataset.fDataFiles[i][1] = new TFile(filename.c_str());
  
-      std::string nominalFilename = Form("%s/%s/mc/variation_nominal/merged.root",
+      std::string nominalFilename = Form("%s/%s/mc/variation_nominal/nominal.root",
                                          baseDirectory.c_str(), projectName.c_str());
       
-      std::string acceptanceFilename = Form("%s/%s/mc/variation_acceptance/merged.root",
+      std::string acceptanceFilename = Form("%s/%s/mc/variation_acceptance/acceptance.root",
                                             baseDirectory.c_str(), projectName.c_str());
       
       // Handle the acceptance variations separately.

@@ -77,12 +77,12 @@ if __name__ == '__main__':
         config['change_strictness'] = 0
         config['strict_to_change']  = 0 
         config['strictness']        = 0
-        process(config, base_filename)
+        process(config, base_filename + '_nominal')
 
         # Run acceptance iteration = 0 
         config['variation'] = 'acceptance'
         config['acceptance_iteration'] = 0
-        process(config, base_filename)
+        process(config, base_filename + '_acceptance')
         config['acceptance_iteration'] = 2
 
         # We're going to play with the sectors. 
