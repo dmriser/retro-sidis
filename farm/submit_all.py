@@ -6,7 +6,7 @@ import numpy as np
 import os 
 
 def create_jsub(output_name='out.jsub', job_name='CreatedFarmJob', project='E1F',
-                track='simulation', time=480, memory=4096, os='CENTOS7', command='ls',
+                track='simulation', time=960, memory=4096, os='CENTOS7', command='ls',
                 other_files=None, output_data=None, output_template=None, input_files=None):
 
     ''' Create a .jsub file for submission to the Jefferson lab batch farm. '''
