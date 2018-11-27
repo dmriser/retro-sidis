@@ -24,8 +24,8 @@
 void variations(int startIndex = 0, int stopIndex = 4){
 
   const std::string baseDirectory("/volatile/clas12/dmriser/farm_out");
-  const std::string projectName("nathan_05"); 
-  const std::string hadronType("pim");
+  const std::string projectName("sidis_batch_11"); 
+  const std::string hadronType("pip");
 
   // Load the entire dataset, these are the output room files 
   // from all the different variations. 
