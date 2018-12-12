@@ -26,9 +26,21 @@ def root_histo_to_numpy(histogram):
 
     return axis_values, content, errors
 
+def nathans_error(values, errors):
+    ''' Nathan's way of putting 
+    sectors together to get an error''' 
+    mean = np.mean(values)
+    std = np.std(values)
+    mean_error = np.sqrt(np.mean(errors**2))
+    
+    if mean_error > std:
+        return 0.0
+    else:
+        return np.sqrt(std**2 - mean_error**2)
+
 if __name__ == '__main__':
 
-    hadron = 'pim'
+    hadron = 'pip'
 
     # get file open for this 
     input_filename = '/u/home/dmriser/mysidis-histos/Sector_systematics.root'
@@ -53,10 +65,17 @@ if __name__ == '__main__':
     output_dict['z_bin'] = []
     output_dict['pt2_bin'] = []
 
-    for i in range(n_sect):
-        output_dict['a0_sect_{}'.format(i)] = []
-        output_dict['acos_sect_{}'.format(i)] = []
-        output_dict['acos2_sect_{}'.format(i)] = []
+    output_dict['a0_sys_sector'] = []
+    output_dict['acos_sys_sector'] = []
+    output_dict['acos2_sys_sector'] = []
+
+#    for i in range(n_sect):
+#        output_dict['a0_sect{}_value'.format(i)] = []
+#        output_dict['acos_sect{}_value'.format(i)] = []
+#        output_dict['acos2_sect{}_value'.format(i)] = []
+#        output_dict['a0_sect{}_error'.format(i)] = []
+#        output_dict['acos_sect{}_error'.format(i)] = []
+#        output_dict['acos2_sect{}_error'.format(i)] = []
 
     
     for xb in range(n_x):
@@ -79,22 +98,33 @@ if __name__ == '__main__':
                     
                     # a0 
                     title = build_histogram_title('M', hadron, xb, q2b, zb, pt2b)
-                    _, a0, err = root_histo_to_numpy(root_file.Get(title))
+                    _, a0, err0 = root_histo_to_numpy(root_file.Get(title))
 
                     # acos
                     title = build_histogram_title('Ac', hadron, xb, q2b, zb, pt2b)
-                    _, acos, err = root_histo_to_numpy(root_file.Get(title))
+                    _, acos, errcos = root_histo_to_numpy(root_file.Get(title))
                         
                     # acos2 
                     title = build_histogram_title('Acc', hadron, xb, q2b, zb, pt2b)
-                    _, acos2, err = root_histo_to_numpy(root_file.Get(title))
+                    _, acos2, errcos2 = root_histo_to_numpy(root_file.Get(title))
 
-                    for i in range(n_sect):
-                        output_dict['a0_sect_{}'.format(i)].append(a0[i])
-                        output_dict['acos_sect_{}'.format(i)].append(acos[i])
-                        output_dict['acos2_sect_{}'.format(i)].append(acos2[i])
-                        
+                    #                    for i in range(n_sect):
+                    #                        output_dict['a0_sect{}_value'.format(i)].append(a0[i])
+                    #                        output_dict['acos_sect{}_value'.format(i)].append(acos[i])
+                    #                        output_dict['acos2_sect{}_value'.format(i)].append(acos2[i])
+                    #                        output_dict['a0_sect{}_error'.format(i)].append(err0[i])
+                    #                        output_dict['acos_sect{}_error'.format(i)].append(errcos[i])
+                    #                        output_dict['acos2_sect{}_error'.format(i)].append(errcos2[i])
 
+                    output_dict['a0_sys_sector'].append(nathans_error(
+                        a0, err0
+                    ))
+                    output_dict['acos_sys_sector'].append(nathans_error(
+                        acos, errcos
+                    ))
+                    output_dict['acos2_sys_sector'].append(nathans_error(
+                        acos2, errcos2
+                    ))
 
-    df = pd.DataFrame(output_dict)
+    df = pd.DataFrame(output_dict)        
     df.to_csv('{}_sector_systematics.csv'.format(hadron), index = False)
