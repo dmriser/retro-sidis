@@ -1,9 +1,10 @@
 void EChit2(int sector = 1)
 {
 gStyle->SetOptStat(0);
+gStyle->SetPalette(kViridis);
 
-TFile *fD = new TFile("/home/kjgroup/mysidis/histos/pid.data.s1.n12114.root");
-TFile *fMC = new TFile("/home/kjgroup/mysidis/histos/pid.MonteCarlo_v12.s1.n32255.root");
+TFile *fD = new TFile("/u/home/dmriser/mysidis-histos/pid.data.s1.n12114.root");
+TFile *fMC = new TFile("/u/home/dmriser/mysidis-histos/pid.MonteCarlo_v12.s1.n32255.root");
 
 TH2F *hD[2][6];
 TH2F *hMC[2][6];
@@ -39,6 +40,7 @@ can->cd(c*6 + s + 1);
 hD[c][s] = (TH2F*) fD->Get(Form("eIDplots/ech_xVech_y_e_hist_c%i_s%i", c, s+1));
 hD[c][s]->GetXaxis()->SetTitle("Y_{EC} (cm)");
 hD[c][s]->GetYaxis()->SetTitle("X_{EC} (cm)");
+ hD[c][s]->SetTitle("Data");
 hD[c][s]->Draw("colz");
 if(c == 1)
 {
@@ -53,8 +55,9 @@ fwMax[k]->Draw("same");
 
 can->cd(12 + c*6 + s + 1);
 hMC[c][s] = (TH2F*) fMC->Get(Form("eIDplots/ech_xVech_y_e_hist_c%i_s%i", c, s+1));
-hMC[c][s]->GetXaxis()->SetTitle("Y_{EC} (cm)");
-hMC[c][s]->GetYaxis()->SetTitle("X_{EC} (cm)");
+hMC[c][s]->GetXaxis()->SetTitle("Y_{EC} [cm]");
+hMC[c][s]->GetYaxis()->SetTitle("X_{EC} [cm]");
+ hMC[c][s]->SetTitle("Monte Carlo");
 hMC[c][s]->Draw("colz");
 if(c == 1)
 {
@@ -77,8 +80,10 @@ can2->Divide(2, 2, 0.00001, 0.00001);
 
 can2->cd(1);
 hD[0][sector-1]->Draw("colz");
+ gPad->SetLogz();
 can2->cd(2);
 hD[1][sector-1]->Draw("colz");
+ gPad->SetLogz();
 for(int k = 0; k < 5; k++)
 {
 fuMin[k]->Draw("same");
@@ -88,8 +93,10 @@ fwMax[k]->Draw("same");
 }
 can2->cd(3);
 hMC[0][sector-1]->Draw("colz");
+ gPad->SetLogz();
 can2->cd(4);
 hMC[1][sector-1]->Draw("colz");
+ gPad->SetLogz();
 for(int k = 0; k < 5; k++)
 {
 fuMin[k]->Draw("same");
@@ -97,7 +104,7 @@ fuMax[k]->Draw("same");
 fvMax[k]->Draw("same");
 fwMax[k]->Draw("same");
 }
-
-//can2->SaveAs(Form("EChit_s%i.png", sector));
+ 
+can2->SaveAs(Form("/volatile/clas12/dmriser/plots/nathan/eid/ec_fid_sect%i.pdf", sector));
 
 }
