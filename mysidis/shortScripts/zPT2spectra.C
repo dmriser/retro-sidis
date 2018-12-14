@@ -3,7 +3,7 @@ gStyle->SetOptStat(0);
 //TFile *tf = new TFile("/home/kjgroup/mysidis/histos/data.s1.n12114.BiSc5.MoCo11.__0000000000000000__.root");
 //TFile *tf = new TFile("/home/kjgroup/mysidis/histos/MonteCarlo_v12.it0.s1.n32255.BiSc5.__0000000000000000__.root");
 //TFile *tf = new TFile("/home/kjgroup/mysidis/histos/data.s1.n12114.BiSc5.MoCo11.6phihBBins.__0000000000000000__.root");
-TFile *tf = new TFile("/home/kjgroup/mysidis/histos/data.s1.n11625.BiSc5.MoCo11.__0000000000009009__.root");
+TFile *tf = new TFile("/u/home/dmriser/mysidis-histos/data.s1.n11625.BiSc5.MoCo11.__0000000000009009__.root");
 
 gROOT->ProcessLine(".L PTsqFcn.C");
 

@@ -25,6 +25,8 @@ L2[st] = new TF1(Form("L2%i", st), Form("%3.4f - %3.4f*x", height[st], slope[st]
 
  L1[st]->SetLineWidth(1);
  L2[st]->SetLineWidth(1);
+ L1[st]->SetLineStyle(9);
+ L2[st]->SetLineStyle(9);
 }
 /*
 TCanvas *can = new TCanvas("can", "can", 1500, 60, 1600, 1000);

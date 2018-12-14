@@ -39,6 +39,12 @@ void ECsampling(int sector = 1)
 	      Ltop[t][s][st] = new TF1(Form("Ltop%i%i%i", t, s, st), Form("%3.4f + %3.4f*x + %3.4f*x*x", a[t][st][s], b[t][st][s], c[t][st][s]), 0, 5);
 	      
 	      Lbottom[t][s][st] = new TF1(Form("Lbottom%i%i%i", t, s, st), Form("%3.4f + %3.4f*x + %3.4f*x*x", d[t][st][s], e[t][st][s], f[t][st][s]), 0, 5);
+
+	      Ltop[t][s][st]->SetLineWidth(1);
+	      Ltop[t][s][st]->SetLineStyle(9);
+	      Lbottom[t][s][st]->SetLineWidth(1);
+	      Lbottom[t][s][st]->SetLineStyle(9);
+
 	    }
 	}
     }
