@@ -1,5 +1,6 @@
 {
   gStyle->SetOptStat(0);
+  gStyle->SetPalette(kViridis);
 
   int sector = 1;
 
@@ -61,11 +62,11 @@
 
   can2->cd(2);
   TF1 *loose = new TF1("loose", "45.5 - 35.0*sqrt(1.0 - pow(x,2.0)/362.5)", -18, 18);
-  //loose->Draw("same");
+  loose->Draw("same");
   TF1 *nominal = new TF1("nominal", "46.0 - 35.0*sqrt(1.0 - pow(x,2.0)/350.0)", -18.7, 18.7);
   nominal->Draw("same");
   TF1 *tight = new TF1("tight", "46.5 - 35.0*sqrt(1.0 - pow(x,2.0)/337.5)", -18, 18);
-  //tight->Draw("same");
+  tight->Draw("same");
 
 
   can->cd(7);
@@ -80,4 +81,14 @@
   nominal->Draw("same");
   can->cd(12);
   nominal->Draw("same");
+
+  TCanvas *davidCanvas = new TCanvas("davidCanvas", "davidCanvas", 800, 600);
+  hD[1][3]->Draw("colz"); 
+
+  // lines of cut 
+  loose->Draw("same"); 
+  nominal->Draw("same"); 
+  tight->Draw("same"); 
+
+  davidCanvas->Print("/volatile/clas12/dmriser/plots/nathan/eid/cc_fid.pdf");
 }

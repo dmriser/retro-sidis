@@ -2,8 +2,11 @@ void pip_R1(int sector = 4)
 {
 gStyle->SetOptStat(0);
 
-TFile *fD = new TFile("/home/kjgroup/mysidis/histos/pid.data.s1.n12114.root");
-TFile *fMC = new TFile("/home/kjgroup/mysidis/histos/pid.MonteCarlo_v12.s1.n32255.root");
+//TFile *fD = new TFile("/home/kjgroup/mysidis/histos/pid.data.s1.n12114.root");
+//TFile *fMC = new TFile("/home/kjgroup/mysidis/histos/pid.MonteCarlo_v12.s1.n32255.root");
+
+TFile *fD = new TFile("/u/home/dmriser/mysidis-histos/pid.data.s1.n12114.root");
+TFile *fMC = new TFile("/u/home/dmriser/mysidis-histos/pid.MonteCarlo_v12.s1.n32255.root");
 
 TH2F *hD[2][6];
 TH2F *hMC[2][6];
